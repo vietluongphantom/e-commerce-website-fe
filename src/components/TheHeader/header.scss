@@ -1,0 +1,119 @@
+.header {
+  // background-color: var(--color-three);
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(175, 215, 181, 0.3);
+
+  &__inner {
+    display: flex;
+    justify-content: flex-end;
+    // padding: 5px 0;
+    align-items: center;
+    padding-right: 35px;
+    background-color: var(--color-three);
+  }
+
+  &__separator {
+    color: #fff;
+    padding: 15px 0;
+  }
+
+  &__search {
+    background-color: var(--color-two);
+    padding: 20px 0;
+    display: flex;
+  }
+
+  &__images {
+    width: 20%;
+    height: auto;
+    object-fit: cover;
+    display: inline !important;
+  }
+
+  &__input {
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding: 10px 20px;
+    margin-left: 30px;
+    margin-right: 10px;
+    font-size: 14px;
+    width: 39%;
+    height: 45px;
+    outline: none;
+
+    &:focus {
+      border: 3px solid var(--color-three);
+    }
+  }
+
+  &__title {
+    font-size: 16px;
+    color: #232323;
+    font-weight: 600;
+    margin-right: 17px;
+  }
+}
+
+.button {
+  color: #fff;
+  border: none;
+  background-color: inherit;
+  margin-right: 5px;
+  font-size: 15px;
+  text-decoration: underline;
+  &__search {
+    border: none;
+    background-color: inherit;
+    padding: 5px;
+    border-radius: 5px;
+    &:hover {
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(50, 110, 81, 0.5);
+    }
+  }
+
+  &__cart,
+  &__store {
+    border: none;
+    background-color: inherit;
+  }
+
+  &__store {
+    margin-right: 0;
+  }
+}
+
+.icon {
+  &__user {
+    width: 35px;
+    height: 35px;
+    color: #ffff;
+    border-radius: 50%;
+    padding: 0px 10px;
+    border: 2px solid;
+    margin-right: 10px;
+  }
+
+  &__search {
+    width: 30px;
+    height: 30px;
+    display: inline;
+  }
+
+  &__cart,
+  &__store {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-three);
+    border-radius: 50%;
+    padding: 8px;
+    margin-right: 5px;
+    display: inline;
+  }
+  &__cart {
+    margin-left: 40px;
+  }
+}

@@ -1,0 +1,110 @@
+.container__register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 100vh;
+  background-color: #f1f5f9;
+}
+
+.register {
+  display: flex;
+  width: 60%;
+  height: 90vh;
+  background-color: white;
+  box-shadow: 0 0 15px 5px rgba(188, 188, 188, 0.8);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.register__images {
+  background-image: url("@/assets/images/bg_res.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 50%;
+  height: 100%;
+}
+.register__content {
+  width: 50%;
+  padding-left: 45px;
+}
+.register__title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #242424;
+  margin: 20px 0 35px 0;
+}
+.register__box .register__wrap {
+  margin-right: 10px;
+  font-size: 16px;
+  display: inline;
+}
+.register__box input {
+  margin-right: 5px;
+  width: 20px;
+  margin-top: 15px;
+}
+.register__gender {
+  border: 1px solid #696969;
+  outline: none;
+  border-radius: 5px;
+  color: #696969;
+}
+
+label {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: #696969;
+  margin: 0;
+}
+
+input {
+  border: none;
+  border-bottom: 2px solid #bcbcbc;
+  margin-bottom: 20px;
+  color: #696969;
+  padding: 10px 0;
+  width: 80%;
+  outline: none;
+  font-size: 14px;
+}
+input:hover {
+  border-bottom: 2px solid #343434;
+}
+
+form {
+  display: inline;
+}
+
+.button {
+  padding: 5px 25px;
+  font-size: 18px;
+  border-radius: 15px;
+}
+.button--one {
+  margin-top: 10px;
+  background-color: #f45678;
+  color: white;
+  border: 1px solid #f45678;
+  width: 150px;
+}
+.button--one:hover {
+  background-color: white;
+  color: #f45678;
+  border: 1px solid #f45678;
+  box-shadow: 0 0 10px rgba(244, 86, 120, 0.8);
+}
+
+.button--two {
+  border: none;
+  background: none;
+  font-size: 20px;
+  color: #f45678;
+  margin-left: 60px;
+  transition: box-shadow 0.3s ease;
+}
+.button--two:hover {
+  color: #f45678;
+  text-shadow: 0 0 10px #f45678;
+}/*# sourceMappingURL=register.css.map */

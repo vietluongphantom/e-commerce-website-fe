@@ -1,0 +1,50 @@
+.gradient-custom {
+  background: linear-gradient(to right, #ed7266, #f6a5a1);
+  padding: 20px;
+  color: white;
+  text-align: center;
+}
+
+.item {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+label {
+  font-size: 16x;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  border: 1px solid #d2d2d2;
+  padding: 3px 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  outline: none;
+  color: #7a7a7a;
+  &:hover {
+    border: 1px solid #696969;
+  }
+}
+
+textarea {
+  border: 1px solid #d2d2d2;
+  padding: 3px 10px;
+  border-radius: 8px;
+  height: 100px;
+  outline: none;
+  color: #7a7a7a;
+}
+
+select {
+  border: 1px solid #d2d2d2;
+  padding: 3px 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  outline: none;
+  color: #7a7a7a;
+  &:hover {
+    border: 1px solid #696969;
+  }
+}
