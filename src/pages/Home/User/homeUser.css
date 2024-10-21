@@ -1,0 +1,48 @@
+.home__fillter {
+  background-color: var(--color-three);
+  font-size: 16px;
+  padding: 10px 20px 10px 12px;
+  width: 100px;
+  height: auto;
+  margin-top: 12px;
+}
+.home__fillter:hover {
+  background-color: var(--color-three);
+}
+.home__box {
+  background-color: var(--color-four);
+}
+.home__inner {
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.home__title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 20px;
+}
+.home__select {
+  margin-right: 0;
+  padding: 5px;
+  border: 2 solid !important;
+  border-radius: 10px;
+  font-size: 15px;
+  box-shadow: 0 4px 8px rgba(35, 35, 35, 0.3098039216);
+}
+.home__label {
+  font-weight: 600;
+  margin-right: 10px;
+}
+.home__left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home__innerTwo {
+  display: flex;
+}
+.home__items {
+  flex: 1;
+}/*# sourceMappingURL=homeUser.css.map */
