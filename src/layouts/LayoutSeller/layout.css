@@ -1,0 +1,38 @@
+@charset "UTF-8";
+::v-deep :where(.css-dev-only-do-not-override-19iuou).ant-layout .ant-layout-sider-children {
+  height: calc(100vh - 70px);
+  position: fixed;
+  top: 100px;
+  left: 0;
+  padding-top: 20px;
+  padding-right: 10px;
+  padding-left: 10px;
+  overflow-y: auto;
+}
+
+::v-deep :where(.css-dev-only-do-not-override-19iuou).ant-layout .ant-layout-sider-children .ant-menu.ant-menu-inline-collapsed {
+  width: 70px;
+  transition: width 0.2s cubic-bezier(0.2, 0, 0, 1) 0s;
+}
+
+::v-deep :where(.css-dev-only-do-not-override-19iuou).ant-layout .ant-layout-sider {
+  flex: 0 0 280px !important;
+  min-width: 0 !important; /* Ghi đè min-width nội tuyến */
+  /* width: none !important;  */
+  max-width: 280px !important;
+}
+
+::v-deep :where(.css-dev-only-do-not-override-19iuou).ant-layout .ant-layout-sider-collapsed {
+  flex: 0 0 90px !important;
+  min-width: 0 !important; /* Ghi đè min-width nội tuyến */
+  /* width: none !important;  */
+  max-width: 90px !important;
+}
+
+.header {
+  box-shadow: 0 4px 8px rgba(160, 174, 190, 0.5);
+}
+
+.input--one:focus {
+  border: 2px solid #884FFB;
+}/*# sourceMappingURL=layout.css.map */

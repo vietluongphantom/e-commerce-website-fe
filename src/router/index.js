@@ -3,9 +3,9 @@ import login from './login.js';
 import register from './register.js';
 import user from './user.js';
 import admin from './admin.js';
+import seller from './seller.js';
 
-
-const routes = [...admin,...login, ...register, ...user];
+const routes = [...admin, ...login, ...register, ...user, ...seller];
 
 const router = createRouter({
   history: createWebHistory(),
