@@ -27,7 +27,8 @@ import AdminIcon from './admin.svg';
 import OrderIcon from './order.svg';
 import EyeIcon from './eye.svg';
 import DropIcon from './dropdown.svg';
-
+import Microphone from './microphone.svg';
+import Mic from './microphone-solid.svg'
 export {
   CartIcon,
   SearchIcon,
@@ -57,5 +58,7 @@ export {
   AdminIcon,
   OrderIcon,
   EyeIcon,
-  DropIcon
+  DropIcon,
+  Microphone,
+  Mic
 };

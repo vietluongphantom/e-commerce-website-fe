@@ -70,10 +70,21 @@
     padding: 5px;
     border-radius: 5px;
     &:hover {
-      background-color: #fff;
+      background-color: #a35656;
       box-shadow: 0 4px 8px rgba(50, 110, 81, 0.5);
     }
   }
+    &__microphone {
+      border: none;
+      background-color: inherit;
+      padding: 5px;
+      border-radius: 5px;
+  
+      &:hover {
+        background-color: #a35656;
+        box-shadow: 0 4px 8px rgba(50, 110, 81, 0.5);
+      }
+    }
 
   &__cart,
   &__store {
@@ -102,6 +113,11 @@
     height: 30px;
     display: inline;
   }
+    &__microphone {
+       width: 30px;
+       height: 30px;
+       display: inline;
+     }
 
   &__cart,
   &__store {
@@ -115,5 +131,80 @@
   }
   &__cart {
     margin-left: 40px;
+  }
+}
+/* Container để bọc cả input và các nút */
+.header__input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  /* Điều chỉnh kích thước theo ý muốn */
+}
+
+/* Input chiếm phần lớn không gian */
+.header__input {
+  flex: 1;
+  padding-right: 80px;
+  /* Để chừa không gian cho các nút */
+  padding-left: 10px;
+  height: 40px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
+}
+
+/* Nút microphone */
+.button__microphone {
+  position: absolute;
+  right: 45px;
+  /* Khoảng cách từ phải */
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Nút search */
+.button__search {
+  position: absolute;
+  right: 10px;
+  /* Khoảng cách từ phải */
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  font-size: 18px;
+  z-index: 1000;
+  /* Đảm bảo popup hiện lên trên cùng */
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
