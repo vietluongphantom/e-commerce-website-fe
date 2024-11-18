@@ -56,6 +56,16 @@
   font-size: 15px;
   text-decoration: underline;
 }
+.button__microphone{
+  border: none;
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+}
+.button__microphone:hover {
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(50, 110, 81, 0.5);
+}
 .button__search {
   border: none;
   background-color: inherit;
@@ -83,11 +93,16 @@
   border: 2px solid;
   margin-right: 10px;
 }
-.icon__search {
+/* .icon__search {
   width: 30px;
   height: 30px;
   display: inline;
-}
+} */
+/* .icon__microphone {
+  width: 90px;
+  height: 90px;
+  display: inline;
+} */
 .icon__cart, .icon__store {
   width: 40px;
   height: 40px;
