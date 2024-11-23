@@ -126,7 +126,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed, ref } from 'vue';
+import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
 import { TrashIcon } from '@/assets/icons/icon.js';
 import { debounce } from 'lodash';
@@ -134,7 +134,9 @@ import apiServices from '@/domain/apiServices';
 import { format, parseISO } from 'date-fns';
 import Swal from 'sweetalert2';
 
+
 const cartStore = useCartStore();
+
 
 const columns = [
   {
@@ -143,7 +145,7 @@ const columns = [
     dataIndex: 'id'
   },
   {
-    title: 'Tên Shop',
+    title: 'Mã giảm giá ',
     dataIndex: ['shopDetails', 'name'],
     key: 'shop_name'
   },
@@ -187,6 +189,7 @@ const columns = [
     scopedSlots: { customRender: 'actions' }
   }
 ];
+
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
@@ -336,7 +339,15 @@ const handlePayment = async () => {
 onMounted(async () => {
   await cartStore.fetchCartItems();
   console.log("OK")
+
+  
 });
+onUnmounted(() => {
+  cartStore.totalPrice = 0; // Reset tổng giá trị về 0 khi rời khỏi trang
+});
+
+
+
 </script>
 
 <style scoped lang="scss">
