@@ -1,0 +1,30 @@
+.product-item__add-attribute-container {
+margin-top: 20px;
+text-align: center; 
+}
+
+.product-item__add-attribute-btn {
+background-color: #28a745;
+color: white;
+padding: 10px 15px;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+font-size: 16px;
+}
+
+.product-item__add-attribute-btn:hover {
+background-color: #218838;
+}
+
+
+.product-item__title {
+  text-align: center;
+  font-size: 24px; /* Tăng kích thước chữ */
+  font-weight: bold; /* Tùy chọn: Làm đậm chữ */
+  margin-bottom: 20px; /* Tùy chọn: Thêm khoảng cách dưới */
+}
+
+::v-deep .ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.5); /* Đặt độ mờ của lớp phủ */
+}

@@ -13,7 +13,7 @@
     </div> -->
 
     <div class="header__inner">
-      <!-- <DropDown></DropDown> -->
+      <DropDown></DropDown>
     </div>
 
     <div class="header__search">
@@ -59,19 +59,19 @@ import { SearchIcon, StoreIcon, CartIcon, Microphone, Mic } from '@/assets/icons
 import { Spin } from '@/components/spin/spin.vue'
 import { useAuthStore } from '@/stores/authStore';
 import router from '@/router/index.js';
-// import { productStore } from '@/stores/products';
+import { productStore } from '@/stores/products';
 import { computed, onMounted } from 'vue';
 // import Modal from '@/components/modal/ModalView.vue';
-// import DropDown from '@/components/dropDown/DropDownUser.vue';
+import DropDown from '@/components/dropdown/dropdownuser.vue'
 import { ref } from 'vue';
 import { eventBus } from '@/utils/eventBusHeader.js';
 
 const inputValue = ref('');
 const authStore = useAuthStore();
 
-// const store = productStore();
+const store = productStore();
 
-// const cartCount = computed(() => store.itemCount);
+const cartCount = computed(() => store.itemCount);
 
 
 const search = () => {
@@ -144,7 +144,7 @@ const handleFollowOrdersClick = () => {
 };
 
 onMounted(async () => {
-  // await store.fetchCart();
+  await store.fetchCart();
 });
 
 
