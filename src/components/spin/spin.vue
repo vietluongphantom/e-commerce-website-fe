@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
     <div class="ant-row ant-row-center ant-row-middle bar-wrapper" :style="circleStyle">
         <div v-for="n in 10" :key="n" class="bar"></div>
     </div>
@@ -94,64 +94,26 @@ export const Spin = {
         transform: rotate(360deg) translateX(130px);
     }
 }
-</style> -->
-<template>
-    <div class="circle-container">
-        <div v-for="n in 10" :key="n" class="bar" :style="barStyle(n)"></div>
+</style>
+<!-- <template>
+    <div class="loading">
+        <div class="obj"></div>
+        <div class="obj"></div>
+        <div class="obj"></div>
+        <div class="obj"></div>
+        <div class="obj"></div>
+        <div class="obj"></div>
+        <div class="obj"></div>
+        <div class="obj"></div>
     </div>
 </template>
 
 <script>
 export const Spin = {
     name: 'Spin',
-    methods: {
-        barStyle(index) {
-            // Tạo chiều cao biến đổi cho các thanh sóng
-            const heights = [20, 30, 40, 50, 60, 50, 40, 30, 20, 30]; // Chiều cao cho từng thanh
-            return {
-                width: '6px',
-                height: `${heights[index]}px`,
-                backgroundColor: '#4a4a87',
-                margin: '0 3px',
-                borderRadius: '3px',
-                animation: 'pulse 1.2s ease-in-out infinite',
-                animationDelay: `${index * 0.1}s`
-            };
-        },
-    },
 };
 </script>
 
-<style scoped>
-/* Vòng tròn với hiệu ứng Neumorphism */
-.circle-container {
-    width: 150px;
-    height: 150px;
-    background-color: #e0e5ec;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 9px 9px 16px #a3b1c6, -9px -9px 16px #ffffff;
-    position: relative;
-}
-
-/* Các thanh sóng */
-.bar {
-    display: inline-block;
-}
-
-/* Hiệu ứng sóng động */
-@keyframes pulse {
-
-    0%,
-    100% {
-        transform: scaleY(1);
-    }
-
-    50% {
-        transform: scaleY(0.5);
-    }
-}
-</style>
-
+<style scoped lang="css">
+@import './spin.css'; 
+ </style> -->
