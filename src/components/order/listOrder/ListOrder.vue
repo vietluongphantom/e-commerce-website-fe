@@ -70,10 +70,10 @@ const columns = [
   { title: 'Người nhận', dataIndex: 'buyer', key: 'name' },
   { title: 'Điện thoại', dataIndex: 'receiver_phone' },
   { title: 'Trạng thái', dataIndex: 'status' },
-//   { title: 'Sản phẩm', dataIndex: 'quantity'},
+  { title: 'Sản phẩm', dataIndex: 'quantity'},
   { title: 'Ngày tạo', dataIndex: 'created_at'},
   { title: 'Sửa lần cuối', dataIndex: 'modified_at'},
-//   { title: 'Actions', key: 'actions' }
+  { title: 'Actions', key: 'actions' }
 ];
 
 const orderStore = useOrderStore();
@@ -117,8 +117,11 @@ const deleteOrder = (id) => {
   OrderStore.deleteOrder(id);
 };
 
+// const editOrder = (id) => {
+//   orderStore.detailOrder(id);
+// };
 const editOrder = (id) => {
-  orderStore.detailOrder(id);
+  router.push({ name: 'order-edit', params: { id } });
 };
 
 const handleAddNew = () => {

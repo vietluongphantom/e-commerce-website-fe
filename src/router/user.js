@@ -28,6 +28,11 @@ const home = [
         path: 'list-order',
         name: 'list-order',
         component: () => import('../components/order/listOrderUser/ListOrderUer.vue')
+      },
+      {
+        path: 'view-order-detail',
+        name: 'view-order-detail',
+        component: () => import('../components/order/viewOrder/viewOrder.vue')
       }
     ]
   }

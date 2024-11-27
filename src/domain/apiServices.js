@@ -281,6 +281,9 @@ export default {
   getAllOrderUser(){
     return httpAuth.get(`${config.baseApiUrl}/api/orders/user`);
   },
+  getOrder(id){
+    return httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`);
+  },
   //Image
   upLoadImage(img){
     return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {

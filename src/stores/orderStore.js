@@ -84,11 +84,12 @@ export const useOrderStore = defineStore('order', {
     },
 
 
-    async detailOrder(id) {
-      const response = await apiServices.getDetailOrder(id);
+    async getOrder(id) {
+      const response = await apiServices.getOrder(id);
       this.detail = response.data.data;
+      console.log(response)
       // router.push({ name: 'warehouse-edit' });
-      router.push({ name: 'inventory-edit', params: { id } });
+      router.push({ name: 'view-order-detail', params: { id } });
     },
 
     async deleteOrder(id) {
