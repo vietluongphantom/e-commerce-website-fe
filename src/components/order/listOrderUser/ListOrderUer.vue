@@ -31,13 +31,13 @@
             <a href="#" @click.prevent="watchOrder(record.id)" class="mr-4">
               <EyeIcon class="w-[15px] h-[15px]" />
             </a>
-            <a href="#" @click.prevent="editOrder(record.id)" class="mr-4">
+            <!-- <a href="#" @click.prevent="editOrder(record.id)" class="mr-4">
               <EditIcon class="w-[15px] h-[15px]"></EditIcon>
             </a>
             <a-divider type="vertical" />
             <a href="#" @click.prevent="deleteOrder(record.id)" >
               <TrashIcon class="w-[15px] h-[15px]"></TrashIcon>
-            </a>
+            </a> -->
           </span>
           <!-- <span v-else-if="column.key === 'orderDetail'" @click="goToOrderDetail(record.id)"
             class="cursor-pointer text-blue-500">
@@ -121,7 +121,9 @@ const goToOrderDetail = (id) => {
   router.push({ name: 'view-order-detail', params: { id } });
 };
 const watchOrder = (id) => {
+  console.log('Navigating to order:', id);
   router.push({ name: 'view-order-detail', params: { id } });
+  
 };
 
 onMounted(async () => {

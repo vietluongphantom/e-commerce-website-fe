@@ -62,7 +62,7 @@ export default {
     return httpAuth.post(config.baseApiUrl + '/categories', { name: name, status: true });
   },
   getCategory(id) {
-    // console.log(httpAuth.get(`${config.baseApiUrl}/categories/${id}`));
+    console.log(httpAuth.get(`${config.baseApiUrl}/categories/${id}`));
     return httpAuth.get(`${config.baseApiUrl}/categories/${id}`);
   },
 
@@ -157,7 +157,7 @@ export default {
     });
   },
   getListProductS(page, size, search) {
-    console.log("page bao nhiêu", page, size, search)
+    console.log('page bao nhiêu', page, size, search);
     return httpAuth.get(`${config.baseApiUrl}/api/products/seller?page=${page - 1}&size=${size}&keyword=${search}`);
   },
 
@@ -191,7 +191,7 @@ export default {
 
   //VOUCHER
   getAllVoucher(page, size, searchQuery) {
-    return httpAuth.get(`${config.baseApiUrl}/api/vouchers/search/name?name=${searchQuery}&page=${page-1}&size=${size}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/vouchers/search/name?name=${searchQuery}&page=${page - 1}&size=${size}`);
   },
   getUserVoucher(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/vouchers/getVouchers/${id}`);
@@ -261,31 +261,36 @@ export default {
   getProductItem(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/sku/${id}`);
   },
-  updateProductItem(formData){
-    return httpAuth.put(`${config.baseApiUrl}/api/v1/sku`,formData);
+  updateProductItem(formData) {
+    return httpAuth.put(`${config.baseApiUrl}/api/v1/sku`, formData);
   },
-  getListProductItemByProductId(id){
+  getListProductItemByProductId(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/sku/product/${id}`);
   },
   //Inventory
   getAllInventory(page, size, searchQuery, skuCode) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/inventory?page=${page - 1}&size=${size}&name=${searchQuery}&skuCode=${skuCode}`);
   },
-  addInventory(formData){
+  addInventory(formData) {
     return httpAuth.post(`${config.baseApiUrl}/api/v1/inventory/import`, formData);
   },
   //Orders
-  getAllOrder(page, size, searchQuery, skuCode){
+  getAllOrder(page, size, searchQuery, skuCode) {
     return httpAuth.get(`${config.baseApiUrl}/api/orders?page=${page - 1}&size=${size}&name=${searchQuery}&skuCode=${skuCode}`);
   },
-  getAllOrderUser(){
+  getAllOrderUser() {
     return httpAuth.get(`${config.baseApiUrl}/api/orders/user`);
   },
-  getOrder(id){
+  getOrder(id) {
+    // console.log(httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`));
     return httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`);
   },
+  editOrder(id, status) {
+    return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, {  status: status });
+  },
+
   //Image
-  upLoadImage(img){
+  upLoadImage(img) {
     return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
       headers: {
         'Content-Type': 'multipart/form-data'
