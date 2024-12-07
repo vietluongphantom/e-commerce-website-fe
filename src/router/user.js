@@ -30,7 +30,7 @@ const home = [
         component: () => import('../components/order/listOrderUser/ListOrderUer.vue')
       },
       {
-        path: 'view-order-detail',
+        path: 'view-order-detail/:id',
         name: 'view-order-detail',
         component: () => import('../components/order/viewOrder/viewOrder.vue')
       }
