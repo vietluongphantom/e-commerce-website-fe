@@ -117,34 +117,97 @@ export const useOrderStore = defineStore('order', {
         });
       }
     },
+    // async editOrder(id, status) {
+    //   const { value: formValues } = await Swal.fire({
+    //     title: 'Thay đổi trạng thái đơn hàng',
+    //     html:
+    //       `<select id="swal-input2" class="swal2-input">` +
+    //       `<option value="completed" ${status === 'COMPLETED' ? 'selected' : ''}>Completed</option>` +
+    //       `<option value="pending" ${status === 'PENDING' ? 'selected' : ''}>Pending</option>` +
+    //       `<option value="cancelled" ${status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>` +
+    //       `</select>`,
+    //     focusConfirm: false,
+    //     showCancelButton: true,
+    //     confirmButtonText: 'Xác nhận',
+    //     cancelButtonText: 'Hủy',
+    //     preConfirm: () => {
+    //       return document.getElementById('swal-input2').value;
+    //     }
+    //   });
+
+    //   if (formValues) {
+    //     const [ selectedStatus] = formValues;
+    //     await apiServices.editOrder(id, selectedStatus);
+    //     this.fetchOrder(this.current);
+    //     await Swal.fire({
+    //       title: 'Saved!',
+    //       text: 'Your status has been saved.',
+    //       icon: 'success'
+    //     });
+    //   }
+    // },
     async editOrder(id, status) {
       const { value: formValues } = await Swal.fire({
         title: 'Thay đổi trạng thái đơn hàng',
         html:
           `<select id="swal-input2" class="swal2-input">` +
-          `<option value="completed" ${status === 'COMPLETED' ? 'selected' : ''}>Completed</option>` +
-          `<option value="pending" ${status === 'PENDING' ? 'selected' : ''}>Pending</option>` +
-          `<option value="cancelled" ${status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>` +
+          `<option value="COMPLETED" ${status === 'COMPLETED' ? 'selected' : ''}>Completed</option>` +
+          `<option value="PENDING" ${status === 'PENDING' ? 'selected' : ''}>Pending</option>` +
+          `<option value="CANCELLED" ${status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>` +
+          `<option value="CONFIRMED" ${status === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>` +
+          `<option value="PACKED" ${status === 'PACKED' ? 'selected' : ''}>Packed</option>` +
+          `<option value="SHIPPED" ${status === 'SHIPPED' ? 'selected' : ''}>Shipped</option>` +
+          `<option value="DELIVERED" ${status === 'DELIVERED' ? 'selected' : ''}>Delivered</option>` +
+          `<option value="RETURNED" ${status === 'RETURNED' ? 'selected' : ''}>Returned</option>` +
           `</select>`,
         focusConfirm: false,
         showCancelButton: true,
         confirmButtonText: 'Xác nhận',
         cancelButtonText: 'Hủy',
         preConfirm: () => {
-          return [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value];
+          return document.getElementById('swal-input2').value;
         }
       });
 
-      if (formValues) {
-        const [ selectedStatus] = formValues;
-        await apiServices.editOrder(id, selectedStatus);
-        this.fetchOrder(this.current);
-        await Swal.fire({
-          title: 'Saved!',
-          text: 'Your status has been saved.',
-          icon: 'success'
-        });
+      // if (formValues) {
+      //   await apiServices.editOrder(id, formValues);
+      //   this.fetchOrder(this.current);
+      //   await Swal.fire({
+      //     title: 'Saved!',
+      //     text: 'Your status has been saved.',
+      //     icon: 'success'
+      //   });
+      
+      // }
+        if (formValues) {
+    try {
+      // Gọi API để cập nhật trạng thái
+      await apiServices.editOrder(id, formValues);
+      
+      // Cập nhật trạng thái ngay lập tức trong state local
+      const orderIndex = this.orders.findIndex(order => order.id === id);
+      if (orderIndex !== -1) {
+        // Tạo bản sao của order và cập nhật trạng thái
+        this.orders[orderIndex] = {
+          ...this.orders[orderIndex],
+          status: formValues
+        };
       }
+
+      await Swal.fire({
+        title: 'Saved!',
+        text: 'Status has been saved.',
+        icon: 'success'
+      });
+    } catch (error) {
+      await Swal.fire({
+        title: 'Error!',
+        text: 'Failed to update status.',
+        icon: 'error'
+      });
+    }
+  }
+
     },
   }
 });

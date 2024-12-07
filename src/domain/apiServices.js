@@ -285,10 +285,15 @@ export default {
     // console.log(httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`));
     return httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`);
   },
-  editOrder(id, status) {
-    return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, {  status: status });
-  },
-
+  // editOrder(id, status) {
+  //   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, {  status: status });
+  // },
+//   editOrder(id, status) {
+//   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, status);
+// },
+editOrder(id, status) {
+  return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status?status=${status}`);
+},
   //Image
   upLoadImage(img) {
     return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
