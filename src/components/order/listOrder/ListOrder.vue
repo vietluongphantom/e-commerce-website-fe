@@ -31,9 +31,9 @@
             <a href="#" @click.prevent="editOrder(record.id, record.status)" class="mr-4">
               <EditIcon class="w-[15px] h-[15px]"></EditIcon>
             </a>
-            <!-- <a href="#" @click.prevent="watchOrder(record.id)" class="mr-4">
+            <a href="#" @click.prevent="watchOrder(record.id)" class="mr-4">
               <EyeIcon class="w-[15px] h-[15px]" />
-            </a> -->
+            </a>
             <a-divider type="vertical" />
             <a href="#" @click.prevent="deleteOrder(record.id)">
               <TrashIcon class="w-[15px] h-[15px]"></TrashIcon>
@@ -60,7 +60,7 @@ const columns = [
   { title: 'Người nhận', dataIndex: 'buyer', key: 'name' },
   { title: 'Điện thoại', dataIndex: 'receiver_phone' },
   { title: 'Trạng thái', dataIndex: 'status' },
-  { title: 'Sản phẩm', dataIndex: 'quantity'},
+  // { title: 'Sản phẩm', dataIndex: 'quantity'},
   { title: 'Ngày tạo', dataIndex: 'created_at'},
   { title: 'Sửa lần cuối', dataIndex: 'modified_at'},
   { title: 'Actions', key: 'actions' }
@@ -112,7 +112,11 @@ const deleteOrder = (id) => {
 //   router.push({ name: 'view-order-detail', params: { id } });
 
 // };
+const watchOrder = (id) => {
+  console.log('Navigating to order:', id);
+  router.push({ name: 'view-order-detail', params: { id } });
 
+};
 // const editOrder = (id) => {
 //   orderStore.detailOrder(id);
 // };

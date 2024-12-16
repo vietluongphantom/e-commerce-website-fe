@@ -36,28 +36,28 @@ export const useAuthStore = defineStore({
 
     async register(newUser) {
       try {
-        // Swal.fire({
-        //   title: 'Loading...',
-        //   text: 'Vui lòng chờ...',
-        //   icon: 'info',
-        //   allowOutsideClick: false,
-        //   didOpen: () => {
-        //     Swal.showLoading();
-        //   }
-        // });
+        Swal.fire({
+          title: 'Loading...',
+          text: 'Vui lòng chờ...',
+          icon: 'info',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
         const newSignUp = _.omit(newUser, ['role', 'confirmPassword']);
         console.log(newUser.role, newSignUp);
         const response = await authService.register(newUser.role, newSignUp);
-        // Swal.close();
+        Swal.close();
         if (response.data.code === 200) {
-          // console.log(newUser.role);
-          // router.push({
-          //   name: 'verification',
-          //   params: {
-          //     role: newUser.role,
-          //     email: newUser.email,
-          //   }
-          // });
+          console.log(newUser.role);
+          router.push({
+            name: 'verification',
+            params: {
+              role: newUser.role,
+              email: newUser.email
+            }
+          });
         }
       } catch (error) {
         const status = error.response.status;
