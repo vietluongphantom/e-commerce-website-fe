@@ -135,6 +135,11 @@ const seller = [
       //   component: () => import('../components/order/editOrder/editOrder.vue'),
       //   props: (route) => ({ page: route.query.id })
       // },
+      {
+        path: 'view-order-detail/:id',
+        name: 'view-order-detail',
+        component: () => import('../components/order/viewOrder/viewOrder.vue')
+      }
     ]
   }
 ];

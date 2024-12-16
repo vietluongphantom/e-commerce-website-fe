@@ -69,6 +69,76 @@ export const useInfoStore = defineStore('info', {
           timer: 1500
         });
       }
+    },
+
+    // async fetchSellerInfoByAdmin(id) {
+    //   const response = await apiServices.getInfoSellerByAdmin(id);
+    //   this.userInfo = response.data.data;
+    //   console.log('API Response:', response.data.data);
+    //   console.log(this.userInfo.gender);
+    // },
+
+    //     async fetchSellerInfoByAdmin(id) {
+    //   const response = await apiServices.getInfoSellerByAdmin(id);
+    //   if (response?.data?.data) {
+    //     this.userInfo = { ...this.userInfo, ...response.data.data }; // Gộp dữ liệu mới và giữ lại các giá trị cũ
+    //     console.log(this.userInfo.gender);
+    //   } else {
+    //     console.error('API không trả dữ liệu hợp lệ');
+    //   }
+    // },
+
+    // async fetchShopInfoByAdmin(id) {
+    //   const response = await apiServices.getShop(id);
+    //   this.shopInfo = response.data.data;
+    // }
+
+    async fetchSellerInfoByAdmin(id) {
+      try {
+        const response = await apiServices.getInfoSellerByAdmin(id);
+        if (response?.data?.data) {
+          this.userInfo = { ...this.userInfo, ...response.data.data }; // Gộp dữ liệu mới vào userInfo
+          console.log('API Response:', response.data.data);
+          console.log(this.userInfo.gender);
+        
+        } else {
+          console.error('API không trả dữ liệu hợp lệ');
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Không thể lấy thông tin người bán. Vui lòng thử lại sau!'
+          });
+        }
+      } catch (error) {
+        console.error('Lỗi khi gọi API:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi',
+          text: 'Không thể kết nối đến server. Vui lòng kiểm tra lại!'
+        });
+      }
+    },
+    async fetchShopInfoByAdmin(id) {
+      try {
+        const response = await apiServices.getShop(id);
+        if (response?.data?.data) {
+          this.shopInfo = { ...this.shopInfo, ...response.data.data }; // Gộp dữ liệu mới vào shopInfo
+        } else {
+          console.error('API không trả dữ liệu hợp lệ');
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Không thể lấy thông tin shop. Vui lòng thử lại sau!'
+          });
+        }
+      } catch (error) {
+        console.error('Lỗi khi gọi API:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi',
+          text: 'Không thể kết nối đến server. Vui lòng kiểm tra lại!'
+        });
+      }
     }
   }
 });

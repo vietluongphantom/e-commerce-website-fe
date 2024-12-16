@@ -55,6 +55,24 @@ const admin = [
         path: 'brand',
         name: 'admin-menu-3',
         component: () => import('../components/brand/ListBrand/ListBrand.vue')
+      },
+      {
+        path: 'list-order',
+        name: 'admin-menu-8',
+        component: () => import('../components/order/listOrderAdmin/listOrderAdmin1.vue')
+      },
+      {
+        path: 'view-order-detail/:id',
+        name: 'admin-menu-16',
+        component: () => import('../components/order/viewOrder/viewOrderByAdmin.vue')
+      },
+
+      {
+        path: 'profile/:id',
+        name: 'admin-menu-17',
+        component: () => import('../components/inforSeller/read/ReadViewByAdmin.vue'),
+        props: true 
+       
       }
     ]
   }
