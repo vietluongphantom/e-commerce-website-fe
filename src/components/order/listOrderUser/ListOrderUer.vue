@@ -2,53 +2,47 @@
   <div class="order bg-[#EFEFEF] p-9">
     <h1 class="text-[25px] font-bold mb-6">Danh sách đơn hàng</h1>
     <div class="mb-8 flex justify-between">
-    <div class="mb-8 flex">
-      <div class="flex items-center mr-[50px]">
-        <input
-          class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3"
-          placeholder="Tên..."
-          @focus="handleFocus"
-          v-model="searchName"
-          @keyup.enter="handleAction"
-        />
-        <!-- <SearchIcon @click="handleAction" class="w-[20px] h-[20px]"></SearchIcon> -->
-      </div>
+      <div class="mb-8 flex">
+        <div class="flex items-center mr-[50px]">
+          <input class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3" placeholder="Tên..."
+            @focus="handleFocus" v-model="searchName" @keyup.enter="handleAction" />
+          <!-- <SearchIcon @click="handleAction" class="w-[20px] h-[20px]"></SearchIcon> -->
+        </div>
 
-      <div class="flex items-center">
-        <input
-          class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3"
-          placeholder="Mã..."
-          @focus="handleFocus"
-          v-model="searchId"
-          @keyup.enter="handleAction"
-        />
-      </div>
+        <div class="flex items-center">
+          <input class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3" placeholder="Mã..." @focus="handleFocus"
+            v-model="searchId" @keyup.enter="handleAction" />
+        </div>
 
-      <button @click="handleSearch" class="button text-[15px] ml-[80px] text-[#fff] bg-[#69C3A3] p-2 font-medium rounded-lg px-4">Tìm kiếm</button>
-    </div>
+        <button @click="handleSearch"
+          class="button text-[15px] ml-[80px] text-[#fff] bg-[#69C3A3] p-2 font-medium rounded-lg px-4">Tìm
+          kiếm</button>
+      </div>
     </div>
 
     <div>
-      <a-table
-        :columns="columns"
-        :data-source="orderData.dataSource"
-        :pagination="{
+      <a-table :columns="columns" :data-source="orderData.dataSource" :pagination="{
           total: orderData.totalElements,
           current: orderData.currentPage,
           pageSize: orderData.pageSize
-        }"
-        @change="handleTableChange"
-      >
+        }" @change="handleTableChange">
         <template #bodyCell="{ column, record }">
           <span v-if="column.key === 'actions'" class="flex">
-            <a href="#" @click.prevent="editOrder(record.id)" class="mr-4">
+            <a href="#" @click.prevent="watchOrder(record.id)" class="mr-4">
+              <EyeIcon class="w-[15px] h-[15px]" />
+            </a>
+            <!-- <a href="#" @click.prevent="editOrder(record.id)" class="mr-4">
               <EditIcon class="w-[15px] h-[15px]"></EditIcon>
             </a>
             <a-divider type="vertical" />
-            <a href="#" @click.prevent="deleteOrder(record.id)">
+            <a href="#" @click.prevent="deleteOrder(record.id)" >
               <TrashIcon class="w-[15px] h-[15px]"></TrashIcon>
-            </a>
+            </a> -->
           </span>
+          <!-- <span v-else-if="column.key === 'orderDetail'" @click="goToOrderDetail(record.id)"
+            class="cursor-pointer text-blue-500">
+            View Details
+          </span> -->
           <span v-else>
             {{ record[column.dataIndex] }}
           </span>
@@ -60,7 +54,7 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
-import { SearchIcon, AddIcon, EditIcon, TrashIcon } from '@/assets/icons/icon.js';
+import { SearchIcon, AddIcon, EditIcon, TrashIcon, EyeIcon  } from '@/assets/icons/icon.js';
 import { format, parseISO } from 'date-fns';
 import { useOrderStore } from '@/stores/orderStore';
 import router from '@/router/index.js';
@@ -73,7 +67,7 @@ const columns = [
 //   { title: 'Sản phẩm', dataIndex: 'quantity'},
   { title: 'Ngày tạo', dataIndex: 'created_at'},
   { title: 'Sửa lần cuối', dataIndex: 'modified_at'},
-//   { title: 'Actions', key: 'actions' }
+  { title: 'Actions', key: 'actions' }
 ];
 
 const orderStore = useOrderStore();
@@ -122,6 +116,14 @@ const editOrder = (id) => {
 
 const handleAddNew = () => {
   router.push({ name: 'menu-11' });
+};
+const goToOrderDetail = (id) => {
+  router.push({ name: 'view-order-detail', params: { id } });
+};
+const watchOrder = (id) => {
+  console.log('Navigating to order:', id);
+  router.push({ name: 'view-order-detail', params: { id } });
+  
 };
 
 onMounted(async () => {

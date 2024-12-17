@@ -10,6 +10,7 @@
 </template>
 
 <script setup>
+
 import Header from '@/components/TheHeader/TheHeader.vue';
 import Footer from '@/components/footer/TheFooter.vue';
 import Call from '@/components/call/TheCall.vue';

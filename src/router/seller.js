@@ -128,6 +128,17 @@ const seller = [
         path: 'list-order',
         name: 'menu-8',
         component: () => import('../components/order/listOrder/ListOrder.vue')
+      },
+      //  {
+      //   path: 'order-edit/:id',
+      //   name: 'order-edit',
+      //   component: () => import('../components/order/editOrder/editOrder.vue'),
+      //   props: (route) => ({ page: route.query.id })
+      // },
+      {
+        path: 'view-order-detail/:id',
+        name: 'view-order-detail',
+        component: () => import('../components/order/viewOrder/viewOrder.vue')
       }
     ]
   }

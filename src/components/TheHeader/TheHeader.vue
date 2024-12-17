@@ -31,7 +31,10 @@
             <SearchIcon class="icon__search"></SearchIcon>
           </button>
           <div v-if="isRecording" class="popup">
-            <Spin></Spin>
+            <!-- <Spin></Spin> -->
+            <a-layout-content style="padding: 50px; display: flex; justify-content: center; align-items: center;">
+              <wave-effect />
+            </a-layout-content>
           </div>
         </div>
 
@@ -55,8 +58,10 @@
 </template>
 
 <script setup>
+
 import { SearchIcon, StoreIcon, CartIcon, Microphone, Mic } from '@/assets/icons/icon.js';
 import { Spin } from '@/components/spin/spin.vue'
+import WaveEffect from '@/components/waveEffect/waveEffect.vue';
 import { useAuthStore } from '@/stores/authStore';
 import router from '@/router/index.js';
 import { productStore } from '@/stores/products';
@@ -99,12 +104,13 @@ const startRecording = () => {
 
   // Hiển thị popup khi bắt đầu ghi âm
   isRecording.value = true;
-  console.log("Bắt đầu ghi âm...");
+  // console.log("Bắt đầu ghi âm...");
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript; // Kết quả ghi âm
     inputValue.value = transcript; // Hiển thị kết quả trên thanh input
     console.log("Kết quả ghi âm:", transcript);
+    search();
   };
 
   recognition.onerror = (event) => {
@@ -116,6 +122,7 @@ const startRecording = () => {
     // Ẩn popup khi ghi âm kết thúc
     isRecording.value = false;
   };
+  
 };
 
 

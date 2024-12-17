@@ -4,19 +4,14 @@
 
     <div class="mb-8 flex justify-between">
       <div class="flex items-center">
-        <input
-          class="category__input w-[250px] h-[35px] rounded-lg mr-2 p-3"
-          placeholder="Tên người bán..."
-          @focus="handleFocus"
-          v-model="searchQuery"
-          @blur="hideList()"
-          @keyup.enter="handleAction"
-        />
+        <input class="category__input w-[250px] h-[35px] rounded-lg mr-2 p-3" placeholder="Tên người bán..."
+          @focus="handleFocus" v-model="searchQuery" @blur="hideList()" @keyup.enter="handleAction" />
         <SearchIcon @click="handleAction" class="w-[20px] h-[20px]"></SearchIcon>
       </div>
 
       <div>
-        <button @click="handleAddNew" class="flex w-[140px] h-[40px] items-center text-[16px] bg-[#0397D6] text-[#fff] p-4 rounded-md mr-3">
+        <button @click="handleAddNew"
+          class="flex w-[140px] h-[40px] items-center text-[16px] bg-[#0397D6] text-[#fff] p-4 rounded-md mr-3">
           <span class="mr-2">Thêm mới</span>
           <AddIcon class="w-[20px] h-[20px]"></AddIcon>
         </button>
@@ -24,32 +19,30 @@
     </div>
 
     <div>
-      <a-table
-        :columns="columns"
-        :data-source="userData.dataSource"
-        :pagination="{
+      <a-table :columns="columns" :data-source="userData.dataSource" :pagination="{
           total: userData.totalElements,
           current: userData.currentPage,
           pageSize: userData.pageSize
-        }"
-        @change="handleTableChange"
-      >
+        }" @change="handleTableChange">
         <template #bodyCell="{ column, record }">
           <span v-if="column.key === 'actions'" class="flex">
-            <a href="#" @click.prevent="viewUserDetails(record.id)">
+            <!-- <a href="#" @click.prevent="viewUserDetails(record.id)">
               <EyeIcon class="w-[15px] h-[15px] mr-3"></EyeIcon>
-            </a>
+            </a> -->
             <a-divider type="vertical" />
             <a href="#" @click.prevent="editUser(record.id)" class="mr-4">
               <EditIcon class="w-[15px] h-[15px]"></EditIcon>
             </a>
-            <a-divider type="vertical" />
+            <!-- <a-divider type="vertical" />
             <a href="#" @click.prevent="deleteUser(record.id)">
               <TrashIcon class="w-[15px] h-[15px]"></TrashIcon>
-            </a>
+            </a> -->
           </span>
           <span v-else-if="column.key === 'createdAt' || column.key === 'updatedAt'">
             {{ format(record[column.dataIndex], 'dd/MM/yyyy HH:mm:ss') }}
+          </span>
+          <span v-else-if="column.key === 'status'">
+            {{ record[column.dataIndex] === true ? 'Đang hoạt động' : 'Không hoạt động' }}
           </span>
           <span v-else>
             {{ record[column.dataIndex] }}
@@ -70,9 +63,10 @@ import router from '@/router/index.js';
 const usersStore = useUsersStore();
 
 const columns = [
-  { title: 'STT', dataIndex: 'stt', key: 'stt' },
-  { title: 'Họ và tên', dataIndex: 'fullName', key: 'fullName' },
+   { title: 'STT', dataIndex: 'stt', key: 'stt' },
+  { title: 'Họ và tên', dataIndex: 'full_name', key: 'full_name' },
   { title: 'Email', dataIndex: 'email', key: 'email' },
+  { title: 'Status', dataIndex: 'status', key: 'status' },
   { title: 'Ngày tạo', dataIndex: 'createdAt', key: 'createdAt' },
   { title: 'Sửa đổi lần cuối', dataIndex: 'updatedAt', key: 'updatedAt' },
   { title: 'Thao tác', key: 'actions' }
@@ -110,7 +104,10 @@ const handleAddNew = () => {
 // const handleAddNew = () => {
 //   router.push({ name: 'menu-11' });
 // };
-
+const editUser = (id, status) => {
+  usersStore.editStatusUser(id, status);
+  // orderStore.editOrder(id, status);
+};
 onMounted(async () => {
   usersStore.fetchUsers();
 });

@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
     "@vueuse/core": "^10.11.1",
+    "animate.css": "^4.1.1",
     "ant-design-vue": "^4.2.6",
     "axios": "^1.7.9",
     "chart.js": "^4.4.7",
@@ -20,6 +22,8 @@
     "path-browserify": "^1.0.1",
     "pinia": "^2.1.7",
     "popper.js": "^1.16.1",
+    "socket.io-client": "^4.8.1",
+    "sockjs-client": "^1.6.1",
     "react-chartjs-2": "^5.2.0",
     "sweetalert2": "^11.12.2",
     "vue": "^3.5.13",
@@ -42,7 +46,7 @@
     "sass": "^1.77.8",
     "sass-loader": "^14.2.1",
     "tailwindcss": "^3.4.6",
-    "vite": "^5.4.9",
+    "vite": "^5.4.11",
     "vite-svg-loader": "^5.1.0"
   }
 }

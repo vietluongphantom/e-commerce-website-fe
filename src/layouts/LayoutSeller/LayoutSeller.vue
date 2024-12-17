@@ -38,6 +38,7 @@
       </a-layout-content>
     </a-layout>
   </a-layout>
+  <Call></Call>
 </template>
 
 <script setup>
@@ -45,7 +46,7 @@ import { ref, reactive, watch, h } from 'vue';
 import { SearchIcon, BarIcon, BellIcon } from '@/assets/icons/icon.js';
 import Dropdown from '@/components/dropdown/DropDown.vue';
 import router from '@/router/index.js';
-
+import Call from '@/components/call/TheCall.vue';
 const collapsed = ref(false);
 const toggleCollapsed = () => {
   collapsed.value = !collapsed.value;

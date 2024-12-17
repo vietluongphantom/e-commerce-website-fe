@@ -1,6 +1,7 @@
 import config from '@/configs/appBase';
 import httpAuth from '@/infrastructures/apiHttpAuth';
 
+
 export default {
   jwtToken() {
     console.log(httpAuth);
@@ -62,7 +63,7 @@ export default {
     return httpAuth.post(config.baseApiUrl + '/categories', { name: name, status: true });
   },
   getCategory(id) {
-    // console.log(httpAuth.get(`${config.baseApiUrl}/categories/${id}`));
+    console.log(httpAuth.get(`${config.baseApiUrl}/categories/${id}`));
     return httpAuth.get(`${config.baseApiUrl}/categories/${id}`);
   },
 
@@ -81,6 +82,9 @@ export default {
   },
   getShopById(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/shop/${id}`);
+  },
+  getInfoShopByUserId(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/shop/user/${id}`);
   },
   getBasicInfo() {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/seller/basicInfor`);
@@ -105,21 +109,49 @@ export default {
   },
 
   //ADMIN
+
+  // getListSeller(page, size) {
+  //   return httpAuth.get(`${config.baseApiUrl}/api/v1/user/sellers?page=${page - 1}&size=${size}`);
+  // },
+
   getListSeller(page, size) {
-    return httpAuth.get(`${config.baseApiUrl}/api/v1/admin/sellers?page=${page - 1}&size=${size}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/user/sellers`);
   },
+
   getDetailSeller(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/admin/sellers/${id}`);
   },
 
   getListUser(page, size) {
-    return httpAuth.get(`${config.baseApiUrl}/api/v1/admin/users?page=${page - 1}&size=${size}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/user/users`);
   },
   getDetailUser(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/admin/users/${id}`);
   },
   addUser(newUser) {
     return httpAuth.post(config.baseApiUrl + '/api/v1/admin/users/add', newUser);
+  },
+  // editStatusUser(id, status) {
+  //   return httpAuth.put(config.baseApiUrl + '/api/v1/users/updateUserStatus',id,  status);
+  // },
+  // editStatusUser(id, status) {
+  // return httpAuth.put(config.baseApiUrl + '/api/v1/users/updateUserStatus', { id, status });
+  // },
+  //   editStatusUser(userId, status) {
+  //   console.log('Received user ID:', userId);
+  //    console.log('Received status:', status);
+  //   return httpAuth.put(config.baseApiUrl + '/api/v1/users/updateUserStatus', { userId, status });
+  // },
+  editStatusUser(data) {
+    return httpAuth.put(config.baseApiUrl + '/api/v1/user/updateUserStatus', data);
+  },
+
+  getInfoSellerByAdmin(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/seller/information/${id}`);
+  },
+
+  getInfoShopByAdmin(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/shop/information/${id}`);
   },
 
   //SUPPLY
@@ -187,7 +219,7 @@ getDailyRevenue(month, year) {
     });
   },
   getListProductS(page, size, search) {
-    console.log("page bao nhiêu", page, size, search)
+    console.log('page bao nhiêu', page, size, search);
     return httpAuth.get(`${config.baseApiUrl}/api/products/seller?page=${page - 1}&size=${size}&keyword=${search}`);
   },
 
@@ -221,7 +253,7 @@ getDailyRevenue(month, year) {
 
   //VOUCHER
   getAllVoucher(page, size, searchQuery) {
-    return httpAuth.get(`${config.baseApiUrl}/api/vouchers/search/name?name=${searchQuery}&page=${page-1}&size=${size}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/vouchers/search/name?name=${searchQuery}&page=${page - 1}&size=${size}`);
   },
   getUserVoucher(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/vouchers/getVouchers/${id}`);
@@ -291,32 +323,60 @@ getDailyRevenue(month, year) {
   getProductItem(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/sku/${id}`);
   },
-  updateProductItem(formData){
-    return httpAuth.put(`${config.baseApiUrl}/api/v1/sku`,formData);
+  updateProductItem(formData) {
+    return httpAuth.put(`${config.baseApiUrl}/api/v1/sku`, formData);
   },
-  getListProductItemByProductId(id){
+  getListProductItemByProductId(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/sku/product/${id}`);
   },
   //Inventory
   getAllInventory(page, size, searchQuery, skuCode) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/inventory?page=${page - 1}&size=${size}&name=${searchQuery}&skuCode=${skuCode}`);
   },
-  addInventory(formData){
+  addInventory(formData) {
     return httpAuth.post(`${config.baseApiUrl}/api/v1/inventory/import`, formData);
   },
   //Orders
-  getAllOrder(page, size, searchQuery, skuCode){
+  getAllOrder(page, size, searchQuery, skuCode) {
     return httpAuth.get(`${config.baseApiUrl}/api/orders?page=${page - 1}&size=${size}&name=${searchQuery}&skuCode=${skuCode}`);
   },
-  getAllOrderUser(){
+  getAllOrderUser() {
     return httpAuth.get(`${config.baseApiUrl}/api/orders/user`);
   },
-  //Image
-  upLoadImage(img){
-    return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-  }
+  getAllOrderAdmin() {
+    return httpAuth.get(`${config.baseApiUrl}/api/orders/admin`);
+  },
+  getOrder(id) {
+    // console.log(httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`));
+    return httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`);
+  },
+  // editOrder(id, status) {
+  //   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, {  status: status });
+  // },
+//   editOrder(id, status) {
+//   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, status);
+// },
+  editOrder(id, status) {
+    return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status?status=${status}`);
+  },
+    //Image
+    upLoadImage(img) {
+      return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    },
+
+    //chat
+    getShopList() {
+      return httpAuth.get(`${config.baseApiUrl}/api/chat/list-messages`);
+    },
+    //chat
+    // createNewMessage(content, recipientId) {
+    //   return httpAuth.post(`${config.baseApiUrl}/api/chat/chat`,{content,recipientId});
+    // },
+    fetchAllMessage(id) {
+      return httpAuth.get(`${config.baseApiUrl}/api/chat/messages/${id}`);
+    },
 };
