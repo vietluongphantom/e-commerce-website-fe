@@ -90,7 +90,7 @@ const seller = [
       {
         path: 'product-edit/:id',
         name: 'product-edit',
-        component: () => import('../components/productSeller/editProduct/editProduct.vue'),
+        component: () => import('../components/productSeller/editProduct/EditProduct.vue'),
         props: (route) => ({ page: route.query.id })
       },
 

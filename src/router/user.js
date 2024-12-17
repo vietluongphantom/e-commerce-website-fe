@@ -9,6 +9,11 @@ const home = [
         component: () => import('../pages/Home/User/HomeUserView.vue')
       },
       {
+        path: 'search',
+        name: 'Search user',
+        component: () => import('../pages/Home/User/HomeUserView1.vue')
+      },
+      {
         path: 'list-cart',
         name: 'list-cart',
         component: () => import('../components/managerCart/listCart/ListCart.vue')

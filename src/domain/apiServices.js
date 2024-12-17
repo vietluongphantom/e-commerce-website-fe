@@ -131,6 +131,36 @@ export default {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/inventory/import?page=${page - 1}&size=${size}&skuCode=${searchId}&name=${searchName}`);
   },
 
+// Revenue Statistics
+getTotalRevenue() {
+  return (config.baseApiUrl + '/api/statistics/revenue/total');
+},
+
+// Orders
+getOrders() {
+  return (config.baseApiUrl + '/api/statistics/orders');
+},
+  
+getMonthlyRevenue(year) {
+  return (`${config.baseApiUrl}/api/statistics/revenue/monthly?year=${year}`);
+},
+
+// export const getMonthlyRevenue = async (year) => {
+//   try {
+//     const response = await axios.get(
+//       `${BASE_URL}/statistics/revenue/monthly?year=${year}`
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error fetching monthly revenue data:", error);
+//     throw error;
+//   }
+// };
+
+getDailyRevenue(month, year) {
+  return (`${config.baseApiUrl}/api/statistics/revenue/daily?month=${month}&year=${year}`);
+},
+
   //BRAND
   getAllBrand(page, size, searchQuery) {
     return httpAuth.get(config.baseApiUrl + `/api/brands?page=${page - 1}&size=${size}&name=${searchQuery}`);
