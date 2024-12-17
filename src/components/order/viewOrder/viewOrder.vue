@@ -70,11 +70,11 @@
             </div>
 
       
-            <!-- <div class="bg-gray-100 p-6 text-right">
+            <div class="bg-gray-100 p-6 text-right">
                 <p class="text-2xl font-bold text-red-600">
                     Tổng giá trị: {{ formatCurrency(orderDetail?.total_price || 0) }}
                 </p>
-            </div> -->
+            </div>
         </div>
     </div>
 </template>

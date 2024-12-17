@@ -115,18 +115,104 @@
       </a-table>
     </div>
   </div>
+  <div class="container">
+    <div class="modal">
+      <a-button type="primary" @click="showModal" class="custom-button"> Chọn địa chỉ giao hàng</a-button>
+      <a-modal v-model:open="open" title="Vui lòng chọn địa chỉ giao hàng" :okButtonProps="{ style: { backgroundColor: '#ad171c' } }" @ok="handleOk">
+        <a-radio v-model:checked="checked">Ngọc lãng, Ngọc Lâm, Mỹ Hào, Hưng Yên</a-radio>
+        <div style="display: flex; justify-content: center; align-items: center">
+          <a-button 
+            type="primary" 
+            style="margin-top:24px ; margin-bottom:24px; width: 100%; background-color: #ad171c"
+            @click="showAddressFields"
+          >Thêm địa chỉ giao hàng</a-button>
+        </div>
+        <div v-if="activeAddress"> 
+          <div class="custom-label">
+            <a-form-item label="Tỉnh/Thành phố" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
+            </a-form-item>
+            <a-select
+              v-model:value="value"
+              show-search
+              placeholder="Chọn tỉnh/thành phố"
+              style="width: 100%"
+              :options="options"
+              :filter-option="filterOption"
+              @focus="handleFocus"
+              @blur="handleBlur"
+              @change="handleChange"
+            ></a-select>
+          </div>
+          <div class="custom-label">
+            <a-form-item label="Quận/Huyện" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]"> </a-form-item>
+            <a-select
+              v-model:value="value"
+              show-search
+              placeholder="Chọn quận/huyện"
+              style="width: 100%"
+              :options="options"
+              :filter-option="filterOption"
+              @focus="handleFocus"
+              @blur="handleBlur"
+              @change="handleChange"
+            ></a-select>
+          </div>
+          <div class="custom-label">
+            <a-form-item label="Phường/Xã" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]"> </a-form-item>
+            <a-select
+              v-model:value="value"
+              show-search
+              placeholder="Chọn phương/xã"
+              style="width: 100%"
+              :options="options"
+              :filter-option="filterOption"
+              @focus="handleFocus"
+              @blur="handleBlur"
+              @change="handleChange"
+            ></a-select>
+          </div>
+          <div class="custom-label">
+            <a-form-item label="Địa chỉ cụ thể" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
+            </a-form-item>
+            <a-select
+              v-model:value="value"
+              show-search
+              placeholder="Số nhà/ngách/đường cụ thể"
+              style="width: 100%"
+              :options="options"
+              :filter-option="filterOption"
+              @focus="handleFocus"
+              @blur="handleBlur"
+              @change="handleChange"
+            ></a-select>
+          </div>
+          <a-button type="primary" style="width: 30%; background-color: #ad171c">Thêm</a-button>
+        </div>
+      </a-modal>
+    </div>
+  </div>
+
+  <div class="mt-[30px] mb-[40px]">
+    <div class="cart container">
+      <div>
+        <div></div>
+        <a-textarea v-model:value="value" placeholder="Basic usage" :rows="4" />
+      </div>
+    </div>
+  </div>
 
   <div class="cart__payment fixed left-0 bottom-0 w-full bg-[#EEEEEE]">
     <div class="container z-30 flex justify-end pt-[25px] pb-[25px] items-center">
       <span class="text-[22px] font-medium mr-4">Tổng thanh toán</span>
       <span class="text-[25px] text-[#F45449] font-medium mr-[40px]">{{ cartData.total }}</span>
-      <button @click="handlePayment" class="text-[#fff] bg-[#2A7E6F] p-3 pl-5 pr-5 rounded-lg">Thanh toán</button>
+      <button @click="handlePayment" class="text-[#fff] bg-[#2A7E6F] p-3 pl-5 pr-5 rounded-lg">Thanh toán online</button>
+      <button @click="handlePayment" class="text-[#fff] bg-[#2A7E6F] p-3 pl-5 pr-5 rounded-lg ml-4">Thanh toán khi nhận</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, computed, ref } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
 import { TrashIcon } from '@/assets/icons/icon.js';
 import { debounce } from 'lodash';
@@ -134,9 +220,7 @@ import apiServices from '@/domain/apiServices';
 import { format, parseISO } from 'date-fns';
 import Swal from 'sweetalert2';
 
-
 const cartStore = useCartStore();
-
 
 const columns = [
   {
@@ -145,7 +229,7 @@ const columns = [
     dataIndex: 'id'
   },
   {
-    title: 'Mã giảm giá ',
+    title: 'Tên Shop',
     dataIndex: ['shopDetails', 'name'],
     key: 'shop_name'
   },
@@ -190,7 +274,6 @@ const columns = [
   }
 ];
 
-
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 };
@@ -234,7 +317,6 @@ const handleCheckboxChange = async (id, checked) => {
 const deleteCart = (id) => {
   cartStore.deleteCart(id);
 };
-
 
 const updateQuantity = debounce((productId, quantity) => {
   console.log('có đi vào đây');
@@ -336,20 +418,60 @@ const handlePayment = async () => {
     window.location.href = res.data.data.url;
   }
 };
+
+const open = ref(false);
+const showModal = () => {
+  open.value = true;
+};
+const handleOk = (e) => {
+  console.log(e);
+  open.value = false;
+};
+
+const activeAddress = ref(false);
+const showAddressFields = (e) => {
+  activeAddress.value = ! activeAddress.value;
+};
+
 onMounted(async () => {
   await cartStore.fetchCartItems();
-  console.log("OK")
-
-  
 });
-onUnmounted(() => {
-  cartStore.totalPrice = 0; // Reset tổng giá trị về 0 khi rời khỏi trang
-});
-
-
-
 </script>
 
 <style scoped lang="scss">
 @import './style.scss';
+.modal {
+  display: flex;
+  justify-content: flex-end; /* Đẩy nút sang phải */
+  padding: 10px; /* Khoảng cách giữa nút và viền  */
+}
+.custom-button {
+  background-color: #ad171c;
+}
+.custom-button:hover {
+  background-color: #f45678; /* Màu cam khi hover */
+  border-color: #e14e2a;
+}
+
+:deep(.ant-form-item) {
+  margin-bottom: 0px !important; /* Ghi đè margin-bottom */
+}
+
+.ant-btn .ant-btn-primary {
+  background-color: #ad171c !important;
+}
+
+::v-deep :where(.css-dev-only-do-not-override-19iuou).ant-btn .ant-btn-primary {
+  background-color: #ad171c !important;
+}
+
+::v-deep :where(.css-dev-only-do-not-override-19iuou).ant-btn-primary {
+  color: #fff;
+  background-color: #faad14 !important;
+  box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+}
+
+.custom-label{
+  margin-bottom: 24px;
+}
 </style>

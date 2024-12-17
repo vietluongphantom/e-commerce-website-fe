@@ -21,7 +21,7 @@
       <div class="grid grid-cols-4 gap-12">
         <div class="col-span-2 p-4">
           <img src="@/assets/images/Logo_PTIT.jpg" class="w-[200px] h-100px]" />
-          <h3 class="uppercase font-semibold text-[18px] mt-4">Học Viện Công NGhệ Buu Chính Viễn Thông</h3>
+          <h3 class="uppercase font-semibold text-[18px] mt-4">Học Viện Công NGhệ Bưu Chính Viễn Thông</h3>
           <p class="text-[16px] mt-2">Địa chỉ: Nguyễn Trãi, Hà Đông, Hà Nội</p>
           <p class="text-[16px] mt-2">Email: abc@gmail.com</p>
           <p class="text-[16px] mt-2 mb-3">SĐT liên hệ: 022469534</p>

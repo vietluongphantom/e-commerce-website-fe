@@ -1,5 +1,17 @@
 <template>
-  <span class="text-[#fff] mr-1">Xin chào, </span>
+  <a-dropdown>
+    <BellIcon class="w-[27px] h-[27px] mr-2 stroke-white fill-white"></BellIcon>
+    <template #overlay>
+      <a-menu>
+        <a-menu-item>
+          <!-- Thông báo bên dưới -->
+          <div>aaaaaaaaaddddddddddddddddddđfffffffffffffffffffffffffffffff
+          </div>
+        </a-menu-item>
+      </a-menu>
+    </template>
+  </a-dropdown>
+  <span class="text-[#fff] mr-1"> Xin chào, </span>
   <a-dropdown v-model:open="visible">
     <a class="ant-dropdown-link" @click.prevent>
       <div class="ml-4 flex items-center cursor-pointer">
@@ -61,6 +73,7 @@
   </a-modal>
 </template>
 <script setup>
+import { BellIcon } from '@/assets/icons/icon.js';
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import router from '@/router/index.js';

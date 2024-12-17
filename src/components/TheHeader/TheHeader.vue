@@ -58,6 +58,7 @@
 </template>
 
 <script setup>
+
 import { SearchIcon, StoreIcon, CartIcon, Microphone, Mic } from '@/assets/icons/icon.js';
 import { Spin } from '@/components/spin/spin.vue'
 import WaveEffect from '@/components/waveEffect/waveEffect.vue';
