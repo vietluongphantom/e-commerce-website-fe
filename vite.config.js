@@ -24,5 +24,8 @@ export default defineConfig({
         //   rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
-  }
+  },
+  define: {
+    global: 'window', // Định nghĩa `global` là `window` để tương thích với trình duyệt
+  },
 });

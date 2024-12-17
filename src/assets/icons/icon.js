@@ -29,7 +29,11 @@ import EyeIcon from './eye.svg';
 import DropIcon from './dropdown.svg';
 import Microphone from './microphone.svg';
 import Mic from './microphone-solid.svg'
+import Messenger from './messenger.svg';
+import Chat from './chat.svg';
 export {
+  Chat,
+  Messenger,
   CartIcon,
   SearchIcon,
   UserIcon,

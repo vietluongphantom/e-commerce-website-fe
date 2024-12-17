@@ -17,7 +17,7 @@
           </div>
 
           <div class="w-[50%]">
-            <p class="text-[25px] font-medium">{{ productData.dataSource.description }}</p>
+            <p class="text-[25px] font-medium">{{ productData.dataSource.name }}</p>
             <div class="mt-3 flex justify-between">
               <div class="flex items-center">
                 <span class="underline text-[#FEC700] text-[18px] mr-1">{{ productData.dataSource.average_rate }}</span>
@@ -116,6 +116,31 @@
 
 
   </div>
+  <div v-if="productData.dataSource" class="bg-[#EFEFEF]">
+    <div class="pt-5 pb-5">
+      <div class="container bg-[#fff] p-12 rounded-md">
+        <div class="text-1xl font-bold rounded-md">{{ productData.dataSource.shop?.name ?? '' }}</div>
+        <div class="flex items-center">
+          <div class="mr-10">
+            <img src="@/assets/images/chart.png" class="w-16 h-16 rounded-full border-2 border-blue-400" alt="User" />
+          </div>
+          <button class="flex items-center rounded-md p-2 hover:bg-red-100 hover:text-white transition" @click="chatNow(productData.dataSource.shop.userId)">
+            <Chat class="w-10 h-10"></Chat>
+            <div class="font-semibold">Chat ngay</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-if="productData.dataSource" class="bg-[#EFEFEF]">
+    <div class="pt-5 pb-5">
+      <div class="container bg-[#fff] p-12 rounded-md">
+        <div class="text-1xl font-bold rounded-md">MÔ TẢ SẢN PHẨM</div>
+        <div>{{productData.dataSource.description}}</div>
+      </div>
+    </div>
+  </div>
+  <ChatBox class="fixed bottom-6 right-6 z-50" :isOpen="isChatOpen" :idShop="idShop" :shopStore="shopStore" @close="toggleChat" />
 </template>
 
 <script setup>
@@ -123,11 +148,19 @@ import { onMounted, computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductDetailStore } from '@/stores/productDetailStore';
 import { productStore } from '@/stores/products';
-import { StartIcon } from '@/assets/icons/icon.js';
+import { StartIcon, Chat } from '@/assets/icons/icon.js';
 import Swal from 'sweetalert2';
 import apiServices from '@/domain/apiServices';
 import axios from 'axios';
 const router = useRouter();
+import { useChatStore } from '@/stores/chatStore';
+import ChatBox from "@/components/chatBox/ChatBox.vue";
+import { useShopStore } from '@/stores/shopStore';
+
+const shopStore = useShopStore();
+
+const isChatOpen = ref(false);
+const idShop = ref(null);
 const route = useRoute();
 const id = route.params.id;
 const productDetail = useProductDetailStore();
@@ -136,6 +169,7 @@ const currentQuantity = ref(1);
 const recommendedProducts = ref([]);
 
 
+const chatStore = useChatStore();
 
 const productData = computed(() => ({
   dataSource: productDetail.product,
@@ -170,6 +204,7 @@ const allAttributesSelected = () => {
 };
 
 const selectValue = (value, attribute) => {
+  console.log("productData.dataSource",productData)
   if (selectedValues.value[attribute] === value.id) {
     delete selectedValues.value[attribute];
   } else {
@@ -211,6 +246,20 @@ const handleAction = async () => {
     });
   }
 };
+
+const chatNow = async (id) => {
+  idShop.value = id
+  await chatStore.fetchAllMessage(id);
+  await shopStore.fetchShopList();
+  console.log("clicl lcickl")
+  isChatOpen.value = true; 
+};
+
+
+const toggleChat = () => {
+  isChatOpen.value = !isChatOpen.value;
+};
+
 
 watch(
   () => productData.value.quantity,

@@ -1,6 +1,7 @@
 import config from '@/configs/appBase';
 import httpAuth from '@/infrastructures/apiHttpAuth';
 
+
 export default {
   jwtToken() {
     console.log(httpAuth);
@@ -81,6 +82,9 @@ export default {
   },
   getShopById(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/shop/${id}`);
+  },
+  getInfoShopByUserId(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/shop/user/${id}`);
   },
   getBasicInfo() {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/seller/basicInfor`);
@@ -319,18 +323,30 @@ export default {
   // editOrder(id, status) {
   //   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, {  status: status });
   // },
-  //   editOrder(id, status) {
-  //   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, status);
-  // },
+//   editOrder(id, status) {
+//   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, status);
+// },
   editOrder(id, status) {
     return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status?status=${status}`);
   },
-  //Image
-  upLoadImage(img) {
-    return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-  }
+    //Image
+    upLoadImage(img) {
+      return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    },
+
+    //chat
+    getShopList() {
+      return httpAuth.get(`${config.baseApiUrl}/api/chat/list-messages`);
+    },
+    //chat
+    // createNewMessage(content, recipientId) {
+    //   return httpAuth.post(`${config.baseApiUrl}/api/chat/chat`,{content,recipientId});
+    // },
+    fetchAllMessage(id) {
+      return httpAuth.get(`${config.baseApiUrl}/api/chat/messages/${id}`);
+    },
 };

@@ -45,9 +45,19 @@ export const useAuthStore = defineStore({
             Swal.showLoading();
           }
         });
+        Swal.fire({
+          title: 'Loading...',
+          text: 'Vui lòng chờ...',
+          icon: 'info',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
         const newSignUp = _.omit(newUser, ['role', 'confirmPassword']);
         console.log(newUser.role, newSignUp);
         const response = await authService.register(newUser.role, newSignUp);
+        Swal.close();
         Swal.close();
         if (response.data.code === 200) {
           console.log(newUser.role);
@@ -55,7 +65,7 @@ export const useAuthStore = defineStore({
             name: 'verification',
             params: {
               role: newUser.role,
-              email: newUser.email
+              email: newUser.email,
             }
           });
         }
