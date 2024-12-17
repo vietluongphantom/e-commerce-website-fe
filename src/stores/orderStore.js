@@ -177,37 +177,46 @@ export const useOrderStore = defineStore('order', {
       //     text: 'Your status has been saved.',
       //     icon: 'success'
       //   });
-      
+
       // }
-        if (formValues) {
-    try {
-      // Gọi API để cập nhật trạng thái
-      await apiServices.editOrder(id, formValues);
-      
-      // Cập nhật trạng thái ngay lập tức trong state local
-      const orderIndex = this.orders.findIndex(order => order.id === id);
-      if (orderIndex !== -1) {
-        // Tạo bản sao của order và cập nhật trạng thái
-        this.orders[orderIndex] = {
-          ...this.orders[orderIndex],
-          status: formValues
-        };
+      if (formValues) {
+        try {
+          // Gọi API để cập nhật trạng thái
+          await apiServices.editOrder(id, formValues);
+
+          // Cập nhật trạng thái ngay lập tức trong state local
+          const orderIndex = this.orders.findIndex((order) => order.id === id);
+          if (orderIndex !== -1) {
+            // Tạo bản sao của order và cập nhật trạng thái
+            this.orders[orderIndex] = {
+              ...this.orders[orderIndex],
+              status: formValues
+            };
+          }
+
+          await Swal.fire({
+            title: 'Saved!',
+            text: 'Status has been saved.',
+            icon: 'success'
+          });
+        } catch (error) {
+          await Swal.fire({
+            title: 'Error!',
+            text: 'Failed to update status.',
+            icon: 'error'
+          });
+        }
       }
-
-      await Swal.fire({
-        title: 'Saved!',
-        text: 'Status has been saved.',
-        icon: 'success'
-      });
-    } catch (error) {
-      await Swal.fire({
-        title: 'Error!',
-        text: 'Failed to update status.',
-        icon: 'error'
-      });
-    }
-  }
-
     },
+
+    async fetchOrdersAdmin(page = 1, searchQuery = '', skuCode = '') {
+      try {
+        const response = await apiServices.getAllOrderAdmin(page, this.pageSize, searchQuery, skuCode);
+        console.log('respon admin', response);
+        this.orders = response.data.data;
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+      }
+    }
   }
 });

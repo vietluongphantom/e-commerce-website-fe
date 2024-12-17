@@ -109,21 +109,49 @@ export default {
   },
 
   //ADMIN
+
+  // getListSeller(page, size) {
+  //   return httpAuth.get(`${config.baseApiUrl}/api/v1/user/sellers?page=${page - 1}&size=${size}`);
+  // },
+
   getListSeller(page, size) {
-    return httpAuth.get(`${config.baseApiUrl}/api/v1/admin/sellers?page=${page - 1}&size=${size}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/user/sellers`);
   },
+
   getDetailSeller(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/admin/sellers/${id}`);
   },
 
   getListUser(page, size) {
-    return httpAuth.get(`${config.baseApiUrl}/api/v1/admin/users?page=${page - 1}&size=${size}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/user/users`);
   },
   getDetailUser(id) {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/admin/users/${id}`);
   },
   addUser(newUser) {
     return httpAuth.post(config.baseApiUrl + '/api/v1/admin/users/add', newUser);
+  },
+  // editStatusUser(id, status) {
+  //   return httpAuth.put(config.baseApiUrl + '/api/v1/users/updateUserStatus',id,  status);
+  // },
+  // editStatusUser(id, status) {
+  // return httpAuth.put(config.baseApiUrl + '/api/v1/users/updateUserStatus', { id, status });
+  // },
+  //   editStatusUser(userId, status) {
+  //   console.log('Received user ID:', userId);
+  //    console.log('Received status:', status);
+  //   return httpAuth.put(config.baseApiUrl + '/api/v1/users/updateUserStatus', { userId, status });
+  // },
+  editStatusUser(data) {
+    return httpAuth.put(config.baseApiUrl + '/api/v1/user/updateUserStatus', data);
+  },
+
+  getInfoSellerByAdmin(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/seller/information/${id}`);
+  },
+
+  getInfoShopByAdmin(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/shop/information/${id}`);
   },
 
   //SUPPLY
@@ -284,6 +312,9 @@ export default {
   },
   getAllOrderUser() {
     return httpAuth.get(`${config.baseApiUrl}/api/orders/user`);
+  },
+  getAllOrderAdmin() {
+    return httpAuth.get(`${config.baseApiUrl}/api/orders/admin`);
   },
   getOrder(id) {
     // console.log(httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`));

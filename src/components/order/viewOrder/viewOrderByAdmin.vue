@@ -1,5 +1,3 @@
-
-
 <template>
     <div class="container mx-auto px-4 py-8">
 
@@ -63,7 +61,7 @@
                             <img :src="record.productDetails.image" alt="Product Image"
                                 class="w-[60px] h-[60px] object-cover rounded-md p-1" />
                         </template>
-                        
+
                         <template v-else-if="column.key === 'attributes'">
                             <div>
                                 <div v-for="attribute in record.productDetails.list_product_item" :key="attribute.id">
@@ -84,7 +82,6 @@
             </div>
 
 
-      
             <div class="bg-gray-100 p-6 text-right">
                 <p class="text-2xl font-bold text-red-600">
                     Tổng giá trị: {{ formatCurrency(orderDetail?.total_price || 0) }}
@@ -169,14 +166,14 @@ const formatDate = (dateString) => {
 
 onMounted(async () => {
     try {
-     
+
         const id = route.params.id;
 
-     
+
         await orderStore.getOrder(id);
     } catch (error) {
         console.error('Lỗi khi tải chi tiết đơn hàng:', error);
- 
+
         router.push({ name: 'order-list' });
     }
 });
