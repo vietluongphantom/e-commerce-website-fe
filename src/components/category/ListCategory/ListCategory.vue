@@ -78,6 +78,8 @@ import { format, parseISO } from 'date-fns';
 import { reactive } from 'vue';
 import Swal from 'sweetalert2';
 import { useCategory } from '@/stores/categoryStore';
+// import { useCategory } from '@/stores/CategoryStore';
+import { useCategory } from '@/stores/categoryStore.js';
 import router from '@/router/index.js';
 import apiServices from '@/domain/apiServices';
 

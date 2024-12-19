@@ -9,9 +9,9 @@
       >
         <div class="relative w-full overflow-hidden aspect-square">
           <img v-bind:src="product.images[0]" alt="Product Image" class="w-full h-full object-cover" />
-          <!-- <div class="absolute top-0 right-0 p-2 text-[13px] bg-[#FE8383] text-[#ffff] rounded-md font-normal bg-opacity-80">
+          <div class="absolute top-0 right-0 p-2 text-[13px] bg-[#FE8383] text-[#ffff] rounded-md font-normal bg-opacity-80">
             -{{ product.average_rate }}%
-          </div> -->
+          </div>
         </div>
         <div class="p-4">
           <h4 class="text-[15px] font-medium truncate mb-1">{{ product.name }}</h4>

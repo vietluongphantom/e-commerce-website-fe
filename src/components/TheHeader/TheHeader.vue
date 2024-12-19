@@ -67,7 +67,8 @@ import router from '@/router/index.js';
 import { productStore } from '@/stores/products';
 import { computed, onMounted } from 'vue';
 // import Modal from '@/components/modal/ModalView.vue';
-import DropDown from '@/components/dropdown/dropdownuser.vue'
+// import DropDown from '@/components/dropdown/dropdownuser.vue';
+import DropDown from '@/components/dropdown/DropDownUser.vue';
 import { ref } from 'vue';
 import { eventBus } from '@/utils/eventBusHeader.js';
 
