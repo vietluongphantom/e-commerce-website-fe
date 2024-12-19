@@ -1,10 +1,20 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Thống kê</h1>
+    <!-- Button to update all data -->
+    <div class="mb-4 text-right">
+      <button 
+        @click="updateAllData" 
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        Cập Nhật Dữ Liệu
+      </button>
+    </div>
+
+    <h1 class="text-2xl font-bold mb-4">Revenue Dashboard</h1>
 
     <!-- Inputs for API 1: Monthly Revenue -->
     <div class="mb-4">
-      <label class="block mb-2">Doanh thu hàng tháng của năm</label>
+      <label class="block mb-2">Year for Monthly Revenue</label>
       <input 
         v-model="monthlyRevenueYear" 
         type="number" 
@@ -15,7 +25,7 @@
 
     <!-- Inputs for API 2: Daily Revenue -->
     <div class="mb-4">
-      <label class="block mb-2">Chọn Tháng và Năm</label>
+      <label class="block mb-2">Month and Year for Daily Revenue</label>
       <div class="flex space-x-2">
         <input 
           v-model="dailyRevenueMonth" 
@@ -37,7 +47,7 @@
 
     <!-- Inputs for API 3: Date Range Revenue -->
     <div class="mb-4">
-      <label class="block mb-2">Chọn một khoảng thời gian</label>
+      <label class="block mb-2">Date Range for Revenue</label>
       <div class="flex space-x-2">
         <input 
           v-model="startDate" 
@@ -57,37 +67,37 @@
     <div class="grid grid-cols-2 gap-4">
       <!-- Monthly Revenue Chart -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Doanh thu hàng tháng</h2>
+        <h2 class="text-xl font-semibold mb-2">Monthly Revenue</h2>
         <canvas ref="monthlyRevenueChart"></canvas>
       </div>
 
       <!-- Daily Revenue Chart -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Doanh thu hàng ngày</h2>
+        <h2 class="text-xl font-semibold mb-2">Daily Revenue</h2>
         <canvas ref="dailyRevenueChart"></canvas>
       </div>
 
       <!-- Date Range Revenue Chart -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Doanh thu trong khoảng thời gian</h2>
+        <h2 class="text-xl font-semibold mb-2">Date Range Revenue</h2>
         <canvas ref="dateRangeRevenueChart"></canvas>
       </div>
 
       <!-- Order Statistics -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Trạng thái đơn hàng</h2>
+        <h2 class="text-xl font-semibold mb-2">Order Statistics</h2>
         <canvas ref="orderStatisticsChart"></canvas>
       </div>
 
       <!-- Brand Product Count -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Loại sản phẩm theo thương hiệu</h2>
+        <h2 class="text-xl font-semibold mb-2">Product Count by Brand</h2>
         <canvas ref="brandProductChart"></canvas>
       </div>
 
       <!-- Category Product Count -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Loại sản phẩm theo danh mục</h2>
+        <h2 class="text-xl font-semibold mb-2">Product Count by Category</h2>
         <canvas ref="categoryProductChart"></canvas>
       </div>
     </div>
@@ -177,18 +187,15 @@ const fetchDateRangeRevenue = async () => {
         endDate: endDate.value
       }
     })
-    const rangeData = response.data.map(item => ({
-      date: new Date(item.date).toLocaleDateString(),
-      revenue: item.revenue
-    }))
+    const rangeData = response.data.map(item => (item.revenue))
 
     new Chart(dateRangeRevenueChart.value, {
       type: 'bar',
       data: {
-        labels: rangeData.map(item => item.date),
+        labels: response.data.map(item => new Date(item.date).toLocaleDateString()),
         datasets: [{
           label: 'Revenue by Date',
-          data: rangeData.map(item => item.revenue),
+          data: rangeData,
           backgroundColor: 'rgba(54, 162, 235, 0.6)'
         }]
       }
@@ -210,11 +217,7 @@ const fetchOrderStatistics = async () => {
         labels: ['Cancelled', 'Completed', 'Pending'],
         datasets: [{
           data: [cancelledOrders, completedOrders, pendingOrders],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(255, 205, 86, 0.6)'
-          ]
+          backgroundColor: ['rgba(255, 99, 132, 0.6)', 'rgba(75, 192, 192, 0.6)', 'rgba(255, 205, 86, 0.6)']
         }]
       }
     })
@@ -227,16 +230,13 @@ const fetchOrderStatistics = async () => {
 const fetchBrandProductCount = async () => {
   try {
     const response = await axios.get('/api/brands/product-count')
-    const brandNames = response.data.map(item => item.brandName)
-    const productCounts = response.data.map(item => item.productCount)
-
     new Chart(brandProductChart.value, {
       type: 'bar',
       data: {
-        labels: brandNames,
+        labels: response.data.map(item => item.brandName),
         datasets: [{
           label: 'Product Count by Brand',
-          data: productCounts,
+          data: response.data.map(item => item.productCount),
           backgroundColor: 'rgba(153, 102, 255, 0.6)'
         }]
       }
@@ -250,16 +250,13 @@ const fetchBrandProductCount = async () => {
 const fetchCategoryProductCount = async () => {
   try {
     const response = await axios.get('/api/products/category/product-count')
-    const categoryNames = response.data.map(item => item.categoryName)
-    const productCounts = response.data.map(item => item.productCount)
-
     new Chart(categoryProductChart.value, {
       type: 'bar',
       data: {
-        labels: categoryNames,
+        labels: response.data.map(item => item.categoryName),
         datasets: [{
           label: 'Product Count by Category',
-          data: productCounts,
+          data: response.data.map(item => item.productCount),
           backgroundColor: 'rgba(255, 159, 64, 0.6)'
         }]
       }
@@ -269,15 +266,18 @@ const fetchCategoryProductCount = async () => {
   }
 }
 
-// Fetch all data when component mounts
-onMounted(() => {
+// Update all charts
+const updateAllData = () => {
   fetchMonthlyRevenue()
   fetchDailyRevenue()
   fetchDateRangeRevenue()
   fetchOrderStatistics()
   fetchBrandProductCount()
   fetchCategoryProductCount()
-})
+}
+
+// Fetch all data when component mounts
+onMounted(() => updateAllData())
 </script>
 
 <style scoped>

@@ -1,17 +1,17 @@
 <template>
   <div>
     <!-- Dashboard Title -->
-    <h1>Dashboard</h1>
+    <h1>Thống kê</h1>
 
     <!-- Order Summary -->
     <section>
-      <h2>Order Summary</h2>
+      <h2>Trạng thái đơn hàng</h2>
       <div v-if="loadingOrders">Loading...</div>
       <div v-else>
         <!-- <canvas id="orderSummaryChart" style="max-height: 500px;"></canvas> -->
-        <!-- <p><strong>Cancelled Orders:</strong> {{ orders.cancelledOrders }}</p>
+        <p><strong>Cancelled Orders:</strong> {{ orders.cancelledOrders }}</p>
         <p><strong>Completed Orders:</strong> {{ orders.completedOrders }}</p>
-        <p><strong>Pending Orders:</strong> {{ orders.pendingOrders }}</p> -->
+        <p><strong>Pending Orders:</strong> {{ orders.pendingOrders }}</p>
       </div>
     </section>
 
@@ -64,7 +64,7 @@
 
     <!-- Brand Product Count -->
     <section>
-      <h2>Brand Product Count</h2>
+      <h2>Số lượng sản phẩm theo thương hiệu</h2>
       <canvas id="brandProductCountChart" style="max-height: 500px;"></canvas>
     </section>
 
@@ -72,7 +72,7 @@
 
     <!-- Revenue Report -->
     <section class="revenue-dashboard">
-      <h2>Revenue Report</h2>
+      <h2>Doanh thu hằng ngày</h2>
       <form @submit.prevent="fetchRevenue">
         <label for="startDate">Start Date:</label>
         <input type="date" id="startDate" v-model="startDate" required />
@@ -80,7 +80,7 @@
         <label for="endDate">End Date:</label>
         <input type="date" id="endDate" v-model="endDate" required />
 
-        <button type="submit">Get Revenue</button>
+        <button type="submit">Lấy dữ liệu</button>
       </form>
 
       <div v-if="chartData.datasets.length">
