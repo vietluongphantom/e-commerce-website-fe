@@ -119,7 +119,7 @@ const columns = [
     key: 'modified_at'
   },
   {
-    title: 'Actions',
+    title: 'Hành động',
     key: 'actions'
   }
 ];

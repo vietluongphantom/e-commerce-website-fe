@@ -3,16 +3,16 @@
   <div class="login">
     <div class="login__container">
       <div class="login__items--one">
-        <h3 class="login__title">Sign In</h3>
+        <h3 class="login__title">Đăng nhập</h3>
         <form @submit.prevent="handleSubmit">
           <div class="login__boxOne">
             <label for="username">Email</label>
             <input class="mb-2" type="email" id="username" v-model="login.username" required />
-            <label for="password">Password</label>
+            <label for="password">Mật khẩu</label>
             <input type="password" id="password" v-model="login.password" required />
           </div>
 
-          <button type="submit" class="button button--one">Sign In</button>
+          <button type="submit" class="button button--one">Đăng ký</button>
         </form>
 
         <div class="login__select">
@@ -24,7 +24,7 @@
 
       <div class="login__items--two">
         <div class="flex flex-col items-center justify-center">
-          <h3>Welcome to login!</h3>
+          <h3>Chào mừng bạn đến với trang đăng nhập!</h3>
           <AdminIcon class="w-[70px] h-[70px] brightness-150 drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-300"></AdminIcon>
         </div>
       </div>

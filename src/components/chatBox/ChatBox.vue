@@ -36,20 +36,10 @@
                 <div class="absolute h-3 w-3 bg-slate-400 rounded-full -top-1.5 -left-1.5 ml-2"></div>
               </div>
               <button class="ml-3" @click="getListMessage(shop.user.id)">
-                <p class="font-semibold">{{shop.shop.name}}</p>
+                <p class="font-semibold">{{shop.user.email.split('@')[0]}}</p>
                 <!-- <p class="text-gray-500">Hello</p> -->
               </button>
             </div>
-
-            <!-- <div class="flex p-2 items-center mb-3 cursor-pointer rounded-md hover:bg-gray-100">
-              <div class="relative">
-                <img src="@/assets/images/chart.png" class="w-12 h-12 rounded-full border-2 border-blue-400" alt="User" />
-                <div class="absolute h-3 w-3 bg-green-600 rounded-full -top-1.5 -left-1.5 ml-2"></div>
-              </div>
-              <div class="ml-3">
-                <p class="font-semibold">Motaleb Hossain</p>
-              </div>
-            </div> -->
           </div>
         </div>
         <div class="col-span-2 bg-slate-50 shadow-md rounded-md">
@@ -59,7 +49,7 @@
               <div class="flex items-center">
                 <img src="@/assets/images/chart.png" class="w-12 h-12 rounded-full" alt="User Image" />
                 <div class="ml-3">
-                  <p class="font-semibold">{{shopInfo?.name}}</p>
+                  <p class="font-semibold">{{shopInfo?.email.split('@')[0]}}</p>
                   <!-- <p class="text-gray-5{00">Hello</p> -->
                 </div>
               </div>

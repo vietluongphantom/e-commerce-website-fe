@@ -4,10 +4,10 @@
       <img src="@/assets/images/warehouse_2.png" class="object-cover w-full h-auto" />
     </div>
     <div class="w-[90%] p-4">
-      <h1 class="text-[22px] font-semibold mb-5 mt-2">Thêm mới kho hàng</h1>
+      <h1 class="text-[22px] font-semibold mb-5 mt-2">Thêm mới nhà cung cấp</h1>
       <form @submit.prevent="handleSubmit">
-        <label for="name">Tên kho</label>
-        <input class="w-[45%]" id="name" v-model="form.name" type="text" placeholder="Kho A..." />
+        <label for="name">Tên nhà cung cấp</label>
+        <input class="w-[45%]" id="name" v-model="form.name" type="text" placeholder="Nhà cung cấp A..." />
 
         <div class="flex justify-between">
           <div class="w-[45%]">

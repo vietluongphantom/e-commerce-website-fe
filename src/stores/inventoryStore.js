@@ -87,7 +87,7 @@ export const useInventoryStore = defineStore('inventory', {
 
     async deleteInventory(id) {
       const result = await Swal.fire({
-        title: 'Bạn chắc chắn muốn xóa kho hàng này?',
+        title: 'Bạn chắc chắn muốn xóa nhà cung cấp này?',
         text: 'Bạn sẽ không thể hoàn tác thao tác này!',
         icon: 'warning',
         showCancelButton: true,

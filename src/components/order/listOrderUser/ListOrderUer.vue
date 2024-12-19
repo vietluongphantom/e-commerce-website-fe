@@ -67,7 +67,7 @@ const columns = [
 //   { title: 'Sản phẩm', dataIndex: 'quantity'},
   { title: 'Ngày tạo', dataIndex: 'created_at'},
   { title: 'Sửa lần cuối', dataIndex: 'modified_at'},
-  { title: 'Actions', key: 'actions' }
+  { title: 'Hành động', key: 'actions' }
 ];
 
 const orderStore = useOrderStore();

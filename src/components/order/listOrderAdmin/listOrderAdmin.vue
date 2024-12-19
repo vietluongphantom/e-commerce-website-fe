@@ -63,7 +63,7 @@ const columns = [
     // { title: 'Sản phẩm', dataIndex: 'quantity'},
     { title: 'Ngày tạo', dataIndex: 'created_at' },
     { title: 'Sửa lần cuối', dataIndex: 'modified_at' },
-    { title: 'Actions', key: 'actions' }
+    { title: 'Hành động', key: 'actions' }
 ];
 
 const orderStore = useOrderStore();
@@ -98,7 +98,6 @@ const handleAction = () => {
 };
 
 const handleSearch = () => {
-    console.log("vào đây chưaaaaaaaaa")
     exportData.currentPage = 1;
     orderStore.fetchOrders(exportData.currentPage, searchName.value, searchId.value);
 };
@@ -113,7 +112,6 @@ const deleteOrder = (id) => {
 
 // };
 const watchOrder = (id) => {
-    console.log('Navigating to order:', id);
     router.push({ name: 'view-order-detail', params: { id } });
 
 };
@@ -134,7 +132,6 @@ const handleAddNew = () => {
 
 onMounted(async () => {
     await orderStore.fetchOrdersAdmin();
-    console.log("vào được đây chưa fettch ra được đây chưa", orderStore.orders)
 });
 </script>
 <style scoped lang="scss">

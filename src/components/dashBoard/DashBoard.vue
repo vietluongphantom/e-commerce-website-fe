@@ -34,7 +34,7 @@
     </div>
     <div class="db__item bg-[#F0F4F8] p-5 rounded-lg">
       <div class="flex justify-between items-center">
-        <span class="text-[18px] font-medium">Nhà kho</span>
+        <span class="text-[18px] font-medium">Nhà cung cấp</span>
         <div class="p-2 bg-[#E0DCFE] rounded-md">
           <CopyrightIcon class="w-[20px] h-[20px]"></CopyrightIcon>
         </div>

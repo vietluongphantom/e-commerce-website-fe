@@ -84,28 +84,28 @@ export default {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/shop/${id}`);
   },
   getInfoShopByUserId(id) {
-    return httpAuth.get(`${config.baseApiUrl}/api/v1/shop/user/${id}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/user/${id}`);
   },
   getBasicInfo() {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/seller/basicInfor`);
   },
 
-  //WAREHOUSE
+  //Supplier
   getAllWarehouse(page, size, searchQuery) {
-    return httpAuth.get(`${config.baseApiUrl}/api/v1/warehouse?page=${page - 1}&size=${size}&name=${searchQuery}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/supplier?page=${page - 1}&size=${size}&name=${searchQuery}`);
   },
   deleteWarehouse(id) {
     // console.log(`${config.baseApiUrl}/api/v1/warehouse/${id}`);
-    return httpAuth.delete(`${config.baseApiUrl}/api/v1/warehouse/${id}`);
+    return httpAuth.delete(`${config.baseApiUrl}/api/v1/supplier/${id}`);
   },
   addWarehouse(newWarehouse) {
-    return httpAuth.post(config.baseApiUrl + '/api/v1/warehouse', newWarehouse);
+    return httpAuth.post(config.baseApiUrl + '/api/v1/supplier', newWarehouse);
   },
   getDetailWarehouse(id) {
-    return httpAuth.get(`${config.baseApiUrl}/api/v1/warehouse/${id}`);
+    return httpAuth.get(`${config.baseApiUrl}/api/v1/supplier/${id}`);
   },
   updateWarehouse(id, newWarehouse) {
-    return httpAuth.put(`${config.baseApiUrl}/api/v1/warehouse/${id}`, newWarehouse);
+    return httpAuth.put(`${config.baseApiUrl}/api/v1/supplier/${id}`, newWarehouse);
   },
 
   //ADMIN

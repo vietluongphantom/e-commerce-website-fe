@@ -74,7 +74,7 @@ import debounce from 'lodash/debounce';
 
 const columns = [
   { title: 'STT', dataIndex: 'stt', key: 'stt' },
-  { title: 'Tên kho', dataIndex: 'warehouse', key: 'name' },
+  // { title: 'Tên kho', dataIndex: 'warehouse', key: 'name' },
   { title: 'Tên sản phẩm', dataIndex: 'name' },
   { title: 'Mã sản phẩm', dataIndex: 'sku_code' },
   { title: 'Số lượng', dataIndex: 'quantity'},
