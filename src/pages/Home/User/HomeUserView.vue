@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="search">
     <Slider></Slider>
     <div class="sidebar-container">
       <a-layout-content>
@@ -107,7 +107,7 @@
 import Slider from '@/components/slider/TheSlider.vue';
 import ListProduct from '@/components/listProduct/ListProduct.vue';
 import { ref, onMounted } from 'vue';
-import { useCategory } from '@/stores/CategoryStore';
+import { useCategory } from '@/stores/categoryStore';
 import { useBrand } from '@/stores/BrandStore';
 import { reactive, watch } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue';
