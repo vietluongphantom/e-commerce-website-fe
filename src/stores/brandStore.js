@@ -44,9 +44,9 @@ export const useBrand = defineStore('brand', {
       router.push({ name: 'brand-edit', params: { id } });
     },
 
-    async addBrand(newValue){
+    async addBrand(name, description,icon){
       try {
-        await apiServices.addBrand(newValue);
+        await apiServices.addBrand(name, description,icon);
         this.fetchBrand(this.current);
         // reverse.value = true;
         await Swal.fire({

@@ -1,28 +1,80 @@
 <template>
   <div>
-    <a-button type="primary" @click="showModal">+ Thêm mới</a-button>
-    <a-modal v-model:visible="visible" title="Basic Modal" @ok="handleOk">
-       <p>Mã sản phẩm</p>
-      <a-input v-model:value="formData.sku_code" placeholder="Basic usage" />
-        <div v-for="(item, index) in attributeProductStore.attributes" :key="index">
-        <p class="pt-6 pb-3 text-[16px] font-normal">{{ item.name }}</p>
+    <!-- Nút thêm mới -->
+    <a-button 
+      type="primary" 
+      class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark"
+      @click="showModal"
+    >
+      + Thêm mới
+    </a-button>
+  
+    <!-- Modal -->
+    <a-modal 
+      v-model:visible="visible" 
+      title="Thêm sản phẩm mới"
+      ok-text="Lưu"
+      cancel-text="Hủy"
+      class="rounded-lg p-6"
+      @ok="handleOk"
+    >
+      <!-- Mã sản phẩm -->
+      <div class="mb-4">
+        <label for="sku" class="block text-sm font-medium text-gray-700">Mã sản phẩm</label>
+        <a-input
+          id="sku"
+          v-model:value="formData.sku_code"
+          placeholder="Nhập mã sản phẩm..."
+          class="mt-2"
+        />
+      </div>
+  
+      <!-- Thuộc tính sản phẩm -->
+      <div v-for="(item, index) in attributeProductStore.attributes" :key="index" class="mb-4">
+        <label 
+          :for="`attribute-${index}`" 
+          class="block text-sm font-medium text-gray-700"
+        >
+          {{ item.name }}
+        </label>
         <a-select
-            v-model:value="idValue[index]"
-            show-search
-            placeholder="Chọn nhãn hiệu"
-            style="width: 100%"
-            :options="attributeValues[index]"
-            :filter-option="(input, option) => option.label.toLowerCase().includes(input.toLowerCase())"
-            @change="handleLoadAttributeValue(index)"
-            @click="fetchAttributeValue(item.id,index)"
+          v-model:value="idValue[index]"
+          :id="`attribute-${index}`"
+          show-search
+          placeholder="Chọn nhãn hiệu"
+          style="width: 100%"
+          class="mt-2"
+          :options="attributeValues[index]"
+          :filter-option="(input, option) => option.label.toLowerCase().includes(input.toLowerCase())"
+          @change="handleLoadAttributeValue(index)"
+          @click="fetchAttributeValue(item.id, index)"
         ></a-select>
-        </div>
-      <p style="margin-top: 10px;">Giá bán</p>
-      <a-input v-model:value="formData.price" placeholder="Nhập giá bán..." />
-      <p style="margin-top: 10px;">Giá nhập</p>
-      <a-input v-model:value="formData.import_price" placeholder="Nhập giá nhạp hàng..." />
+      </div>
+  
+      <!-- Giá bán -->
+      <div class="mb-4">
+        <label for="price" class="block text-sm font-medium text-gray-700">Giá bán</label>
+        <a-input
+          id="price"
+          v-model:value="formData.price"
+          placeholder="Nhập giá bán..."
+          class="mt-2"
+        />
+      </div>
+  
+      <!-- Giá nhập -->
+      <div class="mb-4">
+        <label for="import-price" class="block text-sm font-medium text-gray-700">Giá nhập</label>
+        <a-input
+          id="import-price"
+          v-model:value="formData.import_price"
+          placeholder="Nhập giá nhập hàng..."
+          class="mt-2"
+        />
+      </div>
     </a-modal>
   </div>
+  
 </template>
 <script setup>
 import { onMounted, reactive,ref, watch, defineProps, defineComponent } from 'vue';

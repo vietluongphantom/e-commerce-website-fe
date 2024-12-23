@@ -1,12 +1,12 @@
 <template>
   <div class="warehouse bg-[#EFEFEF] p-9">
-    <h1 class="text-[25px] font-bold mb-6">Danh mục kho hàng</h1>
+    <h1 class="text-[25px] font-bold mb-6">Danh mục nhà cung cấp</h1>
 
     <div class="mb-8 flex justify-between">
       <div class="flex items-center">
         <input
           class="category__input w-[250px] h-[35px] rounded-lg mr-2 p-3"
-          placeholder="Tên kho hàng..."
+          placeholder="Tên nhà cung cấp..."
           @focus="handleFocus"
           v-model="searchQuery"
           @blur="hideList()"
@@ -67,10 +67,10 @@ import router from '@/router/index.js';
 
 const columns = [
   { title: 'STT', dataIndex: 'stt', key: 'stt' },
-  { title: 'Name', dataIndex: 'name', key: 'name' },
-  { title: 'Created At', dataIndex: 'created_at', key: 'created_at' },
-  { title: 'Modified At', dataIndex: 'modified_at', key: 'modified_at' },
-  { title: 'Actions', key: 'actions' }
+  { title: 'Tên', dataIndex: 'name', key: 'name' },
+  { title: 'Ngày tạo', dataIndex: 'created_at', key: 'created_at' },
+  { title: 'Ngày chỉnh sửa', dataIndex: 'modified_at', key: 'modified_at' },
+  { title: 'Hành động', key: 'actions' }
 ];
 
 const warehouseStore = useWarehouseStore();

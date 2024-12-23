@@ -61,7 +61,7 @@ const searchId = ref('');
 
 const columns = [
   { title: 'STT', dataIndex: 'stt', key: 'stt' },
-  { title: 'Kho hàng', dataIndex: 'warehouse', key: 'warehouse' },
+  // { title: 'Kho hàng', dataIndex: 'warehouse', key: 'warehouse' },
   { title: 'Nhà cung cấp', dataIndex: 'supplier', key: 'supplier' },
   { title: 'Tên sản phẩm', dataIndex: 'name', key: 'name' },
   { title: 'Mã sản phẩm', dataIndex: 'sku_code', key: 'sku_code' },

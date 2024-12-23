@@ -4,9 +4,9 @@
       <img src="@/assets/images/edit_warehouse.png" class="object-cover w-full h-auto" />
     </div>
     <div class="w-[90%] p-4">
-      <h1 class="text-[22px] font-semibold mb-5">Thông tin kho hàng</h1>
+      <h1 class="text-[22px] font-semibold mb-5">Thông tin nhà cung cấp</h1>
       <form @submit.prevent="submitForm">
-        <label for="name">Tên kho</label>
+        <label for="name">Tên nhà cung cấp</label>
         <input class="w-[45%]" id="name" v-model="formDetail.name" type="text" />
 
         <div class="flex justify-between">

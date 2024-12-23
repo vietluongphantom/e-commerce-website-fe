@@ -11,6 +11,7 @@ export const useInfoStore = defineStore('info', {
       email: '',
       full_name: '',
       phone: '',
+      avatar: '',
       gender: null,
       country: null,
       province: null,
@@ -21,6 +22,7 @@ export const useInfoStore = defineStore('info', {
     shopInfo: {
       name: '',
       mail: '',
+      avatar: '',
       phone: null,
       country: null,
       province: null,

@@ -39,32 +39,43 @@
         @change="handleTableChange"
       >
         <template #bodyCell="{ column, record }">
-          <span v-if="column.key === 'action'" class="flex">
-            <a href="#" @click.prevent="editBrand(record.id, record.status, record.name)" class="mr-4">
-              <EditIcon class="w-[15px] h-[15px]"></EditIcon>
-            </a>
-            <a-divider type="vertical" />
-            <a href="#" @click.prevent="deleteBrand(record.id)">
-              <TrashIcon class="w-[15px] h-[15px]"></TrashIcon>
-            </a>
-          </span>
+          <!-- Hiển thị ảnh trong cột 'icon' -->
+          <template v-if="column.key === 'icon'">
+            <img :src="record.icon" alt="Product Image" class="w-[60px] h-[60px] object-cover rounded-md p-1" />
+          </template>
 
-        <span v-else-if="column.key === 'status'">
-          <span v-if="record.status">
-            <CheckIcon class="w-[20px] h-[20px]" />
-          </span>
-          <span v-else>
-            <CloseIcon class="w-[20px] h-[20px]" />
-          </span>
-        </span>
+          <!-- Hiển thị thao tác -->
+           <template v-else-if="column.key === 'action'">
+            <span class="flex">
+              <a href="#" @click.prevent="editBrand(record.id, record.status, record.name)" class="mr-4">
+                <EditIcon class="w-[15px] h-[15px]"></EditIcon>
+              </a>
+              <a-divider type="vertical" />
+              <a href="#" @click.prevent="deleteBrand(record.id)">
+                <TrashIcon class="w-[15px] h-[15px]"></TrashIcon>
+              </a>
+            </span>
+          </template>
 
+          <!-- Hiển thị trạng thái -->
+          <template v-else-if="column.key === 'status'">
+            <span v-if="record.status">
+              <CheckIcon class="w-[20px] h-[20px]" />
+            </span>
+            <span v-else>
+              <CloseIcon class="w-[20px] h-[20px]" />
+            </span>
+          </template>
 
-          <span v-else-if="column.key === 'createdAt' || column.key === 'modifiedAt'">
+          <!-- Hiển thị ngày tháng -->
+          <template v-else-if="column.key === 'createdAt' || column.key === 'modifiedAt'">
             {{ record[column.dataIndex] ? format(parseISO(record[column.dataIndex]), 'dd/MM/yyyy HH:mm') : 'N/A' }}
-          </span>
-          <span v-else>
+          </template>
+
+          <!-- Hiển thị giá trị mặc định -->
+          <template v-else>
             {{ record[column.dataIndex] }}
-          </span>
+          </template>
         </template>
       </a-table>
     </div>
@@ -72,15 +83,15 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, watch  } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { SearchIcon, AddIcon, EditIcon, TrashIcon, CheckIcon, CloseIcon, RefreshIcon } from '@/assets/icons/icon.js';
 import { format, parseISO } from 'date-fns';
 import { reactive } from 'vue';
 import Swal from 'sweetalert2';
 import { useBrand } from '@/stores/brandStore';
+import { useImageStore } from '@/stores/imageStore';
 import router from '@/router/index.js';
 import apiServices from '@/domain/apiServices';
-
 
 const inputValue = ref('');
 
@@ -94,6 +105,18 @@ const columns = [
     title: 'Tên nhãn hiệu',
     dataIndex: 'name',
     key: 'name'
+  },
+  ,
+  {
+    title: 'ảnh',
+    dataIndex: 'icon',
+    key: 'icon'
+  },
+  ,
+  {
+    title: 'mô tả',
+    dataIndex: 'description',
+    key: 'description'
   },
   {
     title: 'Trạng thái',
@@ -125,8 +148,6 @@ const brandData = computed(() => ({
   pageSize: brandStore.pageSize
 }));
 
-
-
 const searchQuery = ref('');
 
 const handleTableChange = (pagination) => {
@@ -138,8 +159,7 @@ const handleTableChange = (pagination) => {
 const handleAction = () => {
   brandStore.fetchBrand(1, searchQuery.value);
   brandStore.currentPage = 1;
-}
-
+};
 
 const deleteBrand = (id) => {
   brandStore.deleteBrand(id);
@@ -149,32 +169,66 @@ const editBrand = (id, status, name) => {
   brandStore.editBrand(id, status, name);
 };
 
-
-
 const refreshData = () => {
   searchQuery.value = '';
   // refresh.value = !refresh.value;
-    brandStore.currentPage = 1;
-    brandStore.fetchBrand(1);
+  brandStore.currentPage = 1;
+  brandStore.fetchBrand(1);
 };
+
+const imageStore = useImageStore();
 
 const handleAddNew = async () => {
-  const { value: text , isConfirmed } = await Swal.fire({
-    input: 'textarea',
-    inputLabel: 'Nhập tên nhãn hiệu mới',
-    inputPlaceholder: 'Nhãn hiệu a...',
-    inputAttributes: {
-      'aria-label': 'Nhãn hiệu a...'
-    },
-    showCancelButton: true
+  const { value: formValues, isConfirmed } = await Swal.fire({
+    title: 'Thêm nhãn hiệu mới',
+    html: `
+      <div style="text-align: left; font-size: 14px; margin-bottom: 15px;">
+        <label for="brandName" style="display: block; font-weight: bold; margin-bottom: 5px;">Tên nhãn hiệu:</label>
+        <input id="brandName" placeholder="Nhập tên nhãn hiệu..." 
+          style="width: 100%; resize: none; font-size: 14px; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" />
+      </div>
+      <div style="text-align: left; font-size: 14px; margin-bottom: 15px;">
+        <label for="brandDescription" style="display: block; font-weight: bold; margin-bottom: 5px;">Mô tả nhãn hiệu:</label>
+        <textarea id="brandDescription" placeholder="Nhập mô tả cho nhãn hiệu..." 
+          style="width: 100%; height: 70px; resize: none; font-size: 14px; padding: 10px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
+      </div>
+      <div style="text-align: left; font-size: 14px;">
+        <label for="brandImage" style="display: block; font-weight: bold; margin-bottom: 5px;">Chọn hình ảnh:</label>
+        <input type="file" id="brandImage" class="swal2-file" accept="image/*" 
+          style="width: 100%; padding: 5px; font-size: 14px; border-radius: 5px; border: 1px solid #ddd;" />
+      </div>
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    preConfirm: async () => {
+      const name = document.getElementById('brandName').value;
+      const description = document.getElementById('brandDescription').value;
+      const file = document.getElementById('brandImage').files[0];
+      if (!name) {
+        Swal.showValidationMessage('Vui lòng nhập tên nhãn hiệu');
+        return null;
+      }
+      if (!description) {
+        Swal.showValidationMessage('Vui lòng nhập mô tả');
+        return null;
+      }
+      if (!file) {
+        Swal.showValidationMessage('Vui lòng chọn hình ảnh');
+        return null;
+      }
+      return { name, description, file };
+    }
   });
 
-  if (isConfirmed && text) {
-    inputValue.value = text;
-      brandStore.addBrand(inputValue.value);
+  if (isConfirmed && formValues) {
+    const { name, description, file } = formValues;
+    // Cập nhật store
+    console.log("description", description)
+    await imageStore.upLoadImage([file]);
+    // console.log("imageStore.upLoadImage(file)",imageStore.image)
+    brandStore.addBrand(name, description, imageStore.image);
   }
 };
- 
 
 onMounted(async () => {
   brandStore.fetchBrand();
@@ -187,5 +241,4 @@ onMounted(async () => {
   border-radius: 10px;
   overflow: hidden;
 }
-
 </style>

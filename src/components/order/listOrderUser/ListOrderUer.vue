@@ -67,7 +67,7 @@ const columns = [
 //   { title: 'Sản phẩm', dataIndex: 'quantity'},
   { title: 'Ngày tạo', dataIndex: 'created_at'},
   { title: 'Sửa lần cuối', dataIndex: 'modified_at'},
-  { title: 'Actions', key: 'actions' }
+  { title: 'Hành động', key: 'actions' }
 ];
 
 const orderStore = useOrderStore();
@@ -122,7 +122,7 @@ const goToOrderDetail = (id) => {
 };
 const watchOrder = (id) => {
   console.log('Navigating to order:', id);
-  router.push({ name: 'view-order-detail', params: { id } });
+  router.push({ name: 'user-view-order-detail', params: { id } });
   
 };
 

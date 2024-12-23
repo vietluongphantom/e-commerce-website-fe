@@ -131,18 +131,18 @@ const items = reactive([
   {
     key: 'sub4',
     icon: () => h(FileTextOutlined),
-    label: 'Quản lý kho hàng',
-    title: 'Quản lý kho hàng',
+    label: 'Quản lý nhà cung cấp',
+    title: 'Quản lý nhà cung cấp',
     children: [
       {
         key: '10',
-        label: 'Danh sách kho hàng',
-        title: 'Danh sách kho hàng'
+        label: 'Danh sách cung cấp',
+        title: 'Danh sách cung cấp'
       },
       {
         key: '11',
-        label: 'Thêm mới kho hàng',
-        title: 'Thêm mới kho hàng'
+        label: 'Thêm mới cung cấp',
+        title: 'Thêm mới cung cấp'
       },
       {
         key: '15',

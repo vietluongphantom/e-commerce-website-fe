@@ -3,35 +3,35 @@
   <div class="login">
     <div class="login__container">
       <div class="login__items--one">
-        <h3 class="login__title">Sign In</h3>
+        <h3 class="login__title">Đăng nhập</h3>
         <form @submit.prevent="handleSubmit">
           <div class="login__boxOne">
             <label for="username">Email</label>
             <input class="mb-2" type="email" id="username" v-model="login.username" required />
-            <label for="password">Password</label>
+            <label for="password">Mật khẩu</label>
             <input type="password" id="password" v-model="login.password" required />
           </div>
-          <p v-if="isCheckPassword" class="login__check">Password less than 6 characters</p>
+          <p v-if="isCheckPassword" class="login__check">Mật khẩu phải nhiều hơn 6 kí tự</p>
 
-          <button type="submit" class="button button--one">Sign In</button>
+          <button type="submit" class="button button--one">Đăng nhập</button>
         </form>
 
         <div class="login__select">
           <div class="login__wrap">
             <input type="checkbox" v-model="login.rememberMe" id="rememberMe" name="rememberMe" />
-            <label for="rememberMe">Remember Me</label>
+            <label for="rememberMe">nhớ</label>
           </div>
           <div>
-            <button class="button button--three" @click="handleForgotClick">Forgot Password</button>
+            <button class="button button--three" @click="handleForgotClick">Quên mật khẩu</button>
           </div>
         </div>
       </div>
 
       <div class="login__items--two">
         <div>
-          <h3>Welcome to login, seller !</h3>
-          <h4>Don't have an account?</h4>
-          <button class="button button--two" @click="handleSignUpClick">Sign up</button>
+          <h3>Chào mừng bạn đến với trang đăng nhập của người bán hàng!</h3>
+          <h4>Bạn đã có tài khoản?</h4>
+          <button class="button button--two" @click="handleSignUpClick">Đăng ký</button>
         </div>
       </div>
     </div>

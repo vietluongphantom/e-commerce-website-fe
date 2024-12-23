@@ -3,7 +3,7 @@
   <div class="forgot">
     <div class="forgot__container">
       <div class="forgot__items--one">
-        <h3 class="forgot__title">Forgot password</h3>
+        <h3 class="forgot__title">quên mật khẩu</h3>
 
         <form @submit.prevent="handleSubmit">
           <div class="forgot__boxOne">
@@ -11,15 +11,15 @@
             <input type="email" id="email" v-model="email" required />
           </div>
 
-          <button type="submit" class="button button--one">Reset password</button>
+          <button type="submit" class="button button--one">lấy lại mật khẩu</button>
         </form>
       </div>
 
       <div class="forgot__items--two">
         <div class="pl-4 pr-4">
-          <h3>No worries , we'll send you reset instructions</h3>
-          <h4>Already have an account?</h4>
-          <button class="button button--two">Sign In</button>
+          <h3>Đừng lo , chúng tôi sẽ gửi bạn hướng dẫn</h3>
+          <h4>Bạn đã có tài khoản?</h4>
+          <button class="button button--two">Đăng nhập</button>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
       <a-menu>
         <a-menu-item>
           <!-- Thông báo bên dưới -->
-          <div>aaaaaaaaaddddddddddddddddddđfffffffffffffffffffffffffffffff
+          <div>
           </div>
         </a-menu-item>
       </a-menu>
@@ -15,9 +15,9 @@
   <a-dropdown v-model:open="visible">
     <a class="ant-dropdown-link" @click.prevent>
       <div class="ml-4 flex items-center cursor-pointer">
-        <UserIcon class="icon__user mt-[10px] mb-[10px] w-[25px] h-[25px]"></UserIcon>
+        <img class=" mt-[10px] mb-[10px] w-[25px] h-[25px] rounded-full" :src="formData.avatar"></img>
         <div class="flex items-center">
-          <p class="text-[14px] text-[#fff] mr-1">{{ email }}</p>
+          <p class="text-[14px] text-[#fff] mr-1">{{ formData.email }}</p>
           <DropIcon class="w-[15px] h-[15px]"></DropIcon>
         </div>
       </div>
@@ -83,7 +83,11 @@ import Swal from 'sweetalert2';
 
 const authStore = useAuthStore();
 const visible = ref(false);
-const email = ref('');
+const formData = ref({
+  avatar:"",
+  email:""
+}
+);
 
 const handleMenuClick = ({ key }) => {
   if (key === '1') {
@@ -96,10 +100,11 @@ const handleMenuClick = ({ key }) => {
   }
 };
 
-async function getUserEmail(role) {
-  const response = await apiServices.getUser(role);
-  email.value = response.data.data.email;
-  form.value.email = email.value;
+async function getUserEmail() {
+  const response = await apiServices.getInfoUser();
+  formData.value = response.data.data;
+  console.log("formData.value = response.data.dat;",response)
+  // form.value.email = email.value;
 }
 
 const open = ref(false);
