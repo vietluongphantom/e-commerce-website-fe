@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import _ from 'lodash';
 import router from '@/router/index.js';
 
-export const useOrderStore = defineStore('order', {
+export const useOrderStatusStore = defineStore('order', {
   state: () => ({
     orders: [],
     detail: {
@@ -34,23 +34,6 @@ export const useOrderStore = defineStore('order', {
         console.log('respon absc', response);
         this.orders = response.data.data;
 
-        // const promises = _.map(content, async (item) => {
-        //     const [userId, shopResponse] = await Promise.all([
-        //       apiServices.getItemCart(item.productItemId),
-        //       apiServices.getShopById(item.shopId)
-        //     ]);
-
-        //     return {
-        //       ...item,
-        //       productDetails: productResponse.data.data,
-        //       shopDetails: shopResponse.data.data
-        //     };
-        // });
-
-        // Chờ tất cả các promises hoàn thành
-        //   this.cartItems = await Promise.all(promises);
-        //   Swal.close();
-        //   this.totalElements = response.data.data.totalElements;
       } catch (error) {
         console.error('Error fetching cart items:', error);
       }
@@ -61,43 +44,17 @@ export const useOrderStore = defineStore('order', {
         console.log('respon absc', response);
         this.orders = response.data.data;
 
-        // const promises = _.map(content, async (item) => {
-        //     const [userId, shopResponse] = await Promise.all([
-        //       apiServices.getItemCart(item.productItemId),
-        //       apiServices.getShopById(item.shopId)
-        //     ]);
-
-        //     return {
-        //       ...item,
-        //       productDetails: productResponse.data.data,
-        //       shopDetails: shopResponse.data.data
-        //     };
-        // });
-
-        // Chờ tất cả các promises hoàn thành
-        //   this.cartItems = await Promise.all(promises);
-        //   Swal.close();
-        //   this.totalElements = response.data.data.totalElements;
+      
       } catch (error) {
         console.error('Error fetching cart items:', error);
       }
     },
 
-    // async getOrder(id) {
-    //   try {
-    //   const response = await apiServices.getOrder(id);
-    //   this.detail = response.data.data;
-    //   console.log("response kien",response)
-    //   router.push({ name: 'view-order-detail', params: { id } });
-    //     }
-    //        catch (error) {
-    //         console.error('Error fetching cart items:', error);
-    //     }
-    // },
+   
 
     async deleteOrder(id) {
       const result = await Swal.fire({
-        title: 'Bạn chắc chắn muốn xóa nhà cung cấp này?',
+        title: 'Bạn chắc chắn muốn xóa kho hàng này?',
         text: 'Bạn sẽ không thể hoàn tác thao tác này!',
         icon: 'warning',
         showCancelButton: true,
@@ -117,35 +74,7 @@ export const useOrderStore = defineStore('order', {
         });
       }
     },
-    // async editOrder(id, status) {
-    //   const { value: formValues } = await Swal.fire({
-    //     title: 'Thay đổi trạng thái đơn hàng',
-    //     html:
-    //       `<select id="swal-input2" class="swal2-input">` +
-    //       `<option value="completed" ${status === 'COMPLETED' ? 'selected' : ''}>Completed</option>` +
-    //       `<option value="pending" ${status === 'PENDING' ? 'selected' : ''}>Pending</option>` +
-    //       `<option value="cancelled" ${status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>` +
-    //       `</select>`,
-    //     focusConfirm: false,
-    //     showCancelButton: true,
-    //     confirmButtonText: 'Xác nhận',
-    //     cancelButtonText: 'Hủy',
-    //     preConfirm: () => {
-    //       return document.getElementById('swal-input2').value;
-    //     }
-    //   });
-
-    //   if (formValues) {
-    //     const [ selectedStatus] = formValues;
-    //     await apiServices.editOrder(id, selectedStatus);
-    //     this.fetchOrder(this.current);
-    //     await Swal.fire({
-    //       title: 'Saved!',
-    //       text: 'Your status has been saved.',
-    //       icon: 'success'
-    //     });
-    //   }
-    // },
+ 
     async editOrder(id, status) {
       const { value: formValues } = await Swal.fire({
         title: 'Thay đổi trạng thái đơn hàng',
@@ -156,7 +85,8 @@ export const useOrderStore = defineStore('order', {
           `<option value="CANCELLED" ${status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>` +
           `<option value="CONFIRMED" ${status === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>` +
           `<option value="PACKED" ${status === 'PACKED' ? 'selected' : ''}>Packed</option>` +
-          `<option value="SHIPPED" ${status === 'SHIPPED' ? 'selected' : ''}>Shipping</option>` +
+          `<option value="SHIPPED" ${status === 'SHIPPED' ? 'selected' : ''}>Shipped</option>` +
+          `<option value="DELIVERED" ${status === 'DELIVERED' ? 'selected' : ''}>Delivered</option>` +
           `<option value="RETURNED" ${status === 'RETURNED' ? 'selected' : ''}>Returned</option>` +
           `</select>`,
         focusConfirm: false,
@@ -168,16 +98,7 @@ export const useOrderStore = defineStore('order', {
         }
       });
 
-      // if (formValues) {
-      //   await apiServices.editOrder(id, formValues);
-      //   this.fetchOrder(this.current);
-      //   await Swal.fire({
-      //     title: 'Saved!',
-      //     text: 'Your status has been saved.',
-      //     icon: 'success'
-      //   });
-
-      // }
+ 
       if (formValues) {
         try {
           // Gọi API để cập nhật trạng thái
@@ -207,6 +128,62 @@ export const useOrderStore = defineStore('order', {
         }
       }
     },
+
+    // Thêm action mới vào useOrderStore
+async editOrderByUser(id, status) {
+  // Kiểm tra nếu đơn hàng đã hoàn thành
+if (status === 'COMPLETED' || status === 'CANCELLED' || status === 'SHIPPED'  || status === 'PACKED' || status === 'RETURNED') {
+    await Swal.fire({
+      title: 'Không thể hủy đơn hàng',
+      text: 'Đơn hàng đã hoàn thành không thể hủy',
+      icon: 'error',
+      confirmButtonText: 'Đóng'
+    });
+    return;
+  }
+
+  // Hiển thị dialog xác nhận hủy đơn hàng
+  const { isConfirmed } = await Swal.fire({
+    title: 'Xác nhận hủy đơn hàng',
+    text: 'Bạn có chắc chắn muốn hủy đơn hàng này?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Xác nhận hủy',
+    cancelButtonText: 'Đóng'
+  });
+
+  if (isConfirmed) {
+    try {
+      // Gọi API để cập nhật trạng thái
+      await apiServices.editOrder(id, 'CANCELLED');
+
+      // Cập nhật trạng thái ngay lập tức trong state local
+      const orderIndex = this.orders.findIndex((order) => order.id === id);
+      if (orderIndex !== -1) {
+        this.orders[orderIndex] = {
+          ...this.orders[orderIndex],
+          status: 'CANCELLED'
+        };
+      }
+
+      // Thông báo thành công
+      await Swal.fire({
+        title: 'Thành công!',
+        text: 'Đã hủy đơn hàng thành công',
+        icon: 'success'
+      });
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      await Swal.fire({
+        title: 'Lỗi!',
+        text: 'Không thể hủy đơn hàng. Vui lòng thử lại sau.',
+        icon: 'error'
+      });
+    }
+  }
+},
 
     async fetchOrdersAdmin(page = 1, searchQuery = '', skuCode = '') {
       try {

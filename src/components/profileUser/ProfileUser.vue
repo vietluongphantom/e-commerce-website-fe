@@ -2,7 +2,7 @@
   <div class="flex justify-center p-8">
     <div class="w-[70%] bg-[#ffff] flex rounded-md item overflow-hidden">
       <div class="gradient-custom w-[30%] flex flex-col items-center justify-center">
-        <img src="@/assets/images/user.png" class="w-[60px] object-cover" />
+        <img class="w-[60px] h-[60px] object-cover rounded-full border-[3px] border-[#69C3A3]" :src="formData.avatar"/>
         <p class="mt-4 text-[22px] font-medium">Hồ sơ của tôi</p>
       </div>
 
@@ -12,6 +12,18 @@
 
         <div class="mt-6 mb-8">
           <form @submit.prevent="handleSubmit">
+            <div style="text-align: left; font-size: 14px; margin-bottom: 10px">
+              <label for="avatar" style="display: block; font-weight: bold; margin-bottom: 5px">Chọn hình ảnh:</label>
+              <input
+                type="file"
+                id="avatar"
+                class="swal2-file"
+                @change="handleFileUpload"
+                accept="image/*"
+                style="width: 100%; padding: 5px; font-size: 14px; border-radius: 5px; border: 1px solid #ddd"
+              />
+            </div>
+
             <div class="flex justify-between">
               <div class="form-group w-[46%]">
                 <label for="full_name">Họ tên</label>
@@ -95,6 +107,17 @@ import { onMounted, ref } from 'vue';
 import apiServices from '@/domain/apiServices';
 import Swal from 'sweetalert2';
 import router from '@/router/index.js';
+import { useImageStore } from '@/stores/imageStore';
+
+
+
+
+
+const imageStore = useImageStore();
+
+
+const selectedFile = ref(null);
+
 
 const formData = ref({
   email: '',
@@ -103,6 +126,7 @@ const formData = ref({
   country: '',
   province: '',
   district: '',
+  avatar:'',
   commune: '',
   full_name: '',
   address_detail: ''
@@ -130,6 +154,22 @@ const handleSubmit = async () => {
 const handleBack = async () => {
   router.push({ name: 'Home user' });
 };
+
+
+
+const handleFileUpload = async(event) => {
+  const file = event.target.files[0];
+  if (file) {
+    selectedFile.value = file;
+
+    await imageStore.upLoadImage([file]);
+    // formData.value.avatar
+    // console.log("imageStore.image", imageStore.image)
+    formData.value.avatar = imageStore.image
+    // console.log("userInfo.value.avatar", userInfo.value)
+  }
+};
+
 
 onMounted(() => {
   firstSlove();

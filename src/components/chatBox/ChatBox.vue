@@ -32,7 +32,7 @@
               :key="shop.id"
               class="flex p-2 items-center mb-3 cursor-pointer rounded-md hover:bg-gray-100">
               <div class="relative">
-                <img src="@/assets/images/chart.png" class="w-12 h-12 rounded-full border-2 border-blue-400" alt="User" />
+                <img :src="shop.user.avatar" class="w-12 h-12 rounded-full border-2 border-blue-400" alt="User" />
                 <div class="absolute h-3 w-3 bg-slate-400 rounded-full -top-1.5 -left-1.5 ml-2"></div>
               </div>
               <button class="ml-3" @click="getListMessage(shop.user.id)">
@@ -47,7 +47,7 @@
             <!-- <div v-if="isChatOpen"> -->
             <div class="flex items-center justify-between mb-4 bg-slate-200 px-4 pt-2 pb-2 rounded-tl-md rounded-tr-md">
               <div class="flex items-center">
-                <img src="@/assets/images/chart.png" class="w-12 h-12 rounded-full" alt="User Image" />
+                <img :src="shopInfo?.avatar" class="w-12 h-12 rounded-full" alt="User Image" />
                 <div class="ml-3">
                   <p class="font-semibold">{{shopInfo?.email.split('@')[0]}}</p>
                   <!-- <p class="text-gray-5{00">Hello</p> -->
@@ -61,7 +61,7 @@
                 v-for="message in listMessage"
              >
               <div v-if="message.recipientId !== idShop" class="flex items-center mb-4">
-                <img src="@/assets/images/chart.png" class="w-6 h-6 rounded-full border-2 border-white mr-1" alt="User Image" />
+                <img :src="shopInfo?.avatar" class="w-6 h-6 rounded-full border-2 border-white mr-1" alt="User Image" />
                 <div class="relative group text-sm p-2 shadow bg-white rounded-md max-w-xs">
                   {{message.content}}
                   <div class="absolute top-1/2 -translate-y-1/2 left-full ml-1 hidden group-hover:block bg-gray-600 py-1 px-1.5 rounded z-50 text-white w-max">12:00</div>
@@ -74,7 +74,7 @@
                   {{message.content}}
                   <div class="absolute top-1/2 -translate-y-1/2 right-full mr-1 hidden group-hover:block bg-gray-600 py-1 px-1.5 rounded z-50 text-white w-max">12:00</div>
                 </div>
-                <img src="@/assets/images/chart.png" class="w-6 h-6 rounded-full border-2 border-white mr-1" alt="User Image" />
+                <!-- <img src="@/assets/images/chart.png" class="w-6 h-6 rounded-full border-2 border-white mr-1" alt="User Image" /> -->
               </div>
               </div>
             </div>

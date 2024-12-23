@@ -5,13 +5,24 @@
         <img class="w-[450px] h-[450px]" src="@/assets/images/edit_profile3.png" />
       </div>
       <div class="profile__box w-[55%] p-3 mr-11">
-        <h2 class="mt-3 pl-6 text-[24px] font-semibold">Edit personal information</h2>
+        <h2 class="mt-3 pl-6 text-[24px] font-semibold">chỉnh sửa thông tin người bán</h2>
 
         <div class="p-6">
           <form @submit.prevent="handleUpdate">
+            <div style="text-align: left; font-size: 14px; margin-bottom: 10px">
+              <label for="avatar" style="display: block; font-weight: bold; margin-bottom: 5px">Chọn hình ảnh:</label>
+              <input
+                type="file"
+                id="avatar"
+                class="swal2-file"
+                @change="handleFileUpload"
+                accept="image/*"
+                style="width: 100%; padding: 5px; font-size: 14px; border-radius: 5px; border: 1px solid #ddd"
+              />
+            </div>
             <div class="flex w-full justify-between mb-3">
               <div class="mr-3 w-[60%]">
-                <label for="fullName">Họ và tên</label>
+                <label for="fullName">Họ và tênnnn</label>
                 <input class="w-full" v-model="userInfo.full_name" id="fullName" type="text" />
               </div>
               <div class="mr-3 w-[20%]">
@@ -85,7 +96,11 @@
 import { ref, onMounted } from 'vue';
 import { useInfoStore } from '@/stores/infoStore';
 import router from '@/router/index.js';
+import { useImageStore } from '@/stores/imageStore';
 // Sử dụng store
+
+const imageStore = useImageStore();
+
 const infoStore = useInfoStore();
 
 const userInfo = ref(infoStore.userInfo);
@@ -96,7 +111,6 @@ const fetchUserInfo = async () => {
 };
 
 const handleUpdate = async () => {
-  console.log('trước update');
   console.log(userInfo.value.gender);
   await infoStore.updateUserInfo(userInfo.value);
   router.push({ name: 'view-profile' });
@@ -104,6 +118,21 @@ const handleUpdate = async () => {
 
 const handleBack = function () {
   router.push({ name: 'view-profile' });
+};
+
+
+const selectedFile = ref(null);
+
+const handleFileUpload = async(event) => {
+  const file = event.target.files[0];
+  if (file) {
+    selectedFile.value = file;
+
+    await imageStore.upLoadImage([file]);
+    console.log("imageStore.image", imageStore.image)
+    userInfo.value.avatar = imageStore.image
+    console.log("userInfo.value.avatar", userInfo.value)
+  }
 };
 
 onMounted(() => {

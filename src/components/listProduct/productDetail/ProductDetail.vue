@@ -122,7 +122,7 @@
         <div class="text-1xl font-bold rounded-md">{{ productData.dataSource.shop?.name ?? '' }}</div>
         <div class="flex items-center">
           <div class="mr-10">
-            <img src="@/assets/images/chart.png" class="w-16 h-16 rounded-full border-2 border-blue-400" alt="User" />
+            <!-- <img :src="shopStore.avatar ?? ''" class="w-16 h-16 rounded-full border-2 border-blue-400" alt="User" /> -->
           </div>
           <button class="flex items-center rounded-md p-2 hover:bg-red-100 hover:text-white transition" @click="chatNow(productData.dataSource.shop.userId)">
             <Chat class="w-10 h-10"></Chat>
@@ -251,7 +251,6 @@ const chatNow = async (id) => {
   idShop.value = id
   await chatStore.fetchAllMessage(id);
   await shopStore.fetchShopList();
-  console.log("clicl lcickl")
   isChatOpen.value = true; 
 };
 
@@ -337,6 +336,7 @@ const goToProductDetail = async (productId) => {
 onMounted(async () => {
   try {
     await productDetail.fetchProducts(id);
+    console.log("productDetail.fetchProducts(id);",productDetail.value )
     await fetchRecommendedProducts(id);
   } catch (error) {
     console.error('Lỗi khởi tạo:', error);

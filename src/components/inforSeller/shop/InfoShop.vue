@@ -6,7 +6,7 @@
       </div>
 
       <div class="w-[50%]">
-        <h2 class="text-[24px] font-semibold mb-3">Shop Information Edit</h2>
+        <h2 class="text-[24px] font-semibold mb-3">Chỉnh sửa thông tin cửa hàng</h2>
         <form @submit.prevent="handleEditShop">
           <div class="w-full">
             <label for="name">Tên Shop</label>

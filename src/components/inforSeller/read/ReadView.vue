@@ -2,7 +2,7 @@
   <div class="flex justify-between">
     <div class="information__box w-[46%] p-3 bg-[#ffff]">
       <div class="flex flex-col items-center justify-center">
-        <img class="w-[50px] h-[50px] mb-2 mt-2" src="@/assets/images/avata_2.png" />
+        <img class="w-[50px] h-[50px] mb-2 mt-2 rounded-full border-[3px] border-[#69C3A3]" :src="userInfo.avatar" />
         <hr class="w-[80%] h-[3px] bg-[#69C3A3]" />
       </div>
 

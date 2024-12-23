@@ -203,8 +203,8 @@ getDailyRevenue(month, year) {
   editBrand(id, name, status) {
     return httpAuth.put(`${config.baseApiUrl}/api/brands/${id}`, { name: name, status: status });
   },
-  addBrand(name) {
-    return httpAuth.post(config.baseApiUrl + '/api/brands', { name: name, status: true });
+  addBrand(name, description,icon) {
+    return httpAuth.post(config.baseApiUrl + '/api/brands', { name: name, description:description, icon:icon , status: true });
   },
   getListProduct(page, size, search) {
     return httpAuth.get(`${config.baseApiUrl}/api/products/seller?page=${page - 1}&size=${size}&keyword=${search}`);

@@ -122,7 +122,7 @@ const goToOrderDetail = (id) => {
 };
 const watchOrder = (id) => {
   console.log('Navigating to order:', id);
-  router.push({ name: 'view-order-detail', params: { id } });
+  router.push({ name: 'user-view-order-detail', params: { id } });
   
 };
 

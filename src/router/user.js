@@ -11,7 +11,7 @@ const home = [
       {
         path: 'search',
         name: 'Search user',
-        component: () => import('../pages/Home/User/HomeUserView1.vue')
+        component: () => import('../pages/Home/User/HomeShop.vue')
       },
       {
         path: 'list-cart',
@@ -36,8 +36,13 @@ const home = [
       },
       {
         path: 'view-order-detail/:id',
-        name: 'view-order-detail',
-        component: () => import('../components/order/viewOrder/viewOrder.vue')
+        name: 'user-view-order-detail',
+        component: () => import('../components/order/viewOrder/viewOrderByUser.vue')
+      },
+      {
+        path: 'home-shop',
+        name: 'home shop',
+        component: () => import('../pages/Home/User/HomeShop.vue')
       }
     ]
   }

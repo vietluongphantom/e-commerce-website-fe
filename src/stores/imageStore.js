@@ -26,7 +26,7 @@ export const useImageStore = defineStore('image', {
 
     async upLoadImage(image) {
       const formData = this.createFormData(image[0]);
-      console.log("day là fd",image)
+      console.log("day là fd",formData)
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
@@ -41,6 +41,7 @@ export const useImageStore = defineStore('image', {
       });
       const response = await apiServices.upLoadImage(formData);
       this.image = response.data.data 
+      console.log("day là ảnh",response.data.data)
       Swal.close();
       // Swal.close();
     //   if (response.data.code === 200) {

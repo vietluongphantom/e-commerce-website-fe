@@ -12,7 +12,7 @@
             <input type="password" id="password" v-model="login.password" required />
           </div>
 
-          <button type="submit" class="button button--one">Đăng ký</button>
+          <button type="submit" class="button button--one">Đăng nhập</button>
         </form>
 
         <div class="login__select">
