@@ -1,6 +1,6 @@
 const login = [
   {
-    path: '/login/user',
+    path: '/login/user/',
     name: 'login-user',
     component: () => import('../pages/login/LoginViewUser.vue')
   },
@@ -14,10 +14,10 @@ const login = [
     name: 'HomeAdmin',
     component: () => import('../pages/login/loginAdmin/LoginViewAdmin.vue')
   },
-  {
-    path: '/login/forgotPassword',
-    component: () => import('../pages/forgotPassword/ForgotPasswordView.vue')
-  }
+  // {
+  //   path: '/login/forgotPassword/:role',
+  //   component: () => import('../pages/forgotPassword/ForgotPasswordView.vue')
+  // }
 ];
   
   export default login;

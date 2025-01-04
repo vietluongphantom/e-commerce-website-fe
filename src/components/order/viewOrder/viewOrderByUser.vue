@@ -51,7 +51,11 @@
             <div class="p-6">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Danh Sách Sản Phẩm</h2>
                 <a-table v-if="orderItems.length > 0" :columns="columns" :data-source="orderItems" :pagination="false"
-                    class="w-full">
+                    class="w-full"
+                    @row-click="handleRowClick" :custom-row="(record) => ({
+                        class: 'cursor-pointer hover:bg-gray-50',
+                        onClick: () => handleRowClick(record)
+                    })">
                     <template #bodyCell="{ column, record }">
                         <template v-if="column.dataIndex === 'unitPrice'">
                             <span class="text-blue-600 font-bold">{{ formatCurrency(record.unitPrice) }}</span>
@@ -182,7 +186,22 @@ const handleCancelOrder = async () => {
         await orderStore.getOrderByUser(route.params.id);
     }
 };
+const handleRowClick = (record) => {
+    if (!record?.productDetails?.id) {
+        console.warn('Không tìm thấy ID sản phẩm');
+        return;
+    }
 
+    const productItemId = record.productDetails.id;
+    const productId = record.productDetails.product_id; // Giả sử có trường productId
+
+    router.push({
+        name: 'product-detail-user',
+        params: { id: productId }
+    }).catch(error => {
+        console.error('Lỗi khi chuyển trang:', error);
+    });
+};
 onMounted(async () => {
     try {
 

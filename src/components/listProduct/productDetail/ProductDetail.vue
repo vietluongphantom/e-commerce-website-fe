@@ -80,8 +80,22 @@
                 @click="handleAction">
                 Thêm mới giỏ hàng
               </button>
-              <button class="bg-[#63B899] text-[#fff] p-3 pl-4 pr-4 rounded-lg text-[16px] font-medium">Mua
-                ngay</button>
+              <!-- <button class="bg-[#63B899] text-[#fff] p-3 pl-4 pr-4 rounded-lg text-[16px] font-medium">Mua
+                ngay</button> -->
+
+                <a-button class="h-[48px] bg-[#63B899] text-[#fff] p-3 pl-4 pr-4 rounded-lg text-[16px] font-medium" type="primary" @click="showModal"
+                >Đánh giá</a-button
+              >
+              <a-modal v-model:visible="isModalVisible" title="Cập nhật đánh giá" @ok="handleOk" @cancel="handleCancel">
+                <a-form>
+                  <a-form-item label="Rate">
+                    <a-rate v-model:value="form.rate" />
+                  </a-form-item>
+                  <a-form-item label="Comment">
+                    <a-textarea v-model:value="form.comment" rows="4" />
+                  </a-form-item>
+                </a-form>
+              </a-modal>
             </div>
           </div>
         </div>
@@ -140,11 +154,46 @@
       </div>
     </div>
   </div>
+  <div class="pt-1 pb-14">
+    <div class="container bg-[#fff] p-12 rounded-md">
+      <h3 class="text-[20px] font-medium mb-3">ĐÁNH GIÁ SẢN PHẨM</h3>
+      <div class="mb-5">
+        <span class="text-[30px] font-semibold text-[#EE4D2D] mr-4">{{ productData.aveStart }}</span>
+        <span class="text-[20px] text-[#EE4D2D] font-medium">trên 5</span>
+        <ul class="flex">
+          <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
+          <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
+          <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
+          <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
+          <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
+        </ul>
+      </div>
+
+      <div>
+        <div v-if="productData.comments?.length">
+          <div v-for="comment in productData.comments" :key="comment.id" class="comment p-3">
+            <div class="flex items-center">
+              <img src="@/assets/images/user_1.png" class="w-[25px] h-[25px]" />
+              <p class="ml-2 text-[16px]">{{ comment.fullName }}</p>
+            </div>
+            <p class="mt-2 text-[13px] text-[#7A7A7A]">{{ format(new Date(comment.createdAt), 'dd/MM/yyyy HH:mm:ss') }}</p>
+            <a-rate :value="comment.rateStars" allow-half disabled />
+            <p class="text-[#7A7A7A] mt-3 text-[15px] mb-3">{{ comment.content }}</p>
+            <hr />
+          </div>
+        </div>
+
+        <div v-else>
+          <p>No comments available.</p>
+        </div>
+      </div>
+    </div>
+  </div>
   <ChatBox class="fixed bottom-6 right-6 z-50" :isOpen="isChatOpen" :idShop="idShop" :shopStore="shopStore" @close="toggleChat" />
 </template>
 
 <script setup>
-import { onMounted, computed, ref, watch } from 'vue';
+import { onMounted, computed, ref, watch, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductDetailStore } from '@/stores/productDetailStore';
 import { productStore } from '@/stores/products';
@@ -156,6 +205,8 @@ const router = useRouter();
 import { useChatStore } from '@/stores/chatStore';
 import ChatBox from "@/components/chatBox/ChatBox.vue";
 import { useShopStore } from '@/stores/shopStore';
+import { format } from 'date-fns';
+
 
 const shopStore = useShopStore();
 
@@ -175,7 +226,8 @@ const productData = computed(() => ({
   dataSource: productDetail.product,
   price: productDetail.price,
   quantity: productDetail.quantity,
-  itemId: productDetail.itemId
+  itemId: productDetail.itemId,
+  comments: productDetail.comments
 }));
 
 function formatNumber(number) {
@@ -299,6 +351,74 @@ const selectImage = (index) => {
   pos.value = index;
 };
 
+const form = reactive({
+  rate: 0,
+  comment: ''
+});
+
+const isModalVisible = ref(false);
+
+
+const showModal = async () => {
+  const res = await apiServices.checkPurchase(id);
+  if (res.data.code === 200) {
+    isModalVisible.value = true;
+    const res2 = await apiServices.getCommentById(id);
+    if (res2.data.code === 200) {
+      console.log("log của commet",res2.data.data[0].id);
+      form.rate = res2.data.data[0].rateStars;
+      form.comment = res2.data.data[0].content;
+    } else if (res2.data.code === 500) {
+      form.rate = 0;
+      form.comment = '';
+    }
+  } else if (res.data.code === 500) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Sản phẩm chưa có trong lịch sử mua hàng của bạn!'
+    });
+  }
+};
+
+const handleOk = async () => {
+  Swal.fire({
+    title: 'Loading...',
+    text: 'Vui lòng chờ...',
+    icon: 'info',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+  isModalVisible.value = false;
+  const res2 = await apiServices.getCommentById(id);
+  console.log("log của commet",res2);
+  let res
+  if (res2.data.code === 200) {
+    res = await apiServices.updateComment(res2.data.data[0].id, form.comment, form.rate);
+    console.log(res);
+  } else if (res2.data.code === 500) {
+    res = await apiServices.addComment(id, form.comment, form.rate);
+  }
+  Swal.close();
+  if (res.data.code === 200) {
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: 'Đánh giá thành công!',
+      showConfirmButton: false,
+      timer: 1500
+    });
+    await productDetail.fetchAveStart(id);
+    await productDetail.fetchComments(id);
+  }
+};
+
+const handleCancel = () => {
+  isModalVisible.value = false;
+};
+
 
 const fetchRecommendedProducts = async (idProduct) => {
   try {
@@ -330,12 +450,17 @@ const goToProductDetail = async (productId) => {
 
   // Fetch dữ liệu sản phẩm mới từ API
   await productDetail.fetchProducts(productId);
+  console.log("productDetail.fetchProducts(id);",productDetail.value )
   await fetchRecommendedProducts(productId); // Cập nhật lại danh sách gợi ý
 };
 
 onMounted(async () => {
   try {
+    console.log("mouted log",productDetail.value )
     await productDetail.fetchProducts(id);
+    console.log("productDetail.fetchProducts(id);",productDetail.value )
+    await productDetail.fetchAveStart(id);
+    await productDetail.fetchComments(id);
     console.log("productDetail.fetchProducts(id);",productDetail.value )
     await fetchRecommendedProducts(id);
   } catch (error) {

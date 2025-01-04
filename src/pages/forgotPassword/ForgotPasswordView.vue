@@ -28,22 +28,32 @@
 
 <script setup>
 import { ref } from 'vue';
-// import authService from '@/domain/authServices';
+import authService from '@/domain/authServices';
 import router from '@/router/index.js';
+import { nextTick } from 'vue';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();  
+const role = route.params.role;
 const email = ref('');
 
 const handleSubmit = async () => {
+  console.log("role ", role)
   try {
-    router.push({ path: `/verification` });
-    // const response = await authService.forgot(email.value);
-
-    // router.push({ path: `/veirfication` });
-    // if (response.data.success) {
-    //   alert('A reset link has been sent to your email.');
-    // } else {
-    //   alert('Error: ' + response.data.message);
-    // }
+    router.push({
+      name: `verification-forgot-password`,
+      params: {
+        email: email.value,
+        role: role
+      }
+    });
+    await nextTick();
+    const response = await authService.sendOTPForgetPassword(email.value);
+    if (response.data.success) {
+      alert('A reset link has been sent to your email.');
+    } else {
+      alert('Error: ' + response.data.message);
+    }
   } catch (error) {
     console.error(error);
     alert('An error occurred while trying to reset the password.');

@@ -41,7 +41,9 @@
         <template #bodyCell="{ column, record }">
           <!-- Hiển thị ảnh trong cột 'icon' -->
           <template v-if="column.key === 'icon'">
-            <img :src="record.icon" alt="Product Image" class="w-[60px] h-[60px] object-cover rounded-md p-1" />
+            <div class="flex justify-center items-center">
+              <img :src="record.icon" alt="Product Image" class="w-[60px] h-[60px] object-cover rounded-md p-1" />
+            </div>
           </template>
 
           <!-- Hiển thị thao tác -->
@@ -110,7 +112,8 @@ const columns = [
   {
     title: 'ảnh',
     dataIndex: 'icon',
-    key: 'icon'
+    key: 'icon',
+    width: '20%',
   },
   ,
   {
@@ -201,8 +204,8 @@ const handleAddNew = async () => {
     focusConfirm: false,
     showCancelButton: true,
     preConfirm: async () => {
-      const name = document.getElementById('brandName').value;
-      const description = document.getElementById('brandDescription').value;
+      const name = document.getElementById('brandName').value.trim();
+      const description = document.getElementById('brandDescription').value.trim();
       const file = document.getElementById('brandImage').files[0];
       if (!name) {
         Swal.showValidationMessage('Vui lòng nhập tên nhãn hiệu');
@@ -222,11 +225,26 @@ const handleAddNew = async () => {
 
   if (isConfirmed && formValues) {
     const { name, description, file } = formValues;
-    // Cập nhật store
-    console.log("description", description)
+
+    // Kiểm tra nếu tên đã tồn tại
+    const isDuplicate = brandStore.brand.some((brand) => brand.name.toLowerCase() === name.toLowerCase());
+    if (isDuplicate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Tên nhãn hiệu đã tồn tại',
+        text: `Nhãn hiệu "${name}" đã tồn tại trong hệ thống. Vui lòng nhập tên khác.`
+      });
+      return;
+    }
+
+    // Upload hình ảnh và thêm nhãn hiệu
     await imageStore.upLoadImage([file]);
-    // console.log("imageStore.upLoadImage(file)",imageStore.image)
     brandStore.addBrand(name, description, imageStore.image);
+    Swal.fire({
+      icon: 'success',
+      title: 'Thành công',
+      text: `Nhãn hiệu "${name}" đã được thêm thành công!`
+    });
   }
 };
 

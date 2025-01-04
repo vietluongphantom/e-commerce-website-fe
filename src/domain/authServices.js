@@ -31,11 +31,23 @@ export default {
     return http.post(`${config.baseApiUrl}/api/v1/${newUser.role}/signUpNewVersion`, newUser);
   },
 
+  sendOTPForgetPassword(email) {
+    return http.post(`${config.baseApiUrl}/api/forgotPassword/sendOtp`, {"email":email});
+  },
+
   checkOTP(role, email, otp) {
     const otpNumber = Number(otp);
 
     console.log(role);
     return http.post(`${config.baseApiUrl}/api/v1/${role}/verifyOtp`, {
+      email: email,
+      otp: otpNumber
+    });
+  },
+
+  checkOTPForgotPassword(email, otp) {
+    const otpNumber = Number(otp);
+    return http.post(`${config.baseApiUrl}/api/forgotPassword/verifyOtp/${otp}/${email}`, {
       email: email,
       otp: otpNumber
     });

@@ -75,7 +75,12 @@ export default {
     };
 
     const handleForgotClick = function () {
-      router.push({ path: 'forgotPassword' });
+      router.push({
+        name: `forgot-password`,
+        params: {
+          role: "user"
+        }
+      });
     };
 
     const goToLoginSeller = () => {

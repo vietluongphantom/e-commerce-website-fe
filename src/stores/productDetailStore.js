@@ -37,7 +37,19 @@ export const useProductDetailStore = defineStore('product', {
         this.itemId = item.id;
       }
     },
+    async fetchAveStart(id) {
+      const response = await apiServices.getAveStart(id);
+      if(response.data.code === 200){
+        this.aveStart = response.data.data;
+      }
+    },
 
+    async fetchComments(id) {
+      const response = await apiServices.getAllComments(id);
+      if(response.data.code === 200){
+        this.comments = response.data.data;
+      }
+    },
     setQuantity() {
       this.quantity = this.total_quantity;
     }
