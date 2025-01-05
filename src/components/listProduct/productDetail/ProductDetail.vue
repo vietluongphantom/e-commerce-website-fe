@@ -20,19 +20,22 @@
             <p class="text-[25px] font-medium">{{ productData.dataSource.name }}</p>
             <div class="mt-3 flex justify-between">
               <div class="flex items-center">
-                <span class="underline text-[#FEC700] text-[18px] mr-1">{{ productData.dataSource.average_rate }}</span>
-                <ul class="flex items-center">
-                  <StartIcon class="w-[20px] h-[20px]"></StartIcon>
-                  <StartIcon class="w-[20px] h-[20px]"></StartIcon>
-                  <StartIcon class="w-[20px] h-[20px]"></StartIcon>
-                  <StartIcon class="w-[20px] h-[20px]"></StartIcon>
-                  <StartIcon class="w-[20px] h-[20px]"></StartIcon>
+                <span v-if="productData.dataSource.average_rate > 0" class="underline text-[#FEC700] text-[18px] mr-1">
+                  {{ productData.dataSource.average_rate }}
+                </span>
+                <ul class="flex items-center" v-if="productData.dataSource.average_rate > 0">
+                  <StartIcon
+                    v-for="index in Math.floor(productData.dataSource.average_rate)"
+                    :key="index"
+                    class="w-[20px] h-[20px]"
+                  />
                 </ul>
+                <p v-else class="text-gray-500">Sản phẩm chưa có đánh giá</p>
               </div>
 
               <div>
                 <span class="text-[17px] mr-2">{{ formatNumber(productData.dataSource.total_sold) }}</span>
-                <span class="text-[16px] text-[#8A8A8A] italic">Đánh giá</span>
+                <span v-if="productData.dataSource.average_rate > 0" class="text-[16px] text-[#8A8A8A] italic">Đánh giá</span>
               </div>
 
               <div>
@@ -41,7 +44,11 @@
               </div>
             </div>
 
-            <p class="mt-6 text-[28px] text-[#F45449] font-medium">{{ formatCurrency(productData.price) }}</p>
+            <p :class="productData.price === -1 ? 'text-[#807e7e] text-[18px] font-medium mt-6' : 'text-[#F45449] text-[28px] font-medium mt-6'">
+                {{ productData.price === -1 ? "Phân loại sản phẩm tạm hết hàng" : formatCurrency(productData.price) }}
+            </p>
+
+
 
             <div class="mt-3">
               <div v-for="(item, index) in productData.dataSource.attribute_and_value" :key="index">
@@ -72,7 +79,9 @@
                 :disabled="currentQuantity >= productData.quantity">
                 +
               </button>
-              <p class="text-[16px]">{{ productData.quantity }} sản phẩm sẵn có</p>
+              <p class="text-[16px]">
+                {{ productData.quantity > 0 ? productData.quantity + ' sản phẩm sẵn có' : '' }}
+              </p>
             </div>
 
             <div class="mt-10">
@@ -158,7 +167,7 @@
     <div class="container bg-[#fff] p-12 rounded-md">
       <h3 class="text-[20px] font-medium mb-3">ĐÁNH GIÁ SẢN PHẨM</h3>
       <div class="mb-5">
-        <span class="text-[30px] font-semibold text-[#EE4D2D] mr-4">{{ productData.aveStart }}</span>
+        <!-- <span class="text-[30px] font-semibold text-[#EE4D2D] mr-4">{{ productData.aveStart }}</span>
         <span class="text-[20px] text-[#EE4D2D] font-medium">trên 5</span>
         <ul class="flex">
           <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
@@ -166,7 +175,7 @@
           <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
           <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
           <li class="w-[25px] h-[25px]"><StartIcon></StartIcon></li>
-        </ul>
+        </ul> -->
       </div>
 
       <div>
@@ -184,7 +193,7 @@
         </div>
 
         <div v-else>
-          <p>No comments available.</p>
+          <p>Hiện chưa có đánh giá.</p>
         </div>
       </div>
     </div>
@@ -276,7 +285,39 @@ const selectValue = (value, attribute) => {
   }
 };
 
+// const handleAction = async () => {
+//   if (allAttributesSelected()) {
+//     const res = await apiServices.addCart(productData.value.itemId, currentQuantity.value);
+//     if (res.data.code === 200) {
+//       Swal.fire({
+//         title: 'Thành công!',
+//         text: 'Sản phẩm đã được thêm vào giỏ hàng',
+//         icon: 'success'
+//       });
+//       selectedValues.value = {};
+//       currentQuantity.value = 1;
+//       await store.fetchCart();
+//       await productDetail.fetchProducts(id);
+//     }
+//   } else {
+//     Swal.fire({
+//       icon: 'error',
+//       title: 'Oops...',
+//       text: 'Bạn vui lòng chọn tất cả thuộc tính!'
+//     });
+//   }
+// };
+
 const handleAction = async () => {
+  if (currentQuantity.value <= 0) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Có lỗi xảy ra',
+      text: 'Phân loại sản phẩm tạm hết hàng hoặc số lượng được nhập vào không hợp lệ'
+    });
+    return;
+  }
+
   if (allAttributesSelected()) {
     const res = await apiServices.addCart(productData.value.itemId, currentQuantity.value);
     if (res.data.code === 200) {

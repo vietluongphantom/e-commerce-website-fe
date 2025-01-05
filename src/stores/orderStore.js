@@ -25,75 +25,55 @@ export const useOrderStore = defineStore('order', {
   actions: {
     updatePagination({ currentPage }) {
       this.currentPage = currentPage;
-      this.fetchOrders(this.currentPage);
+      // this.fetchOrders(this.currentPage);
     },
 
-    async fetchOrders(page = 1, searchQuery = '', skuCode = '') {
+
+    async fetchOrders(page = 1, size = 10, id = null) {
       try {
-        const response = await apiServices.getAllOrder(page, this.pageSize, searchQuery, skuCode);
-        console.log('respon absc', response);
-        this.orders = response.data.data;
+        const response = await apiServices.getAllOrder(page - 1, size, id);
+        console.log('Response orders:', response);
 
-        // const promises = _.map(content, async (item) => {
-        //     const [userId, shopResponse] = await Promise.all([
-        //       apiServices.getItemCart(item.productItemId),
-        //       apiServices.getShopById(item.shopId)
-        //     ]);
-
-        //     return {
-        //       ...item,
-        //       productDetails: productResponse.data.data,
-        //       shopDetails: shopResponse.data.data
-        //     };
-        // });
-
-        // Chờ tất cả các promises hoàn thành
-        //   this.cartItems = await Promise.all(promises);
-        //   Swal.close();
-        //   this.totalElements = response.data.data.totalElements;
+        if (response?.data?.data) {
+          this.orders = response.data.data.content;
+          this.totalElements = response.data.data.totalElements;
+          this.totalPages = response.data.data.totalPages;
+          this.currentPage = page;
+        } else {
+          this.orders = [];
+          this.totalElements = 0;
+          this.totalPages = 0;
+        }
       } catch (error) {
-        console.error('Error fetching cart items:', error);
-      }
-    },
-    async fetchOrdersUser(page = 1, searchQuery = '', skuCode = '') {
-      try {
-        const response = await apiServices.getAllOrderUser(page, this.pageSize, searchQuery, skuCode);
-        console.log('respon absc', response);
-        this.orders = response.data.data;
-
-        // const promises = _.map(content, async (item) => {
-        //     const [userId, shopResponse] = await Promise.all([
-        //       apiServices.getItemCart(item.productItemId),
-        //       apiServices.getShopById(item.shopId)
-        //     ]);
-
-        //     return {
-        //       ...item,
-        //       productDetails: productResponse.data.data,
-        //       shopDetails: shopResponse.data.data
-        //     };
-        // });
-
-        // Chờ tất cả các promises hoàn thành
-        //   this.cartItems = await Promise.all(promises);
-        //   Swal.close();
-        //   this.totalElements = response.data.data.totalElements;
-      } catch (error) {
-        console.error('Error fetching cart items:', error);
+        console.error('Error fetching orders:', error);
+        this.orders = [];
+        this.totalElements = 0;
+        this.totalPages = 0;
       }
     },
 
-    // async getOrder(id) {
-    //   try {
-    //   const response = await apiServices.getOrder(id);
-    //   this.detail = response.data.data;
-    //   console.log("response kien",response)
-    //   router.push({ name: 'view-order-detail', params: { id } });
-    //     }
-    //        catch (error) {
-    //         console.error('Error fetching cart items:', error);
-    //     }
-    // },
+    async fetchOrdersUser(page = 1, size = 10, id = null) {
+      try {
+        const response = await apiServices.getAllOrderUser(page - 1, size, id);
+        console.log('Response orders:', response);
+
+        if (response?.data?.data) {
+          this.orders = response.data.data.content;
+          this.totalElements = response.data.data.totalElements;
+          this.totalPages = response.data.data.totalPages;
+          this.currentPage = page;
+        } else {
+          this.orders = [];
+          this.totalElements = 0;
+          this.totalPages = 0;
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        this.orders = [];
+        this.totalElements = 0;
+        this.totalPages = 0;
+      }
+    },
 
     async deleteOrder(id) {
       const result = await Swal.fire({
@@ -117,47 +97,31 @@ export const useOrderStore = defineStore('order', {
         });
       }
     },
-    // async editOrder(id, status) {
-    //   const { value: formValues } = await Swal.fire({
-    //     title: 'Thay đổi trạng thái đơn hàng',
-    //     html:
-    //       `<select id="swal-input2" class="swal2-input">` +
-    //       `<option value="completed" ${status === 'COMPLETED' ? 'selected' : ''}>Completed</option>` +
-    //       `<option value="pending" ${status === 'PENDING' ? 'selected' : ''}>Pending</option>` +
-    //       `<option value="cancelled" ${status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>` +
-    //       `</select>`,
-    //     focusConfirm: false,
-    //     showCancelButton: true,
-    //     confirmButtonText: 'Xác nhận',
-    //     cancelButtonText: 'Hủy',
-    //     preConfirm: () => {
-    //       return document.getElementById('swal-input2').value;
-    //     }
-    //   });
 
-    //   if (formValues) {
-    //     const [ selectedStatus] = formValues;
-    //     await apiServices.editOrder(id, selectedStatus);
-    //     this.fetchOrder(this.current);
-    //     await Swal.fire({
-    //       title: 'Saved!',
-    //       text: 'Your status has been saved.',
-    //       icon: 'success'
-    //     });
-    //   }
-    // },
     async editOrder(id, status) {
+      // Xác định các trạng thái có thể chuyển đổi dựa trên trạng thái hiện tại
+      const statusOptions = {
+        COMPLETED: ['COMPLETED'], // Không thể chuyển đổi
+        CANCELLED: ['CANCELLED'], // Không thể chuyển đổi
+        PENDING: ['PENDING', 'CONFIRMED', 'CANCELLED'],
+        CONFIRMED: ['CONFIRMED', 'PACKED', 'CANCELLED'],
+        PACKED: ['PACKED', 'SHIPPED', 'CANCELLED'],
+        SHIPPED: ['SHIPPED', 'RETURNED', 'COMPLETED'],
+        RETURNED: ['RETURNED'] // Không thể chuyển đổi
+      };
+
+      const availableStatuses = statusOptions[status] || [];
+
       const { value: formValues } = await Swal.fire({
         title: 'Thay đổi trạng thái đơn hàng',
         html:
           `<select id="swal-input2" class="swal2-input">` +
-          `<option value="COMPLETED" ${status === 'COMPLETED' ? 'selected' : ''}>Completed</option>` +
-          `<option value="PENDING" ${status === 'PENDING' ? 'selected' : ''}>Pending</option>` +
-          `<option value="CANCELLED" ${status === 'CANCELLED' ? 'selected' : ''}>Cancelled</option>` +
-          `<option value="CONFIRMED" ${status === 'CONFIRMED' ? 'selected' : ''}>Confirmed</option>` +
-          `<option value="PACKED" ${status === 'PACKED' ? 'selected' : ''}>Packed</option>` +
-          `<option value="SHIPPED" ${status === 'SHIPPED' ? 'selected' : ''}>Shipping</option>` +
-          `<option value="RETURNED" ${status === 'RETURNED' ? 'selected' : ''}>Returned</option>` +
+          availableStatuses
+            .map(
+              (option) =>
+                `<option value="${option}" ${status === option ? 'selected' : ''}>${option.charAt(0) + option.slice(1).toLowerCase()}</option>`
+            )
+            .join('') +
           `</select>`,
         focusConfirm: false,
         showCancelButton: true,
@@ -168,16 +132,6 @@ export const useOrderStore = defineStore('order', {
         }
       });
 
-      // if (formValues) {
-      //   await apiServices.editOrder(id, formValues);
-      //   this.fetchOrder(this.current);
-      //   await Swal.fire({
-      //     title: 'Saved!',
-      //     text: 'Your status has been saved.',
-      //     icon: 'success'
-      //   });
-
-      // }
       if (formValues) {
         try {
           // Gọi API để cập nhật trạng thái
@@ -208,13 +162,80 @@ export const useOrderStore = defineStore('order', {
       }
     },
 
-    async fetchOrdersAdmin(page = 1, searchQuery = '', skuCode = '') {
+    async fetchOrdersAdmin(page = 1, size = 10, id = null) {
       try {
-        const response = await apiServices.getAllOrderAdmin(page, this.pageSize, searchQuery, skuCode);
-        console.log('respon admin', response);
-        this.orders = response.data.data;
+        const response = await apiServices.getAllOrderAdmin(page - 1, size, id);
+        console.log('Response orders:', response);
+
+        if (response?.data?.data) {
+          this.orders = response.data.data.content;
+          this.totalElements = response.data.data.totalElements;
+          this.totalPages = response.data.data.totalPages;
+          this.currentPage = page;
+        } else {
+          this.orders = [];
+          this.totalElements = 0;
+          this.totalPages = 0;
+        }
       } catch (error) {
-        console.error('Error fetching cart items:', error);
+        console.error('Error fetching orders:', error);
+        this.orders = [];
+        this.totalElements = 0;
+        this.totalPages = 0;
+      }
+    },
+
+    async fetchOrdersByStatus(status, page = 1, size = 10, id = null) {
+      try {
+        // Gọi API từ apiServices.getListStatusOrder với các tham số cần thiết
+        const response = await apiServices.getListStatusOrder(status, page, size, id);
+        console.log('Orders by status and id:', response);
+
+        // Cập nhật state với dữ liệu phân trang từ API
+        this.orders = response?.data?.data?.content || []; // Lưu danh sách đơn hàng
+        this.totalElements = response?.data?.data?.totalElements || 0; // Tổng số phần tử
+        this.totalPages = response?.data?.data?.totalPages || 0; // Tổng số trang
+        this.currentPage = page; // Trang hiện tại
+        this.pageSize = size; // Kích thước mỗi trang
+      } catch (error) {
+        console.error('Error fetching orders by status and id:', error);
+        throw error;
+      }
+    },
+
+    async getListStatusOrderBySeller(status, page = 1, size = 10, id = null) {
+      try {
+        // Gọi API từ apiServices.getListStatusOrder với các tham số cần thiết
+        const response = await apiServices.getListStatusOrderBySeller(status, page, size, id);
+        console.log('Orders by status and id:', response);
+
+        // Cập nhật state với dữ liệu phân trang từ API
+        this.orders = response?.data?.data?.content || []; // Lưu danh sách đơn hàng
+        this.totalElements = response?.data?.data?.totalElements || 0; // Tổng số phần tử
+        this.totalPages = response?.data?.data?.totalPages || 0; // Tổng số trang
+        this.currentPage = page; // Trang hiện tại
+        this.pageSize = size; // Kích thước mỗi trang
+      } catch (error) {
+        console.error('Error fetching orders by status and id:', error);
+        throw error;
+      }
+    },
+
+    async getListStatusOrderByAdmin(status, page = 1, size = 10, id = null) {
+      try {
+        // Gọi API từ apiServices.getListStatusOrder với các tham số cần thiết
+        const response = await apiServices.getListStatusOrderByAdmin(status, page, size, id);
+        console.log('Orders by status and id:', response);
+
+        // Cập nhật state với dữ liệu phân trang từ API
+        this.orders = response?.data?.data?.content || []; // Lưu danh sách đơn hàng
+        this.totalElements = response?.data?.data?.totalElements || 0; // Tổng số phần tử
+        this.totalPages = response?.data?.data?.totalPages || 0; // Tổng số trang
+        this.currentPage = page; // Trang hiện tại
+        this.pageSize = size; // Kích thước mỗi trang
+      } catch (error) {
+        console.error('Error fetching orders by status and id:', error);
+        throw error;
       }
     }
   }

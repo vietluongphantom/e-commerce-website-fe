@@ -336,28 +336,69 @@ export default {
     return httpAuth.post(`${config.baseApiUrl}/api/v1/inventory/import`, formData);
   },
   //Orders
-  getAllOrder(page, size, searchQuery, skuCode) {
-    return httpAuth.get(`${config.baseApiUrl}/api/orders?page=${page - 1}&size=${size}&name=${searchQuery}&skuCode=${skuCode}`);
+  
+  getAllOrder(page = 0, size = 10, id = null) {
+    let url = `${config.baseApiUrl}/api/orders?page=${page}&size=${size}`;
+    if (id ) {
+      url += `&id=${id}`;
+    }
+    return httpAuth.get(url);
   },
-  getAllOrderUser() {
-    return httpAuth.get(`${config.baseApiUrl}/api/orders/user`);
+
+
+
+  getAllOrderUser(page = 0, size = 10, id = null) {
+    let url = `${config.baseApiUrl}/api/orders/user?page=${page}&size=${size}`;
+    if (id) {
+      url += `&id=${id}`;
+    }
+    return httpAuth.get(url);
   },
-  getAllOrderAdmin() {
-    return httpAuth.get(`${config.baseApiUrl}/api/orders/admin`);
+
+  
+
+  getAllOrderAdmin(page = 0, size = 10, id = null) {
+    let url = `${config.baseApiUrl}/api/orders/admin?page=${page}&size=${size}`;
+    if (id) {
+      url += `&id=${id}`;
+    }
+    return httpAuth.get(url);
   },
+
   getOrder(id) {
     // console.log(httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`));
     return httpAuth.get(`${config.baseApiUrl}/api/orders/${id}`);
   },
-  // editOrder(id, status) {
-  //   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, {  status: status });
-  // },
-  //   editOrder(id, status) {
-  //   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, status);
-  // },
+ 
   editOrder(id, status) {
     return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status?status=${status}`);
   },
+
+ 
+  getListStatusOrder(status, page, size = 10, id) {
+    let url = `${config.baseApiUrl}/api/orders/status/${status}?page=${page - 1}&size=${size}`;
+    if (id) {
+      url += `&id=${id}`;
+    }
+    return httpAuth.get(url);
+  },
+
+  getListStatusOrderBySeller(status, page, size = 10, id) {
+    let url = `${config.baseApiUrl}/api/orders/seller/status/${status}?page=${page - 1}&size=${size}`;
+    if (id) {
+      url += `&id=${id}`;
+    }
+    return httpAuth.get(url);
+  },
+
+  getListStatusOrderByAdmin(status, page, size = 10, id) {
+    let url = `${config.baseApiUrl}/api/orders/admin/status/${status}?page=${page - 1}&size=${size}`;
+    if (id) {
+      url += `&id=${id}`;
+    }
+    return httpAuth.get(url);
+  },
+
   //Image
   upLoadImage(img) {
     return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
