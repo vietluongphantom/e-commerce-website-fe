@@ -32,15 +32,16 @@ import authService from '@/domain/authServices';
 import router from '@/router/index.js';
 import { nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-
-const route = useRoute();  
+import { useToast } from "vue-toastification";
+const toast = useToast();
+const route = useRoute();
 const role = route.params.role;
 const email = ref('');
 
 const handleSubmit = async () => {
-  console.log("role ", role)
-  try {
-    router.push({
+    const response = await authService.sendOTPForgetPassword(email.value);
+    if (response.data.code == 200) {
+      router.push({
       name: `verification-forgot-password`,
       params: {
         email: email.value,
@@ -48,16 +49,15 @@ const handleSubmit = async () => {
       }
     });
     await nextTick();
-    const response = await authService.sendOTPForgetPassword(email.value);
-    if (response.data.success) {
-      alert('A reset link has been sent to your email.');
-    } else {
-      alert('Error: ' + response.data.message);
+      toast.success("mã xác nhận đã được gửi tới mail của bạn", {
+        timeout: 5000,
+      });
     }
-  } catch (error) {
-    console.error(error);
-    alert('An error occurred while trying to reset the password.');
-  }
+     else {
+      toast.error(response.data.message, {
+        timeout: 5000,
+      });
+    }
 };
 </script>
 

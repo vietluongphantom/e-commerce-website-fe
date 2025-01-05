@@ -16,8 +16,8 @@
   <script setup>
   import { ref } from 'vue';
   import authService from '@/domain/authServices';
-  import Swal from 'sweetalert2';
-  
+  import { useToast } from "vue-toastification";
+  const toast = useToast();
   import { useRoute } from 'vue-router';
   import router from '@/router/index.js';
   
@@ -30,20 +30,13 @@
     const response = await authService.checkOTPForgotPassword(email,verificationCode.value);
     console.log("response                                         km,", role)
     if (response.status === 200) {
-      Swal.fire({
-        position: 'top-end',
-        icon: 'success',
-        title: 'change password successfully',
-        showConfirmButton: false,
-        timer: 1500
+      toast.success("mật khẩu mới đã được gửi tới mail của bạn! Vui lòng đăng nhâp lại", {
+        timeout: 5000,
       });
       router.push({ path: `/login/${role}` });
     } else if (response.data.code == 500) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Invalid OTP',
-        footer: '<a href="#">Why do I have this issue?</a>'
+      toast.success("mã xác nhận không đúng", {
+        timeout: 5000,
       });
     }
   };

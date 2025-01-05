@@ -398,5 +398,6 @@ export default {
   },
   addComment(id, content, rateStars) {
     return httpAuth.post(`${config.baseApiUrl}/api/comments/add_comment`, { content: content, rateStars: rateStars, productId: id, replyTo: null });
-  }
+  },
+
 };

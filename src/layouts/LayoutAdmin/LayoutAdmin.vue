@@ -16,10 +16,10 @@
           <a-button class="trigger p-2" @click="toggleCollapsed">
             <BarIcon class="w-[20px] h-[20px]"></BarIcon>
           </a-button>
-          <input class="input--one ml-[30px] w-[270px] h-[35px] rounded-xl outline-none p-5" placeholder="Nhập từ khóa..." />
+          <!-- <input class="input--one ml-[30px] w-[270px] h-[35px] rounded-xl outline-none p-5" placeholder="Nhập từ khóa..." />
           <Button class="w-[30px] h-[30px] ml-4">
             <SearchIcon class="w-full h-full"></SearchIcon>
-          </Button>
+          </Button> -->
         </div>
 
         <div class="flex items-center">
@@ -107,11 +107,11 @@ const items = reactive([
         label: 'Danh sách người bán',
         title: 'Danh sách người bán'
       },
-      {
-        key: '5',
-        label: 'Thêm mới người bán',
-        title: 'Thêm mới người bán'
-      }
+      // {
+      //   key: '5',
+      //   label: 'Thêm mới người bán',
+      //   title: 'Thêm mới người bán'
+      // }
     ]
   },
   {
@@ -125,11 +125,11 @@ const items = reactive([
         label: 'Danh sách người mua',
         title: 'Danh sách người mua'
       },
-      {
-        key: '7',
-        label: 'Thêm mới người mua',
-        title: 'Thêm mới người mua'
-      }
+      // {
+      //   key: '7',
+      //   label: 'Thêm mới người mua',
+      //   title: 'Thêm mới người mua'
+      // }
     ]
   },
   {
@@ -143,11 +143,11 @@ const items = reactive([
         label: 'Quản lý đơn hàng',
         title: 'Quản lý đơn hàng'
       },
-      {
-        key: '9',
-        label: 'Thêm mới đơn hàng',
-        title: 'Thêm mới đơn hàng'
-      }
+      // {
+      //   key: '9',
+      //   label: 'Thêm mới đơn hàng',
+      //   title: 'Thêm mới đơn hàng'
+      // }
     ]
   },
   {

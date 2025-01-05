@@ -32,7 +32,7 @@ export default {
   },
 
   sendOTPForgetPassword(email) {
-    return http.post(`${config.baseApiUrl}/api/forgotPassword/sendOtp`, {"email":email});
+    return http.post(`${config.baseApiUrl}/api/forgotPassword/sendOtp`, { email: email });
   },
 
   checkOTP(role, email, otp) {
@@ -55,5 +55,10 @@ export default {
 
   resendOTP(email) {
     return http.post(`${config.baseApiUrl}/api/v1/user/resendOtp`, { email: email });
+  },
+
+  // ADDRESS
+  fetchAllProvince() {
+    return http.get(`https://open.oapi.vn/location/provinces?page=0&size=100`);
   }
 };

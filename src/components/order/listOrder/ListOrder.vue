@@ -34,10 +34,10 @@
             <a href="#" @click.prevent="watchOrder(record.id)" class="mr-4">
               <EyeIcon class="w-[15px] h-[15px]" />
             </a>
-            <a-divider type="vertical" />
+            <!-- <a-divider type="vertical" />
             <a href="#" @click.prevent="deleteOrder(record.id)">
               <TrashIcon class="w-[15px] h-[15px]"></TrashIcon>
-            </a>
+            </a> -->
           </span>
           <span v-else>
             {{ record[column.dataIndex] }}
