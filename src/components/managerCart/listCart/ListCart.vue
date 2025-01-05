@@ -132,11 +132,11 @@
             <a-form-item label="Tỉnh/Thành phố" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
             </a-form-item>
             <a-select
-              v-model:value="value"
+              v-model:value="province"
               show-search
               placeholder="Chọn tỉnh/thành phố"
               style="width: 100%"
-              :options="options"
+              :options="provinces"
               :filter-option="filterOption"
               @focus="handleFocus"
               @blur="handleBlur"
@@ -217,9 +217,15 @@ import { useCartStore } from '@/stores/cartStore';
 import { TrashIcon } from '@/assets/icons/icon.js';
 import { debounce } from 'lodash';
 import apiServices from '@/domain/apiServices';
+import authService from '@/domain/authServices';
 import { format, parseISO } from 'date-fns';
 import Swal from 'sweetalert2';
+import { onUnmounted } from 'vue';
+import authServices from '@/domain/authServices';
 
+
+const provinces = ref([]);
+const province = ref()
 const cartStore = useCartStore();
 
 const columns = [
@@ -435,6 +441,24 @@ const showAddressFields = (e) => {
 
 onMounted(async () => {
   await cartStore.fetchCartItems();
+  console.log("le kheeeeeeeeeeeeeee");
+  const response = await authService.fetchAllProvince();
+  provinces.value = response.data.data.map(province => ({
+      value: province.id, // Dùng id làm giá trị
+      label: province.name, // Dùng name làm nhãn hiển thị
+    }));
+  console.log("le kheeeeeeeeeeeeeee 2" ,provinces.value);
+});
+
+
+onUnmounted(() => {
+  cartStore.totalPrice = 0;
+});
+
+onUnmounted(() => {
+  cartStore.totalPrice = 0;
+  selectedCartItems.value = [];
+
 });
 </script>
 

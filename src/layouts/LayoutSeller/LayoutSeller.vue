@@ -13,11 +13,11 @@
           <a-button class="trigger p-2" @click="toggleCollapsed">
             <BarIcon class="w-[20px] h-[20px]"></BarIcon>
           </a-button>
-          <input class="input--one ml-[30px] w-[270px] h-[35px] rounded-xl outline-none p-5"
+          <!-- <input class="input--one ml-[30px] w-[270px] h-[35px] rounded-xl outline-none p-5"
             placeholder="Nhập từ khóa..." />
           <Button class="w-[30px] h-[30px] ml-4">
             <SearchIcon class="w-full h-full"></SearchIcon>
-          </Button>
+          </Button> -->
         </div>
 
         <div class="flex items-center">

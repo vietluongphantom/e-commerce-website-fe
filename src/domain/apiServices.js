@@ -1,7 +1,6 @@
 import config from '@/configs/appBase';
 import httpAuth from '@/infrastructures/apiHttpAuth';
 
-
 export default {
   jwtToken() {
     console.log(httpAuth);
@@ -163,35 +162,35 @@ export default {
     return httpAuth.get(`${config.baseApiUrl}/api/v1/inventory/import?page=${page - 1}&size=${size}&skuCode=${searchId}&name=${searchName}`);
   },
 
-// Revenue Statistics
-getTotalRevenue() {
-  return (config.baseApiUrl + '/api/statistics/revenue/total');
-},
+  // Revenue Statistics
+  getTotalRevenue() {
+    return config.baseApiUrl + '/api/statistics/revenue/total';
+  },
 
-// Orders
-getOrders() {
-  return (config.baseApiUrl + '/api/statistics/orders');
-},
-  
-getMonthlyRevenue(year) {
-  return (`${config.baseApiUrl}/api/statistics/revenue/monthly?year=${year}`);
-},
+  // Orders
+  getOrders() {
+    return config.baseApiUrl + '/api/statistics/orders';
+  },
 
-// export const getMonthlyRevenue = async (year) => {
-//   try {
-//     const response = await axios.get(
-//       `${BASE_URL}/statistics/revenue/monthly?year=${year}`
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching monthly revenue data:", error);
-//     throw error;
-//   }
-// };
+  getMonthlyRevenue(year) {
+    return `${config.baseApiUrl}/api/statistics/revenue/monthly?year=${year}`;
+  },
 
-getDailyRevenue(month, year) {
-  return (`${config.baseApiUrl}/api/statistics/revenue/daily?month=${month}&year=${year}`);
-},
+  // export const getMonthlyRevenue = async (year) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${BASE_URL}/statistics/revenue/monthly?year=${year}`
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("Error fetching monthly revenue data:", error);
+  //     throw error;
+  //   }
+  // };
+
+  getDailyRevenue(month, year) {
+    return `${config.baseApiUrl}/api/statistics/revenue/daily?month=${month}&year=${year}`;
+  },
 
   //BRAND
   getAllBrand(page, size, searchQuery) {
@@ -203,8 +202,8 @@ getDailyRevenue(month, year) {
   editBrand(id, name, status) {
     return httpAuth.put(`${config.baseApiUrl}/api/brands/${id}`, { name: name, status: status });
   },
-  addBrand(name, description,icon) {
-    return httpAuth.post(config.baseApiUrl + '/api/brands', { name: name, description:description, icon:icon , status: true });
+  addBrand(name, description, icon) {
+    return httpAuth.post(config.baseApiUrl + '/api/brands', { name: name, description: description, icon: icon, status: true });
   },
   getListProduct(page, size, search) {
     return httpAuth.get(`${config.baseApiUrl}/api/products/seller?page=${page - 1}&size=${size}&keyword=${search}`);
@@ -353,30 +352,52 @@ getDailyRevenue(month, year) {
   // editOrder(id, status) {
   //   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, {  status: status });
   // },
-//   editOrder(id, status) {
-//   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, status);
-// },
+  //   editOrder(id, status) {
+  //   return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status`, status);
+  // },
   editOrder(id, status) {
     return httpAuth.put(`${config.baseApiUrl}/api/orders/${id}/status?status=${status}`);
   },
-    //Image
-    upLoadImage(img) {
-      return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-    },
+  //Image
+  upLoadImage(img) {
+    return httpAuth.post(`${config.baseApiUrl}/api/products/uploads`, img, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
 
-    //chat
-    getShopList() {
-      return httpAuth.get(`${config.baseApiUrl}/api/chat/list-messages`);
-    },
-    //chat
-    // createNewMessage(content, recipientId) {
-    //   return httpAuth.post(`${config.baseApiUrl}/api/chat/chat`,{content,recipientId});
-    // },
-    fetchAllMessage(id) {
-      return httpAuth.get(`${config.baseApiUrl}/api/chat/messages/${id}`);
-    },
+  //chat
+  getShopList() {
+    return httpAuth.get(`${config.baseApiUrl}/api/chat/list-messages`);
+  },
+  //chat
+  // createNewMessage(content, recipientId) {
+  //   return httpAuth.post(`${config.baseApiUrl}/api/chat/chat`,{content,recipientId});
+  // },
+  fetchAllMessage(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/chat/messages/${id}`);
+  },
+
+  //
+  //REVIEW
+  getAveStart(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/rates/product/${id}/average-stars`);
+  },
+  getAllComments(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/comments/product/${id}/sort-by-date`);
+  },
+  checkPurchase(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/orders/check-purchase/${id}`);
+  },
+  getCommentById(id) {
+    return httpAuth.get(`${config.baseApiUrl}/api/comments/user/product/${id}`);
+  },
+  updateComment(id, content, rateStars) {
+    return httpAuth.put(`${config.baseApiUrl}/api/comments/update_comment/${id}`, { content: content, rateStars: rateStars });
+  },
+  addComment(id, content, rateStars) {
+    return httpAuth.post(`${config.baseApiUrl}/api/comments/add_comment`, { content: content, rateStars: rateStars, productId: id, replyTo: null });
+  },
+
 };

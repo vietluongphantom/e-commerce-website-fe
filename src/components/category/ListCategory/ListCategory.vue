@@ -160,8 +160,25 @@ const refreshData = () => {
     categoryStore.fetchCategory(1);
 };
 
+// const handleAddNew = async () => {
+//   const { value: text, isConfirmed  } = await Swal.fire({
+//     input: 'textarea',
+//     inputLabel: 'Nhập tên danh mục mới',
+//     inputPlaceholder: 'Danh mục a...',
+//     inputAttributes: {
+//       'aria-label': 'Danh mục a...'
+//     },
+//     showCancelButton: true
+//   });
+  
+//     if (isConfirmed && text) {
+//     inputValue.value = text;
+//     categoryStore.addCategory(inputValue.value);
+//   }
+// };
+
 const handleAddNew = async () => {
-  const { value: text, isConfirmed  } = await Swal.fire({
+  const { value: text, isConfirmed } = await Swal.fire({
     input: 'textarea',
     inputLabel: 'Nhập tên danh mục mới',
     inputPlaceholder: 'Danh mục a...',
@@ -170,13 +187,28 @@ const handleAddNew = async () => {
     },
     showCancelButton: true
   });
-  
-    if (isConfirmed && text) {
-    inputValue.value = text;
-    categoryStore.addCategory(inputValue.value);
+
+  if (isConfirmed && text) {
+    // Kiểm tra danh mục trùng
+    const isDuplicate = categoryStore.category.some(category => category.name.toLowerCase() === text.trim().toLowerCase());
+    if (isDuplicate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Trùng lặp!',
+        text: 'Tên danh mục đã tồn tại, vui lòng nhập tên khác.'
+      });
+    } else {
+      // Thêm danh mục mới nếu không trùng
+      inputValue.value = text;
+      categoryStore.addCategory(inputValue.value);
+      Swal.fire({
+        icon: 'success',
+        title: 'Thành công!',
+        text: 'Danh mục mới đã được thêm.'
+      });
+    }
   }
 };
-
 
 onMounted(async () => {
   categoryStore.fetchCategory();

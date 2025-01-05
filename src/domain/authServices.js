@@ -31,6 +31,10 @@ export default {
     return http.post(`${config.baseApiUrl}/api/v1/${newUser.role}/signUpNewVersion`, newUser);
   },
 
+  sendOTPForgetPassword(email) {
+    return http.post(`${config.baseApiUrl}/api/forgotPassword/sendOtp`, { email: email });
+  },
+
   checkOTP(role, email, otp) {
     const otpNumber = Number(otp);
 
@@ -41,7 +45,20 @@ export default {
     });
   },
 
+  checkOTPForgotPassword(email, otp) {
+    const otpNumber = Number(otp);
+    return http.post(`${config.baseApiUrl}/api/forgotPassword/verifyOtp/${otp}/${email}`, {
+      email: email,
+      otp: otpNumber
+    });
+  },
+
   resendOTP(email) {
     return http.post(`${config.baseApiUrl}/api/v1/user/resendOtp`, { email: email });
+  },
+
+  // ADDRESS
+  fetchAllProvince() {
+    return http.get(`https://open.oapi.vn/location/provinces?page=0&size=100`);
   }
 };

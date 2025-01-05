@@ -58,6 +58,7 @@ import { SearchIcon, AddIcon, EditIcon, TrashIcon, EyeIcon  } from '@/assets/ico
 import { format, parseISO } from 'date-fns';
 import { useOrderStore } from '@/stores/orderStore';
 import router from '@/router/index.js';
+import { useToast } from "vue-toastification";
 
 const columns = [
   { title: 'Mã đơn hàng', dataIndex: 'id', key: 'stt' },
@@ -73,6 +74,7 @@ const columns = [
 const orderStore = useOrderStore();
 const searchName = ref('');
 const searchId = ref('');
+const toast = useToast();
 
 const exportData = reactive({
   dataSource: [],
@@ -129,6 +131,21 @@ const watchOrder = (id) => {
 onMounted(async () => {
   await orderStore.fetchOrdersUser();
   console.log("fetchOrdersUser", orderStore.orders)
+    // Lấy query params từ URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const responseCode = urlParams.get("vnp_ResponseCode");
+    console.log("mmmmmmmmmmmmmmmmmmm", responseCode)
+
+    // Kiểm tra responseCode
+    if (responseCode === "00") {
+      toast.success("Đặt hàng thành công!", {
+        timeout: 5000,
+      });
+    } else if (responseCode) {
+      toast.error("Đặt hàng thất bại!", {
+        timeout: 5000,
+      });
+    }
 });
 </script>
 <style scoped lang="scss">

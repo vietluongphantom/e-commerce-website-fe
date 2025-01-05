@@ -50,17 +50,54 @@ export const useProductItemStore = defineStore('productItems', {
       return formData;
     },
 
+    // async addProductItem(productItem) {
+    //   this.productItemForm = {...productItem };
+    //   const response = await apiServices.createProductItem(this.productItemForm);
+    //   router.push({ name: 'product-item' });
+    //   if (response.data.code === 200) {
+    //     Swal.fire({
+    //       position: 'top-end',
+    //       icon: 'success',
+    //       title: 'Thêm mới mã sản phẩm thành công',
+    //       showConfirmButton: false,
+    //       timer: 1500
+    //     });
+    //   }
+    // },
+
     async addProductItem(productItem) {
-      this.productItemForm = {...productItem };
-      const response = await apiServices.createProductItem(this.productItemForm);
-      router.push({ name: 'product-item' });
-      if (response.data.code === 200) {
+      this.productItemForm = { ...productItem };
+    
+      try {
+        const response = await apiServices.createProductItem(this.productItemForm);
+    
+        if (response.data.code === 200) {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Thêm mới mã sản phẩm thành công',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          router.push({ name: 'product-item' });
+        } else {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `Lỗi: ${response.data.message || 'Không xác định'}`,
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      } catch (error) {
+        console.error('Error adding product item:', error);
         Swal.fire({
           position: 'top-end',
-          icon: 'success',
-          title: 'Thêm mới mã sản phẩm thành công',
-          showConfirmButton: false,
-          timer: 1500
+          icon: 'error',
+          title: 'Đã có lỗi xảy ra khi thêm sản phẩm!',
+          text: error.response?.data?.message || 'Vui lòng kiểm tra lại mã sản phẩm và thuộc tính',
+          showConfirmButton: true,
+          timer: 3000
         });
       }
     },

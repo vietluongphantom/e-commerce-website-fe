@@ -68,7 +68,9 @@ export const useAuthStore = defineStore({
               email: newUser.email,
             }
           });
+          console.log('zzzzzzzzzzzzzzzzzzzzzzzz router', router.currentRoute.value.params);
         }
+
       } catch (error) {
         const status = error.response.status;
         if (status === 400) {
