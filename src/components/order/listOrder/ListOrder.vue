@@ -3,16 +3,23 @@
     <h1 class="text-[25px] font-bold mb-6">Danh sách đơn hàng</h1>
     <div class="mb-8 flex justify-between">
       <div class="mb-8 flex">
-        <div class="flex items-center mr-[50px]">
-          <input class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3" placeholder="Tên..."
-            @focus="handleFocus" v-model="searchName" @keyup.enter="handleAction" />
-          <!-- <SearchIcon @click="handleAction" class="w-[20px] h-[20px]"></SearchIcon> -->
-        </div>
+
 
         <div class="flex items-center">
-          <input class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3" placeholder="Mã..." @focus="handleFocus"
-            v-model="searchId" @keyup.enter="handleAction" />
+          <input class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3" type="number" placeholder="Mã..." @focus="handleFocus"
+            v-model="searchId" @keyup.enter="handleSearch" />
         </div>
+
+        <div class="flex items-center mr-[50px]">
+          <a-select v-model:value="selectedStatus" class="w-[200px]" placeholder="Chọn trạng thái"
+            @change="handleSearch">
+            <a-select-option value="">Tất cả</a-select-option>
+            <a-select-option v-for="status in statusOptions" :key="status" :value="status">
+              {{ status }}
+            </a-select-option>
+          </a-select>
+        </div>
+
 
         <button @click="handleSearch"
           class="button text-[15px] ml-[80px] text-[#fff] bg-[#69C3A3] p-2 font-medium rounded-lg px-4">Tìm
@@ -34,10 +41,10 @@
             <a href="#" @click.prevent="watchOrder(record.id)" class="mr-4">
               <EyeIcon class="w-[15px] h-[15px]" />
             </a>
-            <!-- <a-divider type="vertical" />
+            <a-divider type="vertical" />
             <a href="#" @click.prevent="deleteOrder(record.id)">
               <TrashIcon class="w-[15px] h-[15px]"></TrashIcon>
-            </a> -->
+            </a>
           </span>
           <span v-else>
             {{ record[column.dataIndex] }}
@@ -69,6 +76,16 @@ const columns = [
 const orderStore = useOrderStore();
 const searchName = ref('');
 const searchId = ref('');
+const selectedStatus = ref('');
+const statusOptions = [
+  'COMPLETED',
+  'PENDING',
+  'CANCELLED',
+  'CONFIRMED',
+  'PACKED',
+  'SHIPPED',
+  'RETURNED',
+];
 
 const exportData = reactive({
   dataSource: [],
@@ -76,6 +93,33 @@ const exportData = reactive({
   currentPage: 1,
   pageSize: 10
 });
+
+
+
+// const orderData = computed(() => {
+//   const status = selectedStatus.value || '';
+
+//   if (status === '') {
+//     // Xử lý phân trang ở frontend khi không có status
+//     const start = (orderStore.currentPage - 1) * orderStore.pageSize;
+//     const end = start + orderStore.pageSize;
+
+//     return {
+//       dataSource: orderStore.orders.slice(start, end),
+//       totalElements: orderStore.orders.length,
+//       currentPage: orderStore.currentPage,
+//       pageSize: orderStore.pageSize
+//     };
+//   }
+
+//   // Trả về dữ liệu có sẵn phân trang từ API khi có status
+//   return {
+//     dataSource: orderStore.orders,
+//     totalElements: orderStore.totalElements,
+//     currentPage: orderStore.currentPage,
+//     pageSize: orderStore.pageSize
+//   };
+// });
 const orderData = computed(() => ({
   dataSource: orderStore.orders,
   totalElements: orderStore.totalElements,
@@ -83,13 +127,46 @@ const orderData = computed(() => ({
   pageSize: orderStore.pageSize
 }));
 
+
 const searchQuery = ref('');
 
+
+
+// const handleTableChange = async (pagination) => {
+//   const status = selectedStatus.value || '';
+//   const id = searchId.value || null;
+
+//   try {
+//     if (status === '') {
+//       // Nếu đang ở chế độ tìm theo id, không cần gọi API lại
+//       orderStore.currentPage = pagination.current;
+//     } else {
+//       await orderStore.getListStatusOrderBySeller(
+//         status,
+//         pagination.current,
+//         pagination.pageSize,
+//         id
+//       );
+//     }
+//   } catch (error) {
+//     console.error('Error changing page:', error);
+//   }
+// };
 const handleTableChange = (pagination) => {
-    orderStore.updatePagination({
-    currentPage: pagination.current
-  });
+  exportData.currentPage = pagination.current; // Cập nhật số trang hiện tại
+  exportData.pageSize = pagination.pageSize;  // Cập nhật số lượng mỗi trang
+
+  const status = selectedStatus.value || '';
+
+  if (status === '') {
+    // Nếu là "Tất cả", gọi fetchOrdersUser
+    orderStore.fetchOrders(exportData.currentPage, exportData.pageSize);
+  } else {
+    // Nếu có trạng thái, gọi fetchOrdersByStatus
+    orderStore.getListStatusOrderBySeller(status, exportData.currentPage, exportData.pageSize);
+  }
 };
+
 
 //
 const handleAction = () => {
@@ -97,44 +174,64 @@ const handleAction = () => {
    ordertoryStore.fetchOrders(exportData.currentPage, searchName.value, searchId.value);
 };
 
-const handleSearch = () => {
-    console.log("vào đây chưaaaaaaaaa")
-  exportData.currentPage = 1;
-   orderStore.fetchOrders(exportData.currentPage, searchName.value, searchId.value);
-};
-//
-const deleteOrder = (id) => {
-  OrderStore.deleteOrder(id);
-};
+// const handleSearch = async () => {
+//   const status = selectedStatus.value || '';
+//   const id = searchId.value || null;
 
-// const watchOrder = (id) => {
-//   console.log('Navigating to order:', id);
-//   router.push({ name: 'view-order-detail', params: { id } });
+//   try {
+//     if (id !== null) {
+//       // Tìm theo ID
+//       await orderStore.fetchOrders(id);
+//       orderStore.currentPage = 1; // Reset về trang 1
+//       return;
+//     }
 
+//     if (status === '') {
+//       // Lấy tất cả đơn hàng và xử lý phân trang ở frontend
+//       await orderStore.fetchOrders();
+//       orderStore.currentPage = 1; // Reset về trang 1
+//     } else {
+//       // Lấy theo status với phân trang từ API
+//       await orderStore.getListStatusOrderBySeller(status, 1, exportData.pageSize);
+//     }
+//   } catch (error) {
+//     console.error('Error searching orders:', error);
+//   }
 // };
+
+const handleSearch = async () => {
+  exportData.currentPage = 1;
+  const status = selectedStatus.value || '';
+  const id = searchId.value || null;
+
+  if (status === '') {
+    await orderStore.fetchOrders(exportData.currentPage, exportData.pageSize, id);
+  } else {
+    await orderStore.getListStatusOrderBySeller(status, exportData.currentPage, exportData.pageSize, id);
+  }
+};
+
+
 const watchOrder = (id) => {
   console.log('Navigating to order:', id);
   router.push({ name: 'view-order-detail', params: { id } });
 
 };
-// const editOrder = (id) => {
-//   orderStore.detailOrder(id);
-// };
 
 const editOrder = (id, status) => {
   orderStore.editOrder(id, status);
 };
-// const editOrder = (id) => {
-//   router.push({ name: 'order-edit', params: { id } });
-// };
+
 
 const handleAddNew = () => {
   router.push({ name: 'menu-11' });
 };
 
 onMounted(async () => {
-  await orderStore.fetchOrders();
+  await orderStore.fetchOrders(exportData.currentPage, exportData.pageSize);
+
   console.log("vào được đây chưa fettch ra được đây chưa",orderStore.orders )
+  await orderStore.getListStatusOrderBySeller('', exportData.currentPage, exportData.pageSize);
 });
 </script>
 <style scoped lang="scss">

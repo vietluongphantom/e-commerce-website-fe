@@ -44,7 +44,11 @@
               </div>
             </div>
 
-            <p class="mt-6 text-[28px] text-[#F45449] font-medium">{{ formatCurrency(productData.price) }}</p>
+            <p :class="productData.price === -1 ? 'text-[#807e7e] text-[18px] font-medium mt-6' : 'text-[#F45449] text-[28px] font-medium mt-6'">
+                {{ productData.price === -1 ? "Phân loại sản phẩm tạm hết hàng" : formatCurrency(productData.price) }}
+            </p>
+
+
 
             <div class="mt-3">
               <div v-for="(item, index) in productData.dataSource.attribute_and_value" :key="index">
@@ -76,7 +80,7 @@
                 +
               </button>
               <p class="text-[16px]">
-                {{ productData.quantity > 0 ? productData.quantity + ' sản phẩm sẵn có' : 'Tạm hết sản phẩm' }}
+                {{ productData.quantity > 0 ? productData.quantity + ' sản phẩm sẵn có' : '' }}
               </p>
             </div>
 
@@ -308,8 +312,8 @@ const handleAction = async () => {
   if (currentQuantity.value <= 0) {
     Swal.fire({
       icon: 'error',
-      title: 'Oops...',
-      text: 'Phân loại sản phẩm tạm hết hàng!'
+      title: 'Có lỗi xảy ra',
+      text: 'Phân loại sản phẩm tạm hết hàng hoặc số lượng được nhập vào không hợp lệ'
     });
     return;
   }

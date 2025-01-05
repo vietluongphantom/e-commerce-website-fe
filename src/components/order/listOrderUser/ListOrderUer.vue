@@ -3,15 +3,20 @@
     <h1 class="text-[25px] font-bold mb-6">Danh sách đơn hàng</h1>
     <div class="mb-8 flex justify-between">
       <div class="mb-8 flex">
-        <div class="flex items-center mr-[50px]">
-          <input class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3" placeholder="Tên..."
-            @focus="handleFocus" v-model="searchName" @keyup.enter="handleAction" />
-          <!-- <SearchIcon @click="handleAction" class="w-[20px] h-[20px]"></SearchIcon> -->
-        </div>
-
+        
         <div class="flex items-center">
           <input class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3" placeholder="Mã..." @focus="handleFocus"
-            v-model="searchId" @keyup.enter="handleAction" />
+            v-model="searchId" @keyup.enter="handleSearch" />
+        </div>
+
+        <div class="flex items-center mr-[50px]">
+          <a-select v-model:value="selectedStatus" class="w-[200px]" placeholder="Chọn trạng thái"
+            @change="handleSearch">
+            <a-select-option value="">Tất cả</a-select-option>
+            <a-select-option v-for="status in statusOptions" :key="status" :value="status">
+              {{ status }}
+            </a-select-option>
+          </a-select>
         </div>
 
         <button @click="handleSearch"
@@ -75,6 +80,17 @@ const orderStore = useOrderStore();
 const searchName = ref('');
 const searchId = ref('');
 const toast = useToast();
+const selectedStatus = ref('');
+const statusOptions = [
+  'COMPLETED',
+  'PENDING',
+  'CANCELLED',
+  'CONFIRMED',
+  'PACKED',
+  'SHIPPED',
+  'RETURNED',
+];
+
 
 const exportData = reactive({
   dataSource: [],
@@ -92,9 +108,18 @@ const orderData = computed(() => ({
 const searchQuery = ref('');
 
 const handleTableChange = (pagination) => {
-    orderStore.updatePagination({
-    currentPage: pagination.current
-  });
+  exportData.currentPage = pagination.current; // Cập nhật số trang hiện tại
+  exportData.pageSize = pagination.pageSize;  // Cập nhật số lượng mỗi trang
+
+  const status = selectedStatus.value || '';
+
+  if (status === '') {
+    // Nếu là "Tất cả", gọi fetchOrdersUser
+    orderStore.fetchOrdersUser(exportData.currentPage, exportData.pageSize);
+  } else {
+    // Nếu có trạng thái, gọi fetchOrdersByStatus
+    orderStore.fetchOrdersByStatus(status, exportData.currentPage, exportData.pageSize);
+  }
 };
 
 //
@@ -103,10 +128,17 @@ const handleAction = () => {
    ordertoryStore.fetchOrders(exportData.currentPage, searchName.value, searchId.value);
 };
 
-const handleSearch = () => {
-  exportData.currentPage = 1;
-   orderStore.fetchOrders(exportData.currentPage, searchName.value, searchId.value);
-};
+const handleSearch = async () => {
+    exportData.currentPage = 1;
+    const status = selectedStatus.value || '';
+    const id = searchId.value || null;  
+
+    if (status === '') {
+      await orderStore.fetchOrdersUser(exportData.currentPage, exportData.pageSize, id);
+    } else {
+      await orderStore.fetchOrdersByStatus(status, exportData.currentPage, exportData.pageSize, id);
+    }
+  };
 //
 const deleteOrder = (id) => {
   OrderStore.deleteOrder(id);
@@ -129,8 +161,9 @@ const watchOrder = (id) => {
 };
 
 onMounted(async () => {
-  await orderStore.fetchOrdersUser();
+  await orderStore.fetchOrdersUser(exportData.currentPage, exportData.pageSize);      
   console.log("fetchOrdersUser", orderStore.orders)
+  await orderStore.fetchOrdersByStatus('', exportData.currentPage, exportData.pageSize);
     // Lấy query params từ URL
     const urlParams = new URLSearchParams(window.location.search);
     const responseCode = urlParams.get("vnp_ResponseCode");
