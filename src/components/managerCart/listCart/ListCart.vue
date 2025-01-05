@@ -118,16 +118,36 @@
   <div class="container">
     <div class="modal">
       <a-button type="primary" @click="showModal" class="custom-button"> Chọn địa chỉ giao hàng</a-button>
-      <a-modal v-model:open="open" title="Vui lòng chọn địa chỉ giao hàng" :okButtonProps="{ style: { backgroundColor: '#ad171c' } }" @ok="handleOk">
-        <a-radio v-model:checked="checked">Ngọc lãng, Ngọc Lâm, Mỹ Hào, Hưng Yên</a-radio>
-        <div style="display: flex; justify-content: center; align-items: center">
-          <a-button 
-            type="primary" 
-            style="margin-top:24px ; margin-bottom:24px; width: 100%; background-color: #ad171c"
-            @click="showAddressFields"
-          >Thêm địa chỉ giao hàng</a-button>
+      <a-modal
+        v-model:open="open"
+        title="Vui lòng nhập thông tin giao hàng"
+        :okButtonProps="{ style: { backgroundColor: '#ad171c' } }"
+        @ok="handleOk"
+      >
+        <div class="custom-label">
+          <a-form-item label="Họ tên người nhận " name="person" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
+          </a-form-item>
+          <a-input v-model:value.lazy="value1" autofocus placeholder="Nhập họ tên nguòi nhận" />
         </div>
-        <div v-if="activeAddress"> 
+
+        <div class="custom-label">
+          <a-form-item label="Số điện thoại người nhận " name="person" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
+          </a-form-item>
+          <a-input v-model:value.lazy="value1" autofocus placeholder="Nhập số điện thoại nguòi nhận" />
+        </div>
+        <div class="custom-label">
+          <a-form-item label="Chọn địa chỉ nhận hàng " name="person" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
+          </a-form-item>
+          <a-radio>Ngọc lãng, Ngọc Lâm, Mỹ Hào, Hưng Yên</a-radio>
+          <a-radio>Ngọc lãng, Ngọc Lâm, Mỹ Hào, Hưng Yên</a-radio>
+          <a-radio>Ngọc lãng, Ngọc Lâm, Mỹ Hào, Hưng Yên</a-radio>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center">
+          <a-button type="primary" style="margin-top: 24px; margin-bottom: 24px; width: 100%; background-color: #ad171c" @click="showAddressFields"
+            >Thêm địa chỉ giao hàng</a-button
+          >
+        </div>
+        <div v-if="activeAddress">
           <div class="custom-label">
             <a-form-item label="Tỉnh/Thành phố" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
             </a-form-item>
@@ -140,31 +160,31 @@
               :filter-option="filterOption"
               @focus="handleFocus"
               @blur="handleBlur"
-              @change="handleChange"
+              @change="handleChangeProvince"
             ></a-select>
           </div>
           <div class="custom-label">
             <a-form-item label="Quận/Huyện" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]"> </a-form-item>
             <a-select
-              v-model:value="value"
+              v-model:value="district"
               show-search
               placeholder="Chọn quận/huyện"
               style="width: 100%"
-              :options="options"
+              :options="districts"
               :filter-option="filterOption"
               @focus="handleFocus"
               @blur="handleBlur"
-              @change="handleChange"
+              @change="handleChangeDistrict"
             ></a-select>
           </div>
           <div class="custom-label">
             <a-form-item label="Phường/Xã" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]"> </a-form-item>
             <a-select
-              v-model:value="value"
+              v-model:value="ward"
               show-search
               placeholder="Chọn phương/xã"
               style="width: 100%"
-              :options="options"
+              :options="wards"
               :filter-option="filterOption"
               @focus="handleFocus"
               @blur="handleBlur"
@@ -174,30 +194,11 @@
           <div class="custom-label">
             <a-form-item label="Địa chỉ cụ thể" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
             </a-form-item>
-            <a-select
-              v-model:value="value"
-              show-search
-              placeholder="Số nhà/ngách/đường cụ thể"
-              style="width: 100%"
-              :options="options"
-              :filter-option="filterOption"
-              @focus="handleFocus"
-              @blur="handleBlur"
-              @change="handleChange"
-            ></a-select>
+            <a-textarea v-model:value="value" placeholder="Basic usage" :rows="4" />
           </div>
           <a-button type="primary" style="width: 30%; background-color: #ad171c">Thêm</a-button>
         </div>
       </a-modal>
-    </div>
-  </div>
-
-  <div class="mt-[30px] mb-[40px]">
-    <div class="cart container">
-      <div>
-        <div></div>
-        <a-textarea v-model:value="value" placeholder="Basic usage" :rows="4" />
-      </div>
     </div>
   </div>
 
@@ -212,7 +213,7 @@
 </template>
 
 <script setup>
-import { onMounted, computed, ref } from 'vue';
+import { onMounted, computed, ref, reactive } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
 import { TrashIcon } from '@/assets/icons/icon.js';
 import { debounce } from 'lodash';
@@ -223,9 +224,23 @@ import Swal from 'sweetalert2';
 import { onUnmounted } from 'vue';
 import authServices from '@/domain/authServices';
 
-
 const provinces = ref([]);
-const province = ref()
+const province = ref();
+const districts = ref([]);
+const district = ref();
+const wards = ref([]);
+const ward = ref();
+
+const address = reactive({
+  province: null,
+  district: null,
+  ward:null,
+
+});
+
+
+
+
 const cartStore = useCartStore();
 
 const columns = [
@@ -325,7 +340,6 @@ const deleteCart = (id) => {
 };
 
 const updateQuantity = debounce((productId, quantity) => {
-  console.log('có đi vào đây');
   if (productId && quantity > 0) {
     cartStore.updateCartItem(productId, quantity);
   }
@@ -372,9 +386,7 @@ function onKeyUp(productId, quantity) {
     clearTimeout(timeoutId.value);
   }
   timeoutId.value = setTimeout(() => {
-    console.log(productId);
     updateQuantity(productId, quantity);
-    console.log(quantity);
   }, 100);
 }
 
@@ -384,7 +396,6 @@ const voucherData = ref({});
 
 async function handleVisibleChange(newVisible, id) {
   visible.value[id] = newVisible;
-  console.log(newVisible);
   if (newVisible) {
     const response = await apiServices.getUserVoucher(id);
     voucherData.value = response.data.data;
@@ -399,11 +410,8 @@ async function applyDiscount(record, discountId) {
     selectedDiscountIds.value[record.id] = discountId;
   }
   await apiServices.addVoucher(record.id, selectedDiscountIds.value[record.id]);
-  // console.log(res1);
   const res = await apiServices.getCartPrice(record.id);
-  // console.log(res);
   record.totalPrice = res.data.data;
-  // console.log(record.totalPrice);
 }
 
 const handlePayment = async () => {
@@ -416,9 +424,7 @@ const handlePayment = async () => {
       Swal.showLoading();
     }
   });
-  // console.log(selectedCartItems.value);
   const res = await apiServices.payment(selectedCartItems.value);
-  console.log(res);
   if (res.data.code === 200) {
     Swal.close();
     window.location.href = res.data.data.url;
@@ -430,26 +436,44 @@ const showModal = () => {
   open.value = true;
 };
 const handleOk = (e) => {
-  console.log(e);
   open.value = false;
 };
 
 const activeAddress = ref(false);
 const showAddressFields = (e) => {
-  activeAddress.value = ! activeAddress.value;
+  activeAddress.value = !activeAddress.value;
+};
+
+const handleChangeProvince = async (e) => {
+  districts.value = [];
+  district.value = [];
+  wards.value = [];
+  ward.value = [];
+  const response = await authService.fetchAllDistrict(e);
+  districts.value = response.data.data.map((district) => ({
+    value: district.id,
+    label: district.name
+  }));
+};
+
+const handleChangeDistrict = async (e) => {
+  wards.value = [];
+  ward.value = [];
+  const response = await authService.fetchAllWard(e);
+  wards.value = response.data.data.map((ward) => ({
+    value: ward.id,
+    label: ward.name
+  }));
 };
 
 onMounted(async () => {
   await cartStore.fetchCartItems();
-  console.log("le kheeeeeeeeeeeeeee");
   const response = await authService.fetchAllProvince();
-  provinces.value = response.data.data.map(province => ({
-      value: province.id, // Dùng id làm giá trị
-      label: province.name, // Dùng name làm nhãn hiển thị
-    }));
-  console.log("le kheeeeeeeeeeeeeee 2" ,provinces.value);
+  provinces.value = response.data.data.map((province) => ({
+    value: province.id,
+    label: province.name
+  }));
 });
-
 
 onUnmounted(() => {
   cartStore.totalPrice = 0;
@@ -458,7 +482,6 @@ onUnmounted(() => {
 onUnmounted(() => {
   cartStore.totalPrice = 0;
   selectedCartItems.value = [];
-
 });
 </script>
 
@@ -495,7 +518,7 @@ onUnmounted(() => {
   box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
 }
 
-.custom-label{
+.custom-label {
   margin-bottom: 24px;
 }
 </style>

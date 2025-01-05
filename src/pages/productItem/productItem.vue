@@ -2,7 +2,11 @@
 <div class="product-item">
   <div class="product-item__container">
     <div class="product-item__title">Thông tin chi tiết {{productStore.product.name}} theo mã sản phẩm</div>
-
+    <a-form-item label="Lưu ý " :rules="[{ required: true}]">
+      <div>
+        bạn chỉ có thể thêm một thuộc tính khi không có item sản phẩm nào
+      </div>
+    </a-form-item>
    <a-table :columns="columns1" :data-source="attributeValue.attribute" :pagination="false">
 
     <template #bodyCell="{ column, record }">
@@ -32,7 +36,9 @@
   </a-table>
     <!-- Kết thúc bảng thuộc tính và giá trị -->
     <div class="product-item__add-attribute-container">
-      <a-button @click="handleClickAddAttribute" style="width: 200px; font-size: 12px; " type="primary" block>Thêm thuộc tính</a-button>
+      <a-button
+      v-if="productItem.productItems.length < 1" 
+       @click="handleClickAddAttribute" style="width: 200px; font-size: 12px; " type="primary" block>Thêm thuộc tính</a-button>
     </div>
 <div class="relative-container">
   <div class="button-container">
@@ -117,9 +123,9 @@ const values = reactive({
   attribute_id:null,
 })
 
-const productItem = reactive({
+const productItem = computed(() => ({
       productItems: productItemStore.productItems,
-})
+}));
 const showModal = () => {
   open.value = true;
 };
@@ -216,7 +222,6 @@ const handleClickAddAttribute = async (id) => {
     await attributeProductStore.addAttributeProduct(attribute, route.params.id);
     await productStore.fetchProduct(route.params.id);
     attributeValue.attribute = productStore.product.attribute_and_value
-    console.log("productStore.product.attribute_and_value",productStore.product.attribute_and_value)
   }
 };
 

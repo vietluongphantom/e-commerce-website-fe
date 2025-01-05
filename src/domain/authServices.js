@@ -60,5 +60,13 @@ export default {
   // ADDRESS
   fetchAllProvince() {
     return http.get(`https://open.oapi.vn/location/provinces?page=0&size=100`);
+  },
+
+  fetchAllDistrict(provinceId) {
+    return http.get(`https://open.oapi.vn/location/districts/${provinceId}?page=0&size=100`);
+  },
+  
+  fetchAllWard(districtId) {
+    return http.get(`https://open.oapi.vn/location/wards/${districtId}?page=0&size=100`);
   }
 };

@@ -71,7 +71,7 @@
 </template>
 <script setup>
 import { onMounted, reactive,ref, watch, defineProps, defineComponent } from 'vue';
-import { useAttributeProductStore } from '@/stores/attributeProductStore';// Đảm bảo rằng bạn đã nhập store đúng cách
+import { useAttributeProductStore } from '@/stores/attributeProductStore';
 import {useAttributeValuesStore} from '@/stores/attributeValuesStore';
 import { SearchIcon, AddIcon, EditIcon, TrashIcon, EyeIcon } from '@/assets/icons/icon.js';
 import {useProductItemStore} from '@/stores/productItemStore';
@@ -119,15 +119,7 @@ const fetchAttribute = async () => {
   formData.sku_code = productItemStore.productItem.sku_code
   formData.import_price = productItemStore.productItem.import_price
   formData.import_price = productItemStore.productItem.import_price
-  productItemStore.productItem.list_product_item
-  for (let index = 0; index < attributeProductStore.attributes.length; index++) {
-        for (let index2 = 0; index2 < attributeProductStore.attributes.length; index2++) {
-          console.log("ab",productItemStore.productItem.list_product_item[index].product_attributes_id, attributeProductStore.attributes[index2].id)
-          if(productItemStore.productItem.list_product_item[index].product_attributes_id == attributeProductStore.attributes[index2].id){
-            formData.list_product_item[index]=productItemStore.productItem.list_product_item[index2].value;
-          }
-        }
-  }
+  formData.list_product_item = productItemStore.productItem.list_product_item
 };
 
 const handleLoadAttributeValue = async (index) => {
@@ -158,6 +150,7 @@ const handleOk = async (e) => {
       for (let index = 0; index < tempAttributeValues.value.length; index++) {
       formData.list_product_item.push({"attribute_value_id":tempAttributeValues.value[index]})
       }
+
       formData.product_id = route.params.id
       await productItemStore.updateProductItem(formData)
       window.location.reload();
@@ -165,6 +158,16 @@ const handleOk = async (e) => {
 };
 
 onMounted(async () => {
+  console.log("bam vao day cho anh")
   await attributeProductStore.fetchAttributeProduct(route.params.id);
+  await productItemStore.fetchProductItem(props.idProductItem)
+  
+  // for (let index = 0; index < attributeProductStore.attributes.length; index++) {
+  //   for (let index2 = 0; index2 < attributeProductStore.attributes.length; index2++) {
+  //     if(productItemStore.productItem.list_product_item[index].product_attributes_id == attributeProductStore.attributes[index2].id){
+  //       formData.list_product_item[index]=productItemStore.productItem.list_product_item[index2].value;
+  //     }
+  //   }
+  // }
 });
 </script>
