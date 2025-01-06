@@ -2,7 +2,7 @@
   <div class="product flex p-8 justify-between bg-[#ffff]">
     <div class="w-[65%]">
       <h2 class="text-[22px] font-bold mb-8">Thông tin sản phẩm</h2>
-      <input class="input input--one w-full uppercase" placeholder="Sản phẩm A" v-model="product.name" />
+      <input class="input input--one w-full" placeholder="Sản phẩm A" v-model="product.name" />
       <h2 class="pt-6 pb-3 text-[16px] font-normal">Mô tả sản phẩm</h2>
       <textarea
         class="input textarea textarea--one w-full h-[100px] p-3 outline-none"

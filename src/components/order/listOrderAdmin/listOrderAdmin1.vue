@@ -146,14 +146,12 @@ const goToOrderDetail = (id) => {
     router.push({ name: 'view-order-detail', params: { id } });
 };
 const watchOrder = (id) => {
-    console.log('Navigating to order:', id);
     router.push({ name: 'admin-menu-16', params: { id } });
 
 };
 
 onMounted(async () => {
     await orderStore.fetchOrdersAdmin();
-    console.log("fetchOrdersAdmin", orderStore.orders)
     await orderStore.getListStatusOrderByAdmin('', exportData.currentPage, exportData.pageSize);
 });
 </script>

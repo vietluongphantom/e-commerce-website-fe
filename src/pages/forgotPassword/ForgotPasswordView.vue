@@ -32,16 +32,16 @@ import authService from '@/domain/authServices';
 import router from '@/router/index.js';
 import { nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import { useToast } from "vue-toastification";
+import { useToast } from 'vue-toastification';
 const toast = useToast();
 const route = useRoute();
 const role = route.params.role;
 const email = ref('');
 
 const handleSubmit = async () => {
-    const response = await authService.sendOTPForgetPassword(email.value);
-    if (response.data.code == 200) {
-      router.push({
+  const response = await authService.sendOTPForgetPassword(email.value);
+  if (response.data.code == 200) {
+    router.push({
       name: `verification-forgot-password`,
       params: {
         email: email.value,
@@ -49,15 +49,14 @@ const handleSubmit = async () => {
       }
     });
     await nextTick();
-      toast.success("mã xác nhận đã được gửi tới mail của bạn", {
-        timeout: 5000,
-      });
-    }
-     else {
-      toast.error(response.data.message, {
-        timeout: 5000,
-      });
-    }
+    toast.success('mã xác nhận đã được gửi tới mail của bạn', {
+      timeout: 5000
+    });
+  } else {
+    toast.error(response.data.message, {
+      timeout: 5000
+    });
+  }
 };
 </script>
 

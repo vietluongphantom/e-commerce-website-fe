@@ -120,7 +120,6 @@ const handleChangeWareProductItem = (id) => {
 const handleChangeProduct = async (id) => {
   inventory.product_id = id;
   await productItemStore.getListProductItemByProductId(id);
-  console.log('Anbcbđb dddd', productItemStore.productItems);
   productItem.value = productItemStore.productItems.map((productItem) => ({
     value: productItem.sku_code,
     label: productItem.sku_code
@@ -133,7 +132,6 @@ const debouncedFetchBrand = debounce((searchText) => {
 
 const fetchProducts = async (searchText = '') => {
   const response = await apiServices.getListProductS(1, 10, searchText);
-  console.log('có vào kl');
   product.value = response.data.data.productResponses.map((product) => ({
     value: product.id,
     label: product.name

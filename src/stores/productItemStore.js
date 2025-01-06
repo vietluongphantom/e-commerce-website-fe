@@ -3,11 +3,11 @@ import apiServices from '@/domain/apiServices';
 import Swal from 'sweetalert2';
 import router from '@/router/index.js';
 import _ from 'lodash';
-
+import { useToast } from 'vue-toastification';
 
 export const useProductItemStore = defineStore('productItems', {
   state: () => ({
-    productItem:[],
+    productItem: [],
     productItems: [],
     totalElements: 0,
     currentPage: 1,
@@ -17,7 +17,7 @@ export const useProductItemStore = defineStore('productItems', {
       sku_code: '',
       import_price: null,
       product_id: null,
-      attribute_value_id:[]
+      attribute_value_id: []
     }
   }),
 
@@ -27,17 +27,14 @@ export const useProductItemStore = defineStore('productItems', {
       this.fetchProductItems(this.currentPage);
     },
 
-    async fetchProductItems(id,page = 1) {
-      const response = await apiServices.getListProductItem(id,page, this.pageSize);
+    async fetchProductItems(id, page = 1) {
+      const response = await apiServices.getListProductItem(id, page, this.pageSize);
       const content = response.data.data.content;
-      console.log("response.data.data.productResponses", content)
 
       this.productItems = _.map(content, (productItem, index) => ({
         ...productItem,
         stt: (page - 1) * this.pageSize + index + 1
       }));
-
-      console.log("this.productItems",this.productItems)
       this.totalElements = response.data.data.totalPages * this.pageSize;
     },
 
@@ -66,40 +63,19 @@ export const useProductItemStore = defineStore('productItems', {
     // },
 
     async addProductItem(productItem) {
+      const toast = useToast();
       this.productItemForm = { ...productItem };
-    
-      try {
         const response = await apiServices.createProductItem(this.productItemForm);
-    
         if (response.data.code === 200) {
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Thêm mới mã sản phẩm thành công',
-            showConfirmButton: false,
-            timer: 1500
+          await this.fetchProductItems(response.data.data.product_id);
+          toast.success("Thêm mới mã sản phẩm thành công", {
+            timeout: 5000
           });
-          router.push({ name: 'product-item' });
         } else {
-          Swal.fire({
-            position: 'top-end',
-            icon: 'error',
-            title: `Lỗi: ${response.data.message || 'Không xác định'}`,
-            showConfirmButton: false,
-            timer: 3000
+          toast.error(response?.data?.message || 'Đã xảy ra lỗi', {
+            timeout: 5000
           });
         }
-      } catch (error) {
-        console.error('Error adding product item:', error);
-        Swal.fire({
-          position: 'top-end',
-          icon: 'error',
-          title: 'Đã có lỗi xảy ra khi thêm sản phẩm!',
-          text: error.response?.data?.message || 'Vui lòng kiểm tra lại mã sản phẩm và thuộc tính',
-          showConfirmButton: true,
-          timer: 3000
-        });
-      }
     },
 
     async fetchProductItem(id) {
@@ -107,22 +83,20 @@ export const useProductItemStore = defineStore('productItems', {
       this.productItem = response.data.data;
     },
 
-    async updateProductItem(productItem,id) {
+    async updateProductItem(productItem, id) {
+      const toast = useToast();
       this.productItemForm = { ...productItem };
-      console.log("productItemForm",this.productItemForm)
-      const formData = this.createFormData();
       const response = await apiServices.updateProductItem(this.productItemForm);
-      router.push({ name: 'product-item' });
       if (response.data.code === 200) {
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: 'cập nhật mã sản phẩm thành công',
-          showConfirmButton: false,
-          timer: 1500
+        await this.fetchProductItems(response.data.data.product_id);
+        toast.success("Cập nhật mã sản phẩm thành công", {
+          timeout: 5000
+        });
+      } else {
+        toast.error(response?.data?.message || 'Đã xảy ra lỗi', {
+          timeout: 5000
         });
       }
-      window.location.reload();
     },
 
     async deleteProductItem(id, productId) {
@@ -148,9 +122,8 @@ export const useProductItemStore = defineStore('productItems', {
       }
     },
 
-    async getListProductItemByProductId(id){
+    async getListProductItemByProductId(id) {
       const response = await apiServices.getListProductItemByProductId(id);
-      console.log("prodcgetListProductItemByProductId", response.data.data);
       this.productItems = response.data.data;
     }
   }

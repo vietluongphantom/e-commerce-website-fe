@@ -155,20 +155,17 @@ const goToOrderDetail = (id) => {
   router.push({ name: 'view-order-detail', params: { id } });
 };
 const watchOrder = (id) => {
-  console.log('Navigating to order:', id);
   router.push({ name: 'user-view-order-detail', params: { id } });
   
 };
 
 onMounted(async () => {
   await orderStore.fetchOrdersUser(exportData.currentPage, exportData.pageSize);      
-  console.log("fetchOrdersUser", orderStore.orders)
   await orderStore.fetchOrdersByStatus('', exportData.currentPage, exportData.pageSize);
     // Lấy query params từ URL
     const urlParams = new URLSearchParams(window.location.search);
     const responseCode = urlParams.get("vnp_ResponseCode");
-    console.log("mmmmmmmmmmmmmmmmmmm", responseCode)
-
+    console.log("test payment")
     // Kiểm tra responseCode
     if (responseCode === "00") {
       toast.success("Đặt hàng thành công!", {

@@ -26,9 +26,9 @@ export const useAuthStore = defineStore({
         if (status === 401 || status === 500) {
           Swal.fire({
             icon: 'error',
-            title: 'Oops...',
-            text: 'The account does not exist',
-            footer: '<a href="#">Why do I have this issue?</a>'
+            title: 'Đã có lỗi xảy ra',
+            text: 'Tài khoản mặc mật khẩu không chính xác',
+            // footer: '<a href="#">Why do I have this issue?</a>'
           });
         }
       }

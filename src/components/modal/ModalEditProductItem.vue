@@ -77,6 +77,7 @@ import { SearchIcon, AddIcon, EditIcon, TrashIcon, EyeIcon } from '@/assets/icon
 import {useProductItemStore} from '@/stores/productItemStore';
 import { eventBusProductItem } from '@/utils/eventBusHeader.js'; 
 import { useRoute } from 'vue-router';
+import { useToast } from "vue-toastification";
 
 const idValue = ref([])
 const route = useRoute();
@@ -103,11 +104,10 @@ const tempAttributeValues = ref([])
 const temp =ref()
 const productId = ref()
 const propsCopy  = ref()
-// const tempValues = ref
 const formData = reactive({
     price: null,
     sku_code: '',
-    product_id: productId, // Trực tiếp sử dụng `props.idProduct`
+    product_id: productId,
     import_price: null,
     list_product_item: [],
 });
@@ -120,6 +120,9 @@ const fetchAttribute = async () => {
   formData.import_price = productItemStore.productItem.import_price
   formData.import_price = productItemStore.productItem.import_price
   formData.list_product_item = productItemStore.productItem.list_product_item
+  for(let i= 0; i < productItemStore.productItem.list_product_item.length; i++){
+    tempAttributeValues.value[i] = productItemStore.productItem.list_product_item[i]?.attribute_value_id
+  }
 };
 
 const handleLoadAttributeValue = async (index) => {
@@ -135,9 +138,10 @@ const fetchAttributeValue = async (id,index) => {
     attributeValues.value[index] = temp.value
 }
  
-// Sử dụng `watch` để theo dõi sự thay đổi của `props.idProduct`
 watch(() => props.idProduct, fetchAttribute, { immediate: true });
 watch(() => props.attributeProp, fetchAttribute, { immediate: true });
+watch(() => props.idProductItem, fetchAttribute, { immediate: true });
+
 const visible = ref(false);
 
 const showModal = () => {
@@ -145,29 +149,20 @@ const showModal = () => {
 };
 
 const handleOk = async (e) => {
-    formData.list_product_item  =[]
       visible.value = false;
+      formData.list_product_item = []
       for (let index = 0; index < tempAttributeValues.value.length; index++) {
-      formData.list_product_item.push({"attribute_value_id":tempAttributeValues.value[index]})
+        formData.list_product_item.push({"attribute_value_id":tempAttributeValues.value[index]})
       }
-
       formData.product_id = route.params.id
-      await productItemStore.updateProductItem(formData)
-      window.location.reload();
+      await productItemStore.updateProductItem(formData, props.idProductItem)
+      formData.list_product_item = productItemStore.productItem.list_product_item
+      // window.location.reload();
       visible.value = false;
 };
 
 onMounted(async () => {
-  console.log("bam vao day cho anh")
   await attributeProductStore.fetchAttributeProduct(route.params.id);
   await productItemStore.fetchProductItem(props.idProductItem)
-  
-  // for (let index = 0; index < attributeProductStore.attributes.length; index++) {
-  //   for (let index2 = 0; index2 < attributeProductStore.attributes.length; index2++) {
-  //     if(productItemStore.productItem.list_product_item[index].product_attributes_id == attributeProductStore.attributes[index2].id){
-  //       formData.list_product_item[index]=productItemStore.productItem.list_product_item[index2].value;
-  //     }
-  //   }
-  // }
 });
 </script>

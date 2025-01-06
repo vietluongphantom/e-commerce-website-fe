@@ -4,7 +4,7 @@
     <div class="product-item__title">Thông tin chi tiết {{productStore.product.name}} theo mã sản phẩm</div>
     <a-form-item label="Lưu ý " :rules="[{ required: true}]">
       <div>
-        bạn chỉ có thể thêm một thuộc tính khi không có item sản phẩm nào
+        bạn không thể thêm và xoá thuộc tính khi đang có item sản phẩm nào
       </div>
     </a-form-item>
    <a-table :columns="columns1" :data-source="attributeValue.attribute" :pagination="false">
@@ -26,10 +26,10 @@
           </a-tag>
         </span>
       </template>
-      <template v-else-if="column.key === 'action'">
+      <template v-else-if="column.key === 'action'" >
         <span>
-          <a-button @click="handleClickAddValues(record.id)" type="primary" block style="width: 100px; font-size: 12px; margin: 2px;">thêm giá trị</a-button>
-          <a-button @click="deleteAttribute(record.id)" danger block style="width: 100px; font-size: 12px; margin: 2px;">xoá thuộc tính</a-button>
+          <a-button @click="handleClickAddValues(record.id)" v-if="productItem.productItems.length < 1"  type="primary" block style="width: 100px; font-size: 12px; margin: 2px;">thêm giá trị</a-button>
+          <a-button @click="deleteAttribute(record.id)" v-if="productItem.productItems.length < 1"  danger block style="width: 100px; font-size: 12px; margin: 2px;">xoá thuộc tính</a-button>
         </span>
       </template>
     </template>
