@@ -3,7 +3,7 @@
     <div class="w-[65%]">
       <!-- Thông tin sản phẩm -->
       <h2 class="text-[22px] font-bold mb-8">Thông tin sản phẩm</h2>
-      <input class="input input--one w-full uppercase" placeholder="Sản phẩm A"   v-model="product.name" />
+      <input class="input input--one w-full" placeholder="Sản phẩm A"   v-model="product.name" />
       
       <!-- Mô tả sản phẩm -->
       <h2 class="pt-6 pb-3 text-[16px] font-normal">Mô tả sản phẩm</h2>

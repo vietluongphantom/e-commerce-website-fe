@@ -61,6 +61,10 @@
                             <span class="text-blue-600 font-bold">{{ formatCurrency(record.unitPrice) }}</span>
                         </template>
 
+                        <template v-else-if="column.key === 'product_name'">
+                            <a @click="handleProductClick(record)">{{ record.productDetails.name }}</a>
+                        </template>
+
                         <template v-else-if="column.key === 'image'">
                             <img :src="record.productDetails.image" alt="Product Image"
                                 class="w-[60px] h-[60px] object-cover rounded-md p-1" />
@@ -119,7 +123,7 @@ const columns = [
         title: 'Sản phẩm',
         dataIndex: ['productDetails', 'name'],
         key: 'product_name',
-        slots: { customRender: 'name' }
+        // slots: { customRender: 'name' }
     },
     {
         title: 'Hình ảnh',
@@ -175,7 +179,6 @@ const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('vi-VN');
 };
 const handleCancelOrder = async () => {
-    console.log("kieneeeeeeeeeeee")
     if (orderDetail.value) {
         await editOrder.editOrderByUser(
 
@@ -186,22 +189,29 @@ const handleCancelOrder = async () => {
         await orderStore.getOrderByUser(route.params.id);
     }
 };
-const handleRowClick = (record) => {
-    if (!record?.productDetails?.id) {
-        console.warn('Không tìm thấy ID sản phẩm');
-        return;
-    }
+// const handleRowClick = (record) => {
+//     if (!record?.productDetails?.id) {
+//         console.warn('Không tìm thấy ID sản phẩm');
+//         return;
+//     }
 
-    const productItemId = record.productDetails.id;
-    const productId = record.productDetails.product_id; // Giả sử có trường productId
+//     const productItemId = record.productDetails.id;
+//     const productId = record.productDetails.product_id; // Giả sử có trường productId
 
-    router.push({
-        name: 'product-detail-user',
-        params: { id: productId }
-    }).catch(error => {
-        console.error('Lỗi khi chuyển trang:', error);
-    });
+//     router.push({
+//         name: 'product-detail-user',
+//         params: { id: productId }
+//     }).catch(error => {
+//         console.error('Lỗi khi chuyển trang:', error);
+//     });
+// };
+
+const handleProductClick= async (e) => {
+  let id = e.productDetails.product_id
+  router.push({ name: 'product-detail-user', params: { id } });
 };
+
+
 onMounted(async () => {
     try {
 

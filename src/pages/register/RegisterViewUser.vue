@@ -125,8 +125,8 @@ const handleCheckboxChange = (event) => {
 const handleSubmit = async () => {
   if (formData.password !== formData.confirmPassword) {
     Swal.fire({
-      title: 'Passwords do not match!',
-      text: 'Please check your password and confirm password.',
+      title: 'Mật khẩu không khớp!',
+      text: 'Vui lòng kiểm tra mật khẩu của bạn và xác nhận mật khẩu.',
       icon: 'error'
     });
     return;

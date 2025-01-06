@@ -32,7 +32,7 @@ const confirmCode = async () => {
     Swal.fire({
       position: 'top-end',
       icon: 'success',
-      title: 'Register successfully',
+      title: 'đăng ký thành công',
       showConfirmButton: false,
       timer: 1500
     });

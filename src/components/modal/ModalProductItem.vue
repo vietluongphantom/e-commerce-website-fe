@@ -95,12 +95,10 @@ const props = defineProps({
 const productItemStore = useProductItemStore();
 const attributeProductStore =  useAttributeProductStore();
 const attributeValuesStore = useAttributeValuesStore();
-const productData = ref({ dataSource: [] });
 const attributeValues = ref([])
 const tempAttributeValues = ref([])
 const temp =ref()
 const productId = ref()
-const propsCopy  = ref()
 const formData = reactive({
     price: null,
     sku_code: '',
@@ -124,7 +122,6 @@ const fetchAttributeValue = async (id,index) => {
     label: value.value
   }));
     attributeValues.value[index] = temp.value
-    console.log("attributeValues.value", attributeValues.value[index])
 }
  
 watch(() => props.idProduct, fetchAttribute, { immediate: true });
@@ -144,12 +141,10 @@ const handleOk = async (e) => {
       }
       formData.product_id = route.params.id
       await productItemStore.addProductItem(formData, route.params.id)
-      window.location.reload();
       visible.value = false;
 };
 
 onMounted(async () => {
   await attributeProductStore.fetchAttributeProduct(route.params.id);
-  console.log("culi chạy việc vặt", formData.product_id );
 });
 </script>

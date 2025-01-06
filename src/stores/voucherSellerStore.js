@@ -63,21 +63,35 @@ export const useVoucherStore = defineStore('vouchers', {
           Swal.showLoading();
         }
       });
-
-      const response = await apiServices.createVoucher(voucher);
-      Swal.close();
-
-      if (response.data.code === 200) {
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: 'Thêm mới thành công',
-          showConfirmButton: false,
-          timer: 1500
-        });
-        location.reload();
+    
+      try {
+        const response = await apiServices.createVoucher(voucher);
+        Swal.close();
+    
+        if (response.data.code === 200) {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Thêm mới thành công',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          location.reload();
+        } else {
+          throw new Error('Response code không phải 200');
+        }
+      } catch (error) {
+        setTimeout(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Có lỗi xảy ra',
+            text: 'Thiếu trường dữ liệu hoặc mã giảm giá đã tồn tại',
+            confirmButtonText: 'Đóng'
+          });
+        }, 500);
       }
     },
+    
 
     async detailVoucher(id) {
       const response = await apiServices.getVoucherById(id);

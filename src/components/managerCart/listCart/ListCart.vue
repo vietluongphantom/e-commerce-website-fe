@@ -20,7 +20,7 @@
           current: cartData.currentPage,
           pageSize: cartData.pageSize
         }"
-        @change="handleTableChange"
+       
       >
         <template v-slot:bodyCell="{ column, record }">
           <template v-if="column.key === 'checkbox'">
@@ -80,6 +80,10 @@
             </div>
           </template>
 
+          <template v-else-if="column.key === 'product_name'">
+            <a @click="handleProductClick(record)">{{ record.productDetails.name }}</a>
+          </template>
+
           <template v-else-if="column.key === 'image'">
             <img :src="record.productDetails.image" alt="Product Image" class="w-[60px] h-[60px] object-cover rounded-md p-1" />
           </template>
@@ -98,7 +102,7 @@
             <div class="quantity-controls">
               <button @click="decreaseQuantity(record)" class="text-[20px]">-</button>
               <input
-                @keyup="onKeyUp(record.id, record.quantity)"
+                @keyup="onKeyUp(record.id, record.quantity, record)"
                 v-model.number="record.quantity"
                 min="1"
                 style="width: 60px; text-align: center"
@@ -115,7 +119,7 @@
       </a-table>
     </div>
   </div>
-  <div class="container">
+  <!-- <div class="container">
     <div class="modal">
       <a-button type="primary" @click="showModal" class="custom-button"> Chọn địa chỉ giao hàng</a-button>
       <a-modal
@@ -124,7 +128,7 @@
         :okButtonProps="{ style: { backgroundColor: '#ad171c' } }"
         @ok="handleOk"
       >
-        <div class="custom-label">
+         <div class="custom-label">
           <a-form-item label="Họ tên người nhận " name="person" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
           </a-form-item>
           <a-input v-model:value.lazy="value1" autofocus placeholder="Nhập họ tên nguòi nhận" />
@@ -134,13 +138,13 @@
           <a-form-item label="Số điện thoại người nhận " name="person" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
           </a-form-item>
           <a-input v-model:value.lazy="value1" autofocus placeholder="Nhập số điện thoại nguòi nhận" />
-        </div>
-        <div class="custom-label">
+        </div> -->
+        <!-- <div class="custom-label">
           <a-form-item label="Chọn địa chỉ nhận hàng " name="person" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
           </a-form-item>
           <a-radio>Ngọc lãng, Ngọc Lâm, Mỹ Hào, Hưng Yên</a-radio>
           <a-radio>Ngọc lãng, Ngọc Lâm, Mỹ Hào, Hưng Yên</a-radio>
-          <a-radio>Ngọc lãng, Ngọc Lâm, Mỹ Hào, Hưng Yên</a-radio>
+          <a-radio>{{address?.province}}, {{address?.district}}, {{address?.ward}}</a-radio>
         </div>
         <div style="display: flex; justify-content: center; align-items: center">
           <a-button type="primary" style="margin-top: 24px; margin-bottom: 24px; width: 100%; background-color: #ad171c" @click="showAddressFields"
@@ -188,26 +192,26 @@
               :filter-option="filterOption"
               @focus="handleFocus"
               @blur="handleBlur"
-              @change="handleChange"
+              @change="handleChangeWard"
             ></a-select>
           </div>
           <div class="custom-label">
             <a-form-item label="Địa chỉ cụ thể" name="province" :rules="[{ required: true, message: 'Vui lòng nhập Tỉnh/Thành phố!' }]">
             </a-form-item>
-            <a-textarea v-model:value="value" placeholder="Basic usage" :rows="4" />
+            <a-textarea v-model:value="detail" placeholder="Basic usage" :rows="4" />
           </div>
-          <a-button type="primary" style="width: 30%; background-color: #ad171c">Thêm</a-button>
+          <a-button type="primary" @click="addAddress" style="width: 30%; background-color: #ad171c">Thêm</a-button>
         </div>
       </a-modal>
-    </div>
-  </div>
+    </div> -->
+  <!-- </div>  -->
 
   <div class="cart__payment fixed left-0 bottom-0 w-full bg-[#EEEEEE]">
     <div class="container z-30 flex justify-end pt-[25px] pb-[25px] items-center">
       <span class="text-[22px] font-medium mr-4">Tổng thanh toán</span>
       <span class="text-[25px] text-[#F45449] font-medium mr-[40px]">{{ cartData.total }}</span>
       <button @click="handlePayment" class="text-[#fff] bg-[#2A7E6F] p-3 pl-5 pr-5 rounded-lg">Thanh toán online</button>
-      <button @click="handlePayment" class="text-[#fff] bg-[#2A7E6F] p-3 pl-5 pr-5 rounded-lg ml-4">Thanh toán khi nhận</button>
+      <!-- <button @click="handlePayment" class="text-[#fff] bg-[#2A7E6F] p-3 pl-5 pr-5 rounded-lg ml-4">Thanh toán khi nhận</button> -->
     </div>
   </div>
 </template>
@@ -216,27 +220,33 @@
 import { onMounted, computed, ref, reactive } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
 import { TrashIcon } from '@/assets/icons/icon.js';
-import { debounce } from 'lodash';
+import { add, debounce } from 'lodash';
 import apiServices from '@/domain/apiServices';
 import authService from '@/domain/authServices';
 import { format, parseISO } from 'date-fns';
 import Swal from 'sweetalert2';
 import { onUnmounted } from 'vue';
 import authServices from '@/domain/authServices';
+import { useRoute, useRouter } from 'vue-router';
+import { useToast } from "vue-toastification";
 
+
+const toast = useToast();
 const provinces = ref([]);
 const province = ref();
 const districts = ref([]);
 const district = ref();
 const wards = ref([]);
 const ward = ref();
-
+const detail = ref();
+const router = useRouter();
 const address = reactive({
-  province: null,
-  district: null,
-  ward:null,
-
-});
+  province: '',
+  district:'',
+  ward:'',
+  detail:''
+}
+);
 
 
 
@@ -258,7 +268,7 @@ const columns = [
     title: 'Sản phẩm',
     dataIndex: ['productDetails', 'name'],
     key: 'product_name',
-    slots: { customRender: 'name' }
+    // slots: { customRender: 'name' }
   },
 
   {
@@ -341,11 +351,13 @@ const deleteCart = (id) => {
 
 const updateQuantity = debounce((productId, quantity) => {
   if (productId && quantity > 0) {
-    cartStore.updateCartItem(productId, quantity);
+     cartStore.updateCartItem(productId, quantity);
+    //  apiServices.updateQuantityCart(productId, quantity);
   }
 }, 0);
 
 const decreaseQuantity = async (record) => {
+  console.log("lốc", record)
   const item = cartStore.cartItems.find((i) => i.id === record.id);
   if (item && item.quantity > 1) {
     const previousTotalPrice = item.quantity * item.productDetails.price;
@@ -381,12 +393,16 @@ const increaseQuantity = async (record) => {
 
 const timeoutId = ref(null);
 
-function onKeyUp(productId, quantity) {
+function onKeyUp(productId, quantity, record) {
+  console.log("lốc test", productId)
   if (timeoutId.value) {
     clearTimeout(timeoutId.value);
   }
-  timeoutId.value = setTimeout(() => {
-    updateQuantity(productId, quantity);
+  timeoutId.value = setTimeout(async () => {
+    await updateQuantity(productId, quantity);
+    const res = await apiServices.getCartPrice(record.id);
+    console.log("lốc price", res.data.data)
+    record.totalPrice = res.data.data;
   }, 100);
 }
 
@@ -412,6 +428,11 @@ async function applyDiscount(record, discountId) {
   await apiServices.addVoucher(record.id, selectedDiscountIds.value[record.id]);
   const res = await apiServices.getCartPrice(record.id);
   record.totalPrice = res.data.data;
+
+  // Tính lại tổng giá trị giỏ hàng
+  cartStore.totalPrice = cartStore.cartItems
+    .filter(item => item.selected)
+    .reduce((sum, item) => sum + item.totalPrice, 0)
 }
 
 const handlePayment = async () => {
@@ -428,6 +449,11 @@ const handlePayment = async () => {
   if (res.data.code === 200) {
     Swal.close();
     window.location.href = res.data.data.url;
+  }else{
+    Swal.close();
+    toast.error(res.data.message, {
+        timeout: 5000,
+      });
   }
 };
 
@@ -465,6 +491,25 @@ const handleChangeDistrict = async (e) => {
     label: ward.name
   }));
 };
+
+
+const handleChangeWard= async (e) => {
+};
+
+
+const addAddress= async (e) => {
+  address.province = provinces.value.find((d) => d.value === province.value)?.label;
+  address.district = districts.value.find((d) => d.value === district.value)?.label;
+  address.ward = wards.value.find((d) => d.value === ward.value)?.label;
+  address.detail = detail.value
+};
+
+const handleProductClick= async (e) => {
+  // console.log("eeeeeeeeeeeeeeeeeeeeeeeeeêeeeeeeeeeeê",e.productDetails.product_id  )
+  let id = e.productDetails.product_id
+  router.push({ name: 'product-detail-user', params: { id } });
+};
+
 
 onMounted(async () => {
   await cartStore.fetchCartItems();
