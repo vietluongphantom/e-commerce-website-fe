@@ -170,7 +170,7 @@ onMounted(async () => {
     });
   }
   await orderStore.fetchOrdersUser(exportData.currentPage, exportData.pageSize);
-  await orderStore.fetchOrdersByStatus('', exportData.currentPage, exportData.pageSize);
+  // await orderStore.fetchOrdersByStatus('', exportData.currentPage, exportData.pageSize);
   // Lấy query params từ URL
 });
 </script>
