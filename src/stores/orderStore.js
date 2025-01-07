@@ -101,13 +101,14 @@ export const useOrderStore = defineStore('order', {
     async editOrder(id, status) {
       // Xác định các trạng thái có thể chuyển đổi dựa trên trạng thái hiện tại
       const statusOptions = {
-        COMPLETED: ['COMPLETED'], // Không thể chuyển đổi
-        CANCELLED: ['CANCELLED'], // Không thể chuyển đổi
-        PENDING: ['PENDING', 'CONFIRMED', 'CANCELLED'],
-        CONFIRMED: ['CONFIRMED', 'PACKED', 'CANCELLED'],
-        PACKED: ['PACKED', 'SHIPPED', 'CANCELLED'],
-        SHIPPED: ['SHIPPED', 'RETURNED', 'COMPLETED'],
-        RETURNED: ['RETURNED'] // Không thể chuyển đổi
+        COMPLETED: [], // Không thể chuyển đổi, đơn hàng đã hoàn tất
+        CANCELLED: [], // Không thể chuyển đổi, đơn hàng đã bị hủy
+        PENDING: [ 'CONFIRMED', 'CANCELLED'], // Đang chờ xử lý
+        CONFIRMED: [ 'PACKED', 'CANCELLED'], // Đã xác nhận
+        PACKED: [ 'SHIPPED', 'CANCELLED'], // Đã đóng gói
+        SHIPPED: [ 'DELIVERED'], // Đã giao hàng
+        DELIVERED: ['COMPLETED'], // Đã giao hàng thành công
+        
       };
 
       const availableStatuses = statusOptions[status] || [];

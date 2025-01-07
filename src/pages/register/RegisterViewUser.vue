@@ -54,23 +54,52 @@
 
             <div class="flex justify-between">
               <div class="form-group w-[46%]">
-                <label for="country">Quốc gia</label>
-                <input class="w-full" type="text" id="country" v-model="formData.country" required />
+                <label for="country">Tỉnh / thành phố</label>
+                <a-select
+                  v-model:value="formData.province"
+                  show-search
+                  placeholder="Chọn tỉnh/thành phố"
+                  style="width: 100%"
+                  :options="provinces"
+                  @focus="handleFocus"
+                  @blur="handleBlur"
+                  @change="handleChangeProvince"
+                  :filter-option="(input, option) => option.label.toLowerCase().includes(input.toLowerCase())"
+                  required
+                ></a-select>
               </div>
               <div class="form-group w-[46%]">
-                <label for="province">Tỉnh thành</label>
-                <input class="w-full" type="text" id="province" v-model="formData.province" required />
+                <label for="district">Quận / huyện</label>
+                <a-select
+                v-model:value="formData.district"
+                show-search
+                placeholder="Chọn quận/huyện"
+                style="width: 100%"
+                :options="districts"
+                :filter-option="(input, option) => option.label.toLowerCase().includes(input.toLowerCase())"
+                @focus="handleFocus"
+                @blur="handleBlur"
+                @change="handleChangeDistrict"
+                required
+              ></a-select>
               </div>
             </div>
 
             <div class="flex justify-between">
               <div class="form-group w-[46%]">
-                <label for="district">Huyện</label>
-                <input class="w-full" type="text" id="district" v-model="formData.district" required />
-              </div>
-              <div class="form-group w-[46%]">
                 <label for="commune">Xã</label>
-                <input class="w-full" type="text" id="commune" v-model="formData.commune" required />
+                <a-select
+                v-model:value="formData.commune"
+                show-search
+                placeholder="Chọn phương/xã"
+                style="width: 100%"
+                :options="wards"
+                :filter-option="(input, option) => option.label.toLowerCase().includes(input.toLowerCase())"
+                @focus="handleFocus"
+                @blur="handleBlur"
+                @change="handleChangeWard"
+                required
+              ></a-select>
               </div>
             </div>
 
@@ -96,11 +125,14 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import Swal from 'sweetalert2';
+import authService from '@/domain/authServices';
+import { useToast } from "vue-toastification";
 
 
+const toast = useToast();
 const registerStore = useAuthStore();
 
 const formData = reactive({
@@ -111,7 +143,7 @@ const formData = reactive({
   phone: '',
   gender: 'MALE',
   role: 'user',
-  country: '',
+  country: 'Việt Nam',
   province: '',
   district: '',
   commune: '',
@@ -123,18 +155,65 @@ const handleCheckboxChange = (event) => {
 };
 
 const handleSubmit = async () => {
+  const isValid = Object.values(formData).every((value) => value.trim() !== '');
+
+  if (!isValid) {
+    toast.error('Vui lòng điền đầy đủ tất cả các trường.', {
+      timeout: 5000
+    });
+    return;
+  }
+
   if (formData.password !== formData.confirmPassword) {
-    Swal.fire({
-      title: 'Mật khẩu không khớp!',
-      text: 'Vui lòng kiểm tra mật khẩu của bạn và xác nhận mật khẩu.',
-      icon: 'error'
+    toast.error('Mật khẩu  và xác nhận mật khẩu không giống nhau.', {
+      timeout: 5000
     });
     return;
   }
   registerStore.register(formData);
 };
 
+const provinces = ref([]);
+const districts = ref([]);
+const wards = ref([]);
 
+const handleChangeProvince = async (e, option) => {
+  formData.province = option.label
+  districts.value = [];
+  formData.district = '';
+  wards.value = [];
+  formData.commune = '';
+  const response = await authService.fetchAllDistrict(e);
+  districts.value = response.data.data.map((district) => ({
+    value: district.id,
+    label: district.name
+  }));
+};
+
+const handleChangeDistrict = async (e, option) => {
+  formData.district = option.label
+  wards.value = [];
+  formData.commune = '';
+  const response = await authService.fetchAllWard(e);
+  wards.value = response.data.data.map((ward) => ({
+    value: ward.id,
+    label: ward.name
+  }));
+};
+
+
+const handleChangeWard= async (e, option) => {
+  formData.commune = option.label
+};
+
+
+onMounted(async () => {
+  const response = await authService.fetchAllProvince();
+  provinces.value = response.data.data.map((province) => ({
+    value: province.id,
+    label: province.name
+  }));
+});
 </script>
 
 <style scoped lang="scss">

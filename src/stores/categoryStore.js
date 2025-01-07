@@ -113,37 +113,94 @@ export const useCategory = defineStore('category', {
     },
 
 
-    async editCategory(id, status, name) {
-      const { value: formValues } = await Swal.fire({
-        title: 'Thay đổi thông tin danh mục',
-        html:
-          '<input id="swal-input1" class="swal2-input" placeholder="Tên danh mục mới" value="' +
-          name +
-          '">' +
-          `<select id="swal-input2" class="swal2-input">` +
-          `<option value="true" ${status === true ? 'selected' : ''}>Active</option>` +
-          `<option value="false" ${status === false ? 'selected' : ''}>Inactive</option>` +
-          `</select>`,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: 'Xác nhận',
-        cancelButtonText: 'Hủy',
-        preConfirm: () => {
-          return [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value];
-        }
-      });
+    // async editCategory(id, status, name) {
+    //   const { value: formValues } = await Swal.fire({
+    //     title: 'Thay đổi thông tin danh mục',
+    //     html:
+    //       '<input id="swal-input1" class="swal2-input" placeholder="Tên danh mục mới" value="' +
+    //       name +
+    //       '">' +
+    //       `<select id="swal-input2" class="swal2-input">` +
+    //       `<option value="true" ${status === true ? 'selected' : ''}>Active</option>` +
+    //       `<option value="false" ${status === false ? 'selected' : ''}>Inactive</option>` +
+    //       `</select>`,
+    //     focusConfirm: false,
+    //     showCancelButton: true,
+    //     confirmButtonText: 'Xác nhận',
+    //     cancelButtonText: 'Hủy',
+    //     preConfirm: () => {
+    //       return [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value];
+    //     }
+    //   });
     
-      if (formValues) {
-        const [categoryName, selectedStatus] = formValues;
-        await apiServices.editCategory(id, categoryName, selectedStatus);
-        this.fetchCategory(this.current);
+    //   if (formValues) {
+    //     const [categoryName, selectedStatus] = formValues;
+    //     await apiServices.editCategory(id, categoryName, selectedStatus);
+    //     this.fetchCategory(this.current);
+    //     await Swal.fire({
+    //       title: 'Saved!',
+    //       text: 'Your category has been saved.',
+    //       icon: 'success'
+    //     });
+    //   }
+    // },
+
+
+    async editCategory(id, status, name) {
+      try {
+        const { value: formValues } = await Swal.fire({
+          title: 'Thay đổi thông tin danh mục',
+          html:
+            '<input id="swal-input1" class="swal2-input" placeholder="Tên danh mục mới" value="' +
+            name +
+            '">' +
+            `<select id="swal-input2" class="swal2-input">` +
+            `<option value="true" ${status === true ? 'selected' : ''}>Active</option>` +
+            `<option value="false" ${status === false ? 'selected' : ''}>Inactive</option>` +
+            `</select>`,
+          focusConfirm: false,
+          showCancelButton: true,
+          confirmButtonText: 'Xác nhận',
+          cancelButtonText: 'Hủy',
+          preConfirm: () => {
+            return [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value];
+          }
+        });
+
+        if (formValues) {
+          const [categoryName, selectedStatus] = formValues;
+          try {
+            const response = await apiServices.editCategory(id, categoryName, selectedStatus);
+            await this.fetchCategory(this.current);
+            await Swal.fire({
+              title: 'Đã lưu!',
+              text: 'Danh mục của bạn đã được lưu.',
+              icon: 'success'
+            });
+          } catch (error) {
+            if (error.response && error.response.status === 500) {
+              await Swal.fire({
+                title: 'Lỗi!',
+                text: error.response.detail || 'Danh mục của bạn đã bị trùng.',
+                icon: 'error'
+              });
+            } else {
+              await Swal.fire({
+                title: 'Lỗi!',
+                text: 'Không thể cập nhật danh mục.',
+                icon: 'error'
+              });
+            }
+          }
+        }
+      } catch (error) {
         await Swal.fire({
-          title: 'Saved!',
-          text: 'Your category has been saved.',
-          icon: 'success'
+          title: 'Lỗi!',
+          text: 'Có lỗi xảy ra khi xử lý yêu cầu.',
+          icon: 'error'
         });
       }
-    },
+    }
   }
 
 });
