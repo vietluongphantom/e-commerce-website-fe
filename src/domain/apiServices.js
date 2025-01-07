@@ -441,4 +441,9 @@ export default {
     return httpAuth.post(`${config.baseApiUrl}/api/comments/add_comment`, { content: content, rateStars: rateStars, productId: id, replyTo: null });
   },
 
+  //Delete
+  getAddress(){
+    return httpAuth.get(`${config.baseApiUrl}/api/address`)
+  }
+
 };
