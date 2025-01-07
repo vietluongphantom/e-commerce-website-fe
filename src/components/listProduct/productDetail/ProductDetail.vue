@@ -72,7 +72,7 @@
               <span class="text-[16px] mr-3 font-semibold">Số lượng</span>
               <button class="border border-[#D2D2D2] pl-2 pr-2 text-[18px]" @click="decreaseQuantity"
                 :disabled="quantity <= 1">-</button>
-              <input v-model.number="currentQuantity" type="number" @blur="validateInput" min="1"
+              <input style="width: 100px;" v-model.number="currentQuantity" type="number" @blur="validateInput" min="1"
                 :max="productData.quantity"
                 class="w-[40px] text-center outline-none border border-[#D2D2D2] text-[18px]" />
               <button class="border border-[#D2D2D2] pl-2 pr-2 text-[18px] mr-3" @click="increaseQuantity"
@@ -215,7 +215,10 @@ import { useChatStore } from '@/stores/chatStore';
 import ChatBox from "@/components/chatBox/ChatBox.vue";
 import { useShopStore } from '@/stores/shopStore';
 import { format } from 'date-fns';
+import { useToast } from "vue-toastification";
 
+
+const toast = useToast();
 
 const shopStore = useShopStore();
 
@@ -265,7 +268,6 @@ const allAttributesSelected = () => {
 };
 
 const selectValue = (value, attribute) => {
-  console.log("productData.dataSource",productData)
   if (selectedValues.value[attribute] === value.id) {
     delete selectedValues.value[attribute];
   } else {
@@ -316,6 +318,13 @@ const handleAction = async () => {
       text: 'Phân loại sản phẩm tạm hết hàng hoặc số lượng được nhập vào không hợp lệ'
     });
     return;
+  }
+
+  if(currentQuantity.value > productData.value.quantity){
+    toast.error(`Rất tiếc, bạn chỉ có thể mua tối đa ${productData.value.quantity} sản phẩm của sản phẩm này.`, {
+      timeout: 5000
+    });
+    return
   }
 
   if (allAttributesSelected()) {
@@ -383,6 +392,9 @@ function validateInput(event) {
 
   if (value > productData.value.quantity) {
     value = productData.value.quantity;
+    toast.error(`Rất tiếc, bạn chỉ có thể mua tối đa ${productData.value.quantity} sản phẩm của sản phẩm này.`, {
+      timeout: 5000
+    });
   }
   currentQuantity.value = value;
 }
@@ -434,7 +446,6 @@ const handleOk = async () => {
   });
   isModalVisible.value = false;
   const res2 = await apiServices.getCommentById(id);
-  console.log("log của commet",res2);
   let res
   if (res2.data.code === 200) {
     res = await apiServices.updateComment(res2.data.data[0].id, form.comment, form.rate);
@@ -474,7 +485,6 @@ const fetchRecommendedProducts = async (idProduct) => {
       rating_quantity: product.rating_quantity || 0
     }));
 
-    console.log('Processed Recommended Products:', recommendedProducts.value);
   } catch (error) {
     console.error('Lỗi khi lấy sản phẩm đề xuất:', error);
     recommendedProducts.value = [];
@@ -491,21 +501,16 @@ const goToProductDetail = async (productId) => {
 
   // Fetch dữ liệu sản phẩm mới từ API
   await productDetail.fetchProducts(productId);
-  console.log("productDetail.fetchProducts(id);",productDetail.value )
   await fetchRecommendedProducts(productId); // Cập nhật lại danh sách gợi ý
 };
 
 onMounted(async () => {
   try {
-    console.log("mouted log",productDetail.value )
     await productDetail.fetchProducts(id);
-    console.log("productDetail.fetchProducts(id);",productDetail.value )
     await productDetail.fetchAveStart(id);
     await productDetail.fetchComments(id);
-    console.log("productDetail.fetchProducts(id);",productDetail.value )
     await fetchRecommendedProducts(id);
   } catch (error) {
-    console.error('Lỗi khởi tạo:', error);
   }
 });
 

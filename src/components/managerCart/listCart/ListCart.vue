@@ -102,10 +102,11 @@
             <div class="quantity-controls">
               <button @click="decreaseQuantity(record)" class="text-[20px]">-</button>
               <input
-                @keyup="onKeyUp(record.id, record.quantity, record)"
+                type="number"
+                @blur="blur(record.id, record.quantity, record)"
                 v-model.number="record.quantity"
                 min="1"
-                style="width: 60px; text-align: center"
+                style="width: 100px; text-align: center"
                 class="outline-none"
               />
               <button @click="increaseQuantity(record)" class="text-[20px]">+</button>
@@ -239,6 +240,7 @@ const district = ref();
 const wards = ref([]);
 const ward = ref();
 const detail = ref();
+const checkedBox = ref();
 const router = useRouter();
 const address = reactive({
   province: '',
@@ -326,6 +328,8 @@ const handleTableChange = (pagination) => {
 const selectedCartItems = ref([]);
 
 const handleCheckboxChange = async (id, checked) => {
+  checkedBox.value = checked
+  console.log("checked", checked,checkedBox.value )
   const item = cartData.value.dataSource.find((item) => item.id === id);
 
   if (item) {
@@ -357,51 +361,54 @@ const updateQuantity = debounce((productId, quantity) => {
 }, 0);
 
 const decreaseQuantity = async (record) => {
-  console.log("lốc", record)
-  const item = cartStore.cartItems.find((i) => i.id === record.id);
-  if (item && item.quantity > 1) {
-    const previousTotalPrice = item.quantity * item.productDetails.price;
-    item.quantity -= 1;
-    const newTotalPrice = item.quantity * item.productDetails.price;
-
-    if (item.selected) {
-      cartStore.totalPrice -= previousTotalPrice - newTotalPrice;
+  if(record.quantity <=  1){
+    record.quantity = 1
+      toast.error(`Rất tiếc, bạn chỉ có thể mua ít nhất 1 sản phẩm của sản phẩm này.`, {
+      timeout: 5000
+    });
+    }else{
+      record.quantity -= 1
+      await updateQuantity(record.id, record.quantity);
+      if(checkedBox.value) {
+        cartStore.totalPrice -= record.productDetails.price
+      }
     }
-  }
-
-  await updateQuantity(item.id, item.quantity);
-  const res = await apiServices.getCartPrice(record.id);
-  record.totalPrice = res.data.data;
+  record.totalPrice = record.quantity*record.productDetails.price;
 };
 
 const increaseQuantity = async (record) => {
-  const item = cartStore.cartItems.find((i) => i.id === record.id);
-  if (item) {
-    const previousTotalPrice = item.quantity * item.productDetails.price;
-    item.quantity += 1;
-    const newTotalPrice = item.quantity * item.productDetails.price;
-
-    if (item.selected) {
-      cartStore.totalPrice += newTotalPrice - previousTotalPrice;
+  const res1 = await apiServices.getProductItem(record.productItemId)
+    if(res1.data.data.quantity <=  record.quantity){
+      record.quantity = res1.data.data.quantity
+      toast.error(`Rất tiếc, bạn chỉ có thể mua tối đa ${res1.data.data.quantity} sản phẩm của sản phẩm này.`, {
+      timeout: 5000
+    });
+    }else{
+      record.quantity += 1
+      await updateQuantity(record.id, record.quantity);
+      if(checkedBox.value) {
+        cartStore.totalPrice += record.productDetails.price
+      } 
     }
-  }
-
-  await updateQuantity(item.id, item.quantity);
-  const res = await apiServices.getCartPrice(record.id);
-  record.totalPrice = res.data.data;
+    record.totalPrice = record.quantity*record.productDetails.price;
 };
 
 const timeoutId = ref(null);
 
-function onKeyUp(productId, quantity, record) {
-  console.log("lốc test", productId)
+function blur(productId, quantity, record) {
   if (timeoutId.value) {
     clearTimeout(timeoutId.value);
   }
   timeoutId.value = setTimeout(async () => {
+    const res1 = await apiServices.getProductItem(record.productItemId)
+    if(res1.data.data.quantity <=  quantity){
+      record.quantity = res1.data.data.quantity
+      toast.error(`Rất tiếc, bạn chỉ có thể mua tối đa ${res1.data.data.quantity} sản phẩm của sản phẩm này.`, {
+      timeout: 5000
+    });
+    }
     await updateQuantity(productId, quantity);
     const res = await apiServices.getCartPrice(record.id);
-    console.log("lốc price", res.data.data)
     record.totalPrice = res.data.data;
   }, 100);
 }

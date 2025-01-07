@@ -20,29 +20,31 @@ import Swal from 'sweetalert2';
 
 import { useRoute } from 'vue-router';
 import router from '@/router/index.js';
+import { useToast } from "vue-toastification";
 
+const toast = useToast();
 const route = useRoute();
 const email = route.params.email;
 const role = route.params.role;
 const verificationCode = ref();
 
 const confirmCode = async () => {
-  const response = await authService.checkOTP(role, email, verificationCode.value);
-  if (response.data.code === 200) {
-    Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: 'đăng ký thành công',
-      showConfirmButton: false,
-      timer: 1500
-    });
-    router.push({ path: `/login/${role}` });
-  } else if (response.data.code == 500) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Invalid OTP',
-      footer: '<a href="#">Why do I have this issue?</a>'
+  try {
+    console.log("vào đây vào đây")
+    const response = await authService.checkOTP(role, email, verificationCode.value);
+    if (response.data.code === 200) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'đăng ký thành công',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      router.push({ path: `/login/${role}` });   
+    }
+  } catch (e) {
+    toast.error("Mã xác nhận không đúng hoặc OTP đã hết hạn.", {
+      timeout: 5000,
     });
   }
 };
