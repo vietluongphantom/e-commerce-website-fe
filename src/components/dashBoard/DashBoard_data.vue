@@ -14,24 +14,26 @@
 
     <!-- Date Range for API 2 & 3 -->
     <div class="mb-4">
-      <label class="block mb-2">Chọn khoảng thời gian:</label>
-      <input 
-        v-model="startDate" 
-        type="datetime-local" 
-        class="border p-2 rounded mr-2"
-      />
-      <input 
-        v-model="endDate" 
-        type="datetime-local" 
-        class="border p-2 rounded"
-      />
-      <button 
-        @click="fetchDateRangeData" 
-        class="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
-      >
-        Xem kết quả
-      </button>
-    </div>
+    <label class="block mb-2">Chọn khoảng thời gian:</label>
+    <input 
+      v-model="rawStartDate" 
+      @change="updateStartDate" 
+      type="date" 
+      class="border p-2 rounded mr-2"
+    />
+    <input 
+      v-model="rawEndDate" 
+      @change="updateEndDate" 
+      type="date" 
+      class="border p-2 rounded"
+    />
+    <button 
+      @click="fetchDateRangeData" 
+      class="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      Xem kết quả
+    </button>
+  </div>
 
     <!-- Results Display -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -88,6 +90,9 @@
         <p>Đơn đã hủy: {{ orderStats.cancelledOrders }}</p>
         <p>Đơn hoàn thành: {{ orderStats.completedOrders }}</p>
         <p>Đơn đang chờ: {{ orderStats.pendingOrders }}</p>
+        <p>Đơn đã đóng gói: {{ orderStats.packedOrders }}</p>
+        <p>Đơn đang vận chuyển: {{ orderStats.shippedOrders }}</p>
+        <p>Đơn đã xác nhận: {{ orderStats.confirmedOrders }}</p>
       </div>
 
       <!-- Address Statistics -->
@@ -120,6 +125,8 @@ export default {
   data() {
     return {
       selectedYear: new Date().getFullYear(),
+      rawStartDate: "", // Dữ liệu gốc từ input
+      rawEndDate: "",
       startDate: '',
       endDate: '',
       monthlyRevenue: Array(12).fill(0),
@@ -148,6 +155,13 @@ export default {
     this.fetchAllData();
   },
   methods: {
+
+    updateStartDate() {
+        this.startDate = this.rawStartDate ? `${this.rawStartDate}T00:00:00` : "";
+      },
+      updateEndDate() {
+        this.endDate = this.rawEndDate ? `${this.rawEndDate}T23:59:59` : "";
+      },
     async fetchAllData() {
       await this.fetchMonthlyRevenue();
       await this.fetchDateRangeData();

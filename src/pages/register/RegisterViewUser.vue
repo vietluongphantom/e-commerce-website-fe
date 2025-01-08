@@ -87,7 +87,7 @@
 
             <div class="flex justify-between">
               <div class="form-group w-[46%]">
-                <label for="commune">Xã</label>
+                <label for="commune">Phường/Xã</label>
                 <a-select
                 v-model:value="formData.commune"
                 show-search

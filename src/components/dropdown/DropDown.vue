@@ -2,7 +2,8 @@
   <a-dropdown v-model:open="visible">
     <a class="ant-dropdown-link" @click.prevent>
       <div class="ml-4 flex items-center">
-        <img :src="formData.avatar" class="w-[40px] h-[40px] rounded-full" />
+        <img v-if="!formData.avatar" src="@/assets/images/user_1.png" class="w-[40px] h-[40px] rounded-full" />
+        <img v-if="formData.avatar" :src="formData.avatar" class="w-[40px] h-[40px] rounded-full" />
         <div>
           <p class="text-[13px]">{{ formData.email }}</p>
           <p class="text-[12px] text-[#7A7A7A]">Người bán</p>

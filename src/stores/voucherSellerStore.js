@@ -147,7 +147,7 @@ export const useVoucherStore = defineStore('vouchers', {
         await this.fetchVouchers();
         await Swal.fire({
           title: 'Deleted!',
-          text: 'Kho hàng đã được xóa thành công',
+          text: 'Mã giảm giá đã được xóa thành công',
           icon: 'success'
         });
       }

@@ -26,8 +26,11 @@
 
       <button @click="handleSearch" class="button text-[15px] ml-[80px] text-[#fff] bg-[#69C3A3] p-2 font-medium rounded-lg px-4">Tìm kiếm</button>
     </div>
-
-      <div>
+      <div class="flex">
+        <button @click="handleExcel" class="flex justify-center w-[140px] h-[40px] items-center text-[16px] bg-[#27932c] text-[#fff] p-4 rounded-md mr-3">
+          <span class="mr-2">xuất excel</span>
+          <!-- <AddIcon class="w-[20px] h-[20px]"></AddIcon> -->
+        </button>
         <Modal></Modal>
       </div>
     </div>
@@ -71,6 +74,7 @@ import Modal from '@/components/modal/ModalAddInventory.vue';
 import { useInventoryStore } from '@/stores/inventoryStore';
 import router from '@/router/index.js';
 import debounce from 'lodash/debounce';
+import apiServices from '@/domain/apiServices';
 
 const columns = [
   { title: 'STT', dataIndex: 'stt', key: 'stt' },
@@ -127,6 +131,38 @@ const editInventory = (id) => {
 const handleAddNew = () => {
   router.push({ name: 'menu-11' });
 };
+
+
+const handleExcel = async () => {
+  try {
+    // Gọi API để lấy file Excel
+    const response = await apiServices.handleExcelInventory();
+
+    // Kiểm tra xem response có dữ liệu hay không
+    if (response && response.data) {
+      const blob = new Blob([response.data], {
+        type: response.headers['content-type'] || 'application/vnd.ms-excel',
+      });
+
+      // Tạo URL từ Blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Tạo thẻ <a> ẩn để tải file
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'inventory.xlsx'; // Tên file khi tải xuống
+      document.body.appendChild(a);
+      a.click();
+
+      // Dọn dẹp tài nguyên
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  } catch (error) {
+    console.error('Lỗi khi tải file Excel:', error);
+  }
+};
+
 
 onMounted(async () => {
 //  console.log("vào được đây chưa",response.data.data.content )

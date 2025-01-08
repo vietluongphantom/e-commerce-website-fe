@@ -278,8 +278,9 @@ export default {
   },
 
   //PAYMENT
-  payment(selectedCartItems) {
+  payment(selectedCartItems, address) {
     return httpAuth.post(config.baseApiUrl + '/api/checkout/checkout_cart', {
+      address:address,
       selectedCartItems: selectedCartItems,
       method: true,
       note: 'Ghi chú thanh toán'
@@ -441,4 +442,34 @@ export default {
     return httpAuth.post(`${config.baseApiUrl}/api/comments/add_comment`, { content: content, rateStars: rateStars, productId: id, replyTo: null });
   },
 
+  //Delete
+  getAddress(){
+    return httpAuth.get(`${config.baseApiUrl}/api/address`)
+  },
+
+
+  // attribute value
+  updateAllAttributeValue(attributeValuesDTOS) {
+    return httpAuth.put(`${config.baseApiUrl}/api/attribute-values/all`, { attributeValuesDTOS:attributeValuesDTOS });
+  },
+
+  handleExcelProduct() {
+    return httpAuth.get(`${config.baseApiUrl}/api/report/export/excel/product`, {
+      responseType: 'blob', 
+    });
+  },
+
+  handleExcelInventory() {
+    return httpAuth.get(`${config.baseApiUrl}/api/report/export/excel/inventory`, {
+      responseType: 'blob',
+    });
+  },
+
+
+  handleExcelImport() {
+    return httpAuth.get(`${config.baseApiUrl}/api/report/export/excel/inventory`, {
+      responseType: 'blob',
+    });
+  }
+  
 };
