@@ -28,7 +28,14 @@
       </template>
       <template v-else-if="column.key === 'action'" >
         <span>
-          <a-button @click="handleClickAddValues(record.id)" v-if="productItem.productItems.length < 1"  type="primary" block style="width: 100px; font-size: 12px; margin: 2px;">thêm giá trị</a-button>
+          <a-button @click="handleClickAddValues(record.id)"  type="primary" block style="width: 100px; font-size: 12px; margin: 2px;">thêm giá trị</a-button>
+          <ModalEditAttributeValue ref="modalEditAttributeValue"  :listValues="record.values"/>
+          <a-button @click="editAttributeValues(record.id)" type="default" block style="width: 100px; font-size: 12px; margin: 2px;">Sửa giá trị</a-button>
+          <a-button @click="deleteAttribute(record.id)" v-if="productItem.productItems.length < 1"  danger block style="width: 100px; font-size: 12px; margin: 2px;">xoá giá trị</a-button>
+        </span>
+      </template>
+      <template v-else-if="column.key === 'del'" >
+        <span>
           <a-button @click="deleteAttribute(record.id)" v-if="productItem.productItems.length < 1"  danger block style="width: 100px; font-size: 12px; margin: 2px;">xoá thuộc tính</a-button>
         </span>
       </template>
@@ -103,6 +110,8 @@ import { useAttributeValuesStore } from '@/stores/attributeValuesStore';
 import {useProductItemStore} from '@/stores/productItemStore';
 import Modal from '@/components/modal/ModalProductItem.vue';
 import ModalEditProductItem from '@/components/modal/ModalEditProductItem.vue';
+import ModalEditAttributeValue from "@/components/modal/ModalEditAttributeValue.vue";
+import { nextTick } from 'vue';
 const productStore = useProductStore();
 const attributeProductStore = useAttributeProductStore();
 const attributeValuesStore = useAttributeValuesStore();
@@ -149,8 +158,13 @@ const columns1 = [
     dataIndex: 'tags',
   },
   {
-    title: 'Action',
+    title: 'Hành động',
     key: 'action',
+  },
+  ,
+  {
+    title: 'Xoá',
+    key: 'del',
   },
 ];
 
@@ -196,7 +210,7 @@ const columns2 = [
     dataIndex: 'import_price',
   },
   {
-    title: 'Action',
+    title: 'Hành động',
     key: 'action',
   },
 ];
@@ -261,6 +275,18 @@ const deleteAttribute = async (id) => {
     attributeValue.attribute = productStore.product.attribute_and_value;
     productItem.productItems  = productItemStore.productItems
 };
+
+const modalEditAttributeValue = ref(null);
+
+const editAttributeValues = async (attributeId) => {
+  await nextTick(); 
+  const attribute = attributeValue.attribute.find(attr => attr.id === attributeId);
+  if (attribute) {
+    modalEditAttributeValue.value.showModal(attribute.values);
+  }
+};
+
+
 
 onMounted(async () => {
   await productStore.fetchProduct(id.value);

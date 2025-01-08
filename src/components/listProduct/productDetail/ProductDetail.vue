@@ -34,12 +34,12 @@
               </div>
 
               <div>
-                <span class="text-[17px] mr-2">{{ formatNumber(productData.dataSource.total_sold) }}</span>
+                <span class="text-[17px] mr-2">{{ formatNumber(productData.dataSource.quantity_rate) }}</span>
                 <span v-if="productData.dataSource.average_rate > 0" class="text-[16px] text-[#8A8A8A] italic">Đánh giá</span>
               </div>
 
               <div>
-                <span class="text-[17px] mr-2"> {{ formatNumber(productData.dataSource.quantity_rate) }}</span>
+                <span class="text-[17px] mr-2"> {{ formatNumber(productData.dataSource.total_sold) }}</span>
                 <span class="text-[16px] text-[#8A8A8A] italic">Đã bán</span>
               </div>
             </div>

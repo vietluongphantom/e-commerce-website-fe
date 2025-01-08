@@ -2,7 +2,8 @@
   <div class="flex justify-center p-8">
     <div class="w-[70%] bg-[#ffff] flex rounded-md item overflow-hidden">
       <div class="gradient-custom w-[30%] flex flex-col items-center justify-center">
-        <img class="w-[60px] h-[60px] object-cover rounded-full border-[3px] border-[#69C3A3]" :src="formData.avatar"/>
+        <img v-if="formData.avatar == null"src="@/assets/images/user_1.png" class="w-[60px] h-[60px] object-cover rounded-full border-[3px] border-[#69C3A3]" />
+        <img v-if="formData.avatar != null" class="w-[60px] h-[60px] object-cover rounded-full border-[3px] border-[#69C3A3]" :src="formData.avatar"/>
         <p class="mt-4 text-[22px] font-medium">Hồ sơ của tôi</p>
       </div>
 

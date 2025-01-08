@@ -9,13 +9,13 @@
         v-model="monthlyRevenueYear" 
         type="number" 
         class="border p-2 w-full"
-        @change="fetchMonthlyRevenue"
+        @input="throttledFetchMonthlyRevenue"
       />
     </div>
 
     <!-- Inputs for API 2: Daily Revenue -->
     <div class="mb-4">
-      <label class="block mb-2">Chọn Tháng và Năm</label>
+      <label class="block mb-2">Chọn 1 tháng muốn xem doanh thu *</label>
       <div class="flex space-x-2">
         <input 
           v-model="dailyRevenueMonth" 
@@ -24,34 +24,38 @@
           max="12" 
           placeholder="Month"
           class="border p-2 w-1/2"
+          @input="throttledFetchDailyRevenue"
         />
         <input 
           v-model="dailyRevenueYear" 
           type="number" 
           placeholder="Year"
           class="border p-2 w-1/2"
-          @change="fetchDailyRevenue"
+          @input="throttledFetchDailyRevenue"
         />
       </div>
     </div>
 
     <!-- Inputs for API 3: Date Range Revenue -->
     <div class="mb-4">
-      <label class="block mb-2">Chọn một khoảng thời gian</label>
-      <div class="flex space-x-2">
-        <input 
-          v-model="startDate" 
-          type="datetime-local" 
-          class="border p-2 w-1/2"
-        />
-        <input 
-          v-model="endDate" 
-          type="datetime-local" 
-          class="border p-2 w-1/2"
-          @change="fetchDateRangeRevenue"
-        />
-      </div>
-    </div>
+  <label class="block mb-2">Chọn một khoảng thời gian</label>
+  <div class="flex space-x-2">
+    <input 
+      v-model="startDate" 
+      type="datetime-local" 
+      class="border p-2 w-1/2"
+      @input="fetchDateRangeRevenue"
+    />
+    <input 
+      v-model="endDate" 
+      type="datetime-local" 
+      class="border p-2 w-1/2"
+      @input="fetchDateRangeRevenue"
+    />
+  </div>
+  <p v-if="dateRangeError" class="text-red-500 mt-2">{{ dateRangeError }}</p>
+</div>
+
 
     <!-- Charts Container -->
     <div class="grid grid-cols-2 gap-4">
@@ -63,7 +67,7 @@
 
       <!-- Daily Revenue Chart -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Doanh thu hàng ngày</h2>
+        <h2 class="text-xl font-semibold mb-2">Doanh thu hàng ngày của tháng *</h2>
         <canvas ref="dailyRevenueChart"></canvas>
       </div>
 
@@ -98,11 +102,12 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import Chart from 'chart.js/auto'
+import throttle from 'lodash/throttle'
 
 // Refs for input
-const monthlyRevenueYear = ref(2024)
+const monthlyRevenueYear = ref(new Date().getFullYear())
 const dailyRevenueMonth = ref(1)
-const dailyRevenueYear = ref(2024)
+const dailyRevenueYear = ref(new Date().getFullYear())
 const startDate = ref('')
 const endDate = ref('')
 
@@ -114,116 +119,136 @@ const orderStatisticsChart = ref(null)
 const brandProductChart = ref(null)
 const categoryProductChart = ref(null)
 
-// Fetch and process monthly revenue
-const fetchMonthlyRevenue = async () => {
+// Helper to fetch and render charts
+const fetchAndRenderChart = async (url, params, chartRef, chartOptions) => {
   try {
-    const response = await axios.get(`/api/statistics/revenue/monthly?year=${monthlyRevenueYear.value}`)
-    const monthlyData = Array(12).fill(0)
-    
-    response.data.forEach(item => {
-      monthlyData[item.month - 1] = item.revenue
+    const response = await axios.get(url, { params })
+    if (chartRef.value.chart) chartRef.value.chart.destroy()
+    chartRef.value.chart = new Chart(chartRef.value, {
+      type: chartOptions.type,
+      data: chartOptions.getData(response.data),
+      options: chartOptions.options || {}
     })
+  } catch (error) {
+    console.error(`Error fetching data from ${url}:`, error)
+  }
+}
 
-    new Chart(monthlyRevenueChart.value, {
+// Fetch monthly revenue
+const fetchMonthlyRevenue = () => {
+  fetchAndRenderChart(
+    '/api/statistics/revenue/monthly',
+    { year: monthlyRevenueYear.value },
+    monthlyRevenueChart,
+    {
       type: 'bar',
-      data: {
+      getData: (data) => ({
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
           label: 'Monthly Revenue',
-          data: monthlyData,
+          data: Array(12).fill(0).map((_, idx) => data.find(item => item.month === idx + 1)?.revenue || 0),
           backgroundColor: 'rgba(75, 192, 192, 0.6)'
         }]
-      }
-    })
-  } catch (error) {
-    console.error('Error fetching monthly revenue:', error)
-  }
+      })
+    }
+  )
 }
 
-// Fetch and process daily revenue
-const fetchDailyRevenue = async () => {
-  try {
-    const response = await axios.get(`/api/statistics/revenue/daily?month=${dailyRevenueMonth.value.toString().padStart(2, '0')}&year=${dailyRevenueYear.value}`)
-    const dailyData = Array(31).fill(0)
-    
-    response.data.forEach(item => {
-      const date = new Date(item.date)
-      const dayOfMonth = date.getDate() - 1
-      dailyData[dayOfMonth] = item.revenue
-    })
-
-    new Chart(dailyRevenueChart.value, {
+// Fetch daily revenue
+const fetchDailyRevenue = () => {
+  if (!dailyRevenueYear.value || !dailyRevenueMonth.value) return
+  fetchAndRenderChart(
+    '/api/statistics/revenue/daily',
+    { 
+      month: String(dailyRevenueMonth.value).padStart(2, '0'), 
+      year: dailyRevenueYear.value 
+    },
+    dailyRevenueChart,
+    {
       type: 'bar',
-      data: {
-        labels: Array.from({length: 31}, (_, i) => i + 1),
+      getData: (data) => ({
+        labels: Array.from({ length: 31 }, (_, i) => i + 1),
         datasets: [{
           label: 'Daily Revenue',
-          data: dailyData,
+          data: Array(31).fill(0).map((_, idx) => data.find(item => new Date(item.date).getDate() === idx + 1)?.revenue || 0),
           backgroundColor: 'rgba(255, 99, 132, 0.6)'
         }]
-      }
-    })
-  } catch (error) {
-    console.error('Error fetching daily revenue:', error)
-  }
+      })
+    }
+  )
 }
 
-// Fetch and process date range revenue
-const fetchDateRangeRevenue = async () => {
-  try {
-    const response = await axios.get(`/api/orders/revenue`, {
-      params: {
-        startDate: startDate.value,
-        endDate: endDate.value
-      }
-    })
-    const rangeData = response.data.map(item => ({
-      date: new Date(item.date).toLocaleDateString(),
-      revenue: item.revenue
-    }))
+// Fetch date range revenue
+// Thêm biến lưu lỗi
+const dateRangeError = ref('')
 
-    new Chart(dateRangeRevenueChart.value, {
+// Cập nhật hàm fetchDateRangeRevenue
+const fetchDateRangeRevenue = () => {
+  // Reset thông báo lỗi
+  dateRangeError.value = ''
+
+  // Kiểm tra nếu một trong hai giá trị rỗng
+  if (!startDate.value || !endDate.value) return
+
+  // Chuyển đổi startDate và endDate thành đối tượng Date
+  const start = new Date(startDate.value)
+  const end = new Date(endDate.value)
+
+  // Kiểm tra tính hợp lệ của khoảng thời gian
+  if (start >= end) {
+    dateRangeError.value = 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc.'
+    return
+  }
+
+  // Nếu hợp lệ, gọi API và vẽ biểu đồ
+  fetchAndRenderChart(
+    '/api/orders/revenue',
+    { startDate: startDate.value, endDate: endDate.value },
+    dateRangeRevenueChart,
+    {
       type: 'bar',
-      data: {
-        labels: rangeData.map(item => item.date),
+      getData: (data) => ({
+        labels: data.map(item => new Date(item.date).toLocaleDateString()),
         datasets: [{
           label: 'Revenue by Date',
-          data: rangeData.map(item => item.revenue),
+          data: data.map(item => item.revenue),
           backgroundColor: 'rgba(54, 162, 235, 0.6)'
         }]
-      }
-    })
-  } catch (error) {
-    console.error('Error fetching date range revenue:', error)
-  }
+      })
+    }
+  )
 }
 
-// Fetch and process order statistics
+
+// Fetch order statistics
 const fetchOrderStatistics = async () => {
   try {
     const response = await axios.get('/api/statistics/orders')
-    const { cancelledOrders, completedOrders, pendingOrders } = response.data
+    const { cancelledOrders, completedOrders, pendingOrders, packedOrders, shippedOrders, confirmedOrders } = response.data
 
-    new Chart(orderStatisticsChart.value, {
-      type: 'pie',
-      data: {
-        labels: ['Cancelled', 'Completed', 'Pending'],
-        datasets: [{
-          data: [cancelledOrders, completedOrders, pendingOrders],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(255, 205, 86, 0.6)'
-          ]
-        }]
-      }
-    })
+  new Chart(orderStatisticsChart.value, {
+  type: 'pie',
+  data: {
+    labels: ['Đã huỷ', 'Hoàn thành', 'Chờ xác nhận', 'Đóng gói', 'Vận chuyển', 'Xác nhận'],
+    datasets: [{
+      data: [cancelledOrders, completedOrders, pendingOrders, packedOrders, shippedOrders, confirmedOrders],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.6)', // Cancelled
+        'rgba(75, 192, 192, 0.6)', // Completed
+        'rgba(255, 205, 86, 0.6)', // Pending
+        'rgba(54, 162, 235, 0.6)', // Packed
+        'rgba(153, 102, 255, 0.6)', // Shipped
+        'rgba(255, 159, 64, 0.6)'  // Confirmed
+      ]
+    }]
+  }
+})
   } catch (error) {
     console.error('Error fetching order statistics:', error)
   }
 }
 
-// Fetch and process brand product count
+// Fetch brand product count
 const fetchBrandProductCount = async () => {
   try {
     const response = await axios.get('/api/brands/product-count')
@@ -246,7 +271,7 @@ const fetchBrandProductCount = async () => {
   }
 }
 
-// Fetch and process category product count
+// Fetch category product count
 const fetchCategoryProductCount = async () => {
   try {
     const response = await axios.get('/api/products/category/product-count')
@@ -268,6 +293,10 @@ const fetchCategoryProductCount = async () => {
     console.error('Error fetching category product count:', error)
   }
 }
+
+// Throttle API calls
+const throttledFetchMonthlyRevenue = throttle(fetchMonthlyRevenue, 500)
+const throttledFetchDailyRevenue = throttle(fetchDailyRevenue, 500)
 
 // Fetch all data when component mounts
 onMounted(() => {

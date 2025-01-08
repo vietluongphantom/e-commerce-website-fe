@@ -2,7 +2,7 @@
   <div class="supply bg-[#EFEFEF] p-9">
     <h1 class="text-[25px] font-bold mb-6">Danh sách nhập kho</h1>
 
-    <div class="mb-8 flex">
+    <div class="mb-8 flex justify-between">
       <div class="flex items-center mr-[50px]">
         <input
           class="category__input w-[200px] h-[35px] rounded-lg mr-2 p-3"
@@ -25,7 +25,15 @@
       </div>
 
       <button @click="handleSearch" class="button text-[15px] ml-[80px] text-[#fff] bg-[#69C3A3] p-2 font-medium rounded-lg px-4">Tìm kiếm</button>
+
+      <div class="flex">
+        <button @click="handleExcel" class="flex justify-center w-[140px] h-[40px] items-center text-[16px] bg-[#27932c] text-[#fff] p-4 rounded-md mr-3">
+          <span class="mr-2">xuất excel</span>
+          <!-- <AddIcon class="w-[20px] h-[20px]"></AddIcon> -->
+        </button>
+      </div>
     </div>
+
 
     <div>
       <a-table
@@ -106,6 +114,37 @@ const handleAction = () => {
 const handleSearch = () => {
   exportData.currentPage = 1;
   fetchAPI(exportData.currentPage, searchName.value, searchId.value);
+};
+
+
+const handleExcel = async () => {
+  try {
+    // Gọi API để lấy file Excel
+    const response = await apiServices.handleExcelImport();
+
+    // Kiểm tra xem response có dữ liệu hay không
+    if (response && response.data) {
+      const blob = new Blob([response.data], {
+        type: response.headers['content-type'] || 'application/vnd.ms-excel',
+      });
+
+      // Tạo URL từ Blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Tạo thẻ <a> ẩn để tải file
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'list-import.xlsx'; // Tên file khi tải xuống
+      document.body.appendChild(a);
+      a.click();
+
+      // Dọn dẹp tài nguyên
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  } catch (error) {
+    console.error('Lỗi khi tải file Excel:', error);
+  }
 };
 
 onMounted(async () => {

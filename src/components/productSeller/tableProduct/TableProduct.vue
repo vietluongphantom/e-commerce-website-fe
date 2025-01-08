@@ -14,7 +14,11 @@
         <SearchIcon @click="handleAction" class="w-[20px] h-[20px]"></SearchIcon>
       </div>
 
-      <div>
+      <div class="flex">
+        <button @click="handleExcel" class="flex justify-center w-[140px] h-[40px] items-center text-[16px] bg-[#27932c] text-[#fff] p-4 rounded-md mr-3">
+          <span class="mr-2">xuất excel</span>
+          <!-- <AddIcon class="w-[20px] h-[20px]"></AddIcon> -->
+        </button>
         <button @click="handleAddNew" class="flex w-[140px] h-[40px] items-center text-[16px] bg-[#0397D6] text-[#fff] p-4 rounded-md mr-3">
           <span class="mr-2">Thêm mới</span>
           <AddIcon class="w-[20px] h-[20px]"></AddIcon>
@@ -85,6 +89,7 @@ import { ref, computed, onMounted , reactive} from 'vue';
 import { format } from 'date-fns';
 import { SearchIcon, AddIcon, EditIcon, TrashIcon, EyeIcon } from '@/assets/icons/icon.js';
 import router from '@/router/index.js';
+import apiServices from '@/domain/apiServices';
 
 const columns = [
   { title: 'STT', dataIndex: 'stt', key: 'stt' },
@@ -143,7 +148,6 @@ const handleTableChange =  async (pagination) => {
   await productStore.updatePagination({
     currentPage: pagination.current
   });
-  console.log("hú", productStore.products)
 };
 
 const handleAction = () => {
@@ -153,6 +157,36 @@ const handleAction = () => {
 const handleAddNew = () => {
   router.push({name: 'menu-5'});
 }
+
+const handleExcel = async () => {
+  try {
+    // Gọi API để lấy file Excel
+    const response = await apiServices.handleExcelProduct();
+
+    // Kiểm tra xem response có dữ liệu hay không
+    if (response && response.data) {
+      const blob = new Blob([response.data], {
+        type: response.headers['content-type'] || 'application/vnd.ms-excel',
+      });
+
+      // Tạo URL từ Blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Tạo thẻ <a> ẩn để tải file
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'products.xlsx'; // Tên file khi tải xuống
+      document.body.appendChild(a);
+      a.click();
+
+      // Dọn dẹp tài nguyên
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  } catch (error) {
+    console.error('Lỗi khi tải file Excel:', error);
+  }
+};
 
 const editItem = (id) => {
   router.push({ name: 'product-edit', params: { id } });
