@@ -4,18 +4,19 @@
 
     <!-- Inputs for API 1: Monthly Revenue -->
     <div class="mb-4">
-      <label class="block mb-2">Doanh thu hàng tháng của năm</label>
-      <input 
-        v-model="monthlyRevenueYear" 
-        type="number" 
-        class="border p-2 w-full"
-        @input="throttledFetchMonthlyRevenue"
-      />
-    </div>
+  <label class="block mb-2">Doanh thu hàng tháng của năm</label>
+  <input 
+    v-model="monthlyRevenueYear" 
+    type="number" 
+    class="border p-2 w-1/7"
+    @input="throttledFetchMonthlyRevenue"
+  />
+</div>
+
 
     <!-- Inputs for API 2: Daily Revenue -->
     <div class="mb-4">
-      <label class="block mb-2">Chọn 1 tháng muốn xem doanh thu *</label>
+      <label class="block mb-2">Doanh thu hàng ngày của tháng</label>
       <div class="flex space-x-2">
         <input 
           v-model="dailyRevenueMonth" 
@@ -23,14 +24,14 @@
           min="1" 
           max="12" 
           placeholder="Month"
-          class="border p-2 w-1/2"
+          class="border p-2 w-1/9"
           @input="throttledFetchDailyRevenue"
         />
         <input 
           v-model="dailyRevenueYear" 
           type="number" 
           placeholder="Year"
-          class="border p-2 w-1/2"
+          class="border p-2 w-1/9"
           @input="throttledFetchDailyRevenue"
         />
       </div>
@@ -38,18 +39,18 @@
 
     <!-- Inputs for API 3: Date Range Revenue -->
     <div class="mb-4">
-  <label class="block mb-2">Chọn một khoảng thời gian</label>
+  <label class="block mb-2">Chọn một khoảng thời gian *</label>
   <div class="flex space-x-2">
     <input 
       v-model="startDate" 
       type="datetime-local" 
-      class="border p-2 w-1/2"
+      class="border p-2 w-1/4"
       @input="fetchDateRangeRevenue"
     />
     <input 
       v-model="endDate" 
       type="datetime-local" 
-      class="border p-2 w-1/2"
+      class="border p-2 w-1/4"
       @input="fetchDateRangeRevenue"
     />
   </div>
@@ -67,13 +68,13 @@
 
       <!-- Daily Revenue Chart -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Doanh thu hàng ngày của tháng *</h2>
+        <h2 class="text-xl font-semibold mb-2">Doanh thu hàng ngày</h2>
         <canvas ref="dailyRevenueChart"></canvas>
       </div>
 
       <!-- Date Range Revenue Chart -->
       <div>
-        <h2 class="text-xl font-semibold mb-2">Doanh thu trong khoảng thời gian</h2>
+        <h2 class="text-xl font-semibold mb-2">Doanh thu trong khoảng thời gian *</h2>
         <canvas ref="dateRangeRevenueChart"></canvas>
       </div>
 
@@ -201,22 +202,61 @@ const fetchDateRangeRevenue = () => {
   }
 
   // Nếu hợp lệ, gọi API và vẽ biểu đồ
+  // fetchAndRenderChart(
+  //   '/api/orders/revenue',
+  //   { startDate: startDate.value, endDate: endDate.value },
+  //   dateRangeRevenueChart,
+  //   {
+  //     type: 'bar',
+  //     getData: (data) => ({
+  //       labels: data.map(item => new Date(item.date).toLocaleDateString()),
+  //       datasets: [{
+  //         label: 'Revenue by Date',
+  //         data: data.map(item => item.revenue),
+  //         backgroundColor: 'rgba(54, 162, 235, 0.6)'
+  //       }]
+  //     })
+  //   }
+  // )
+
   fetchAndRenderChart(
-    '/api/orders/revenue',
-    { startDate: startDate.value, endDate: endDate.value },
-    dateRangeRevenueChart,
-    {
-      type: 'bar',
-      getData: (data) => ({
-        labels: data.map(item => new Date(item.date).toLocaleDateString()),
+  '/api/orders/revenue',
+  { startDate: startDate.value, endDate: endDate.value },
+  dateRangeRevenueChart,
+  {
+    type: 'line', // Thay đổi loại biểu đồ
+    getData: (data) => {
+      // Tạo mảng các ngày từ startDate đến endDate
+      const start = new Date(startDate.value);
+      const end = new Date(endDate.value);
+      const dateLabels = [];
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        dateLabels.push(new Date(d).toLocaleDateString());
+      }
+
+      // Tạo đối tượng để tra cứu doanh thu theo ngày
+      const revenueLookup = data.reduce((acc, item) => {
+        acc[new Date(item.date).toLocaleDateString()] = item.revenue;
+        return acc;
+      }, {});
+
+      // Tạo dữ liệu đầy đủ, gán 0 cho các ngày không có giá trị
+      const revenueData = dateLabels.map(label => revenueLookup[label] || 0);
+
+      return {
+        labels: dateLabels,
         datasets: [{
           label: 'Revenue by Date',
-          data: data.map(item => item.revenue),
-          backgroundColor: 'rgba(54, 162, 235, 0.6)'
+          data: revenueData,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          fill: false, // Không tô màu dưới đường
         }]
-      })
+      };
     }
-  )
+  }
+);
+
 }
 
 
